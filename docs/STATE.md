@@ -52,16 +52,74 @@ src/lib/cards.ts        A byte-mirror of packages/cards/src/{deck,rounds,deal}
                         .ts in chaupal. The deck order is FROZEN.
 src/lib/mirror.test.ts  Holds both mirrors to what the real code answered.
 src/lib/__vectors__/    Those answers, plus a README on regenerating them.
-src/app/page.tsx        Home. Runs the real ceremony live in the browser.
+src/app/page.tsx        Home. Hero, facts strip, game tiles, the ceremony,
+                        the closing band. Runs the real ceremony in-browser.
 src/app/fair-play/      The long explanation of the ceremony.
 src/app/about/          Who is accountable. No team, no office, no investor.
 src/app/legal/          Index + [slug] route, 7 docs prerendered by
                         generateStaticParams from LEGAL_DOCS.
 src/components/legal/   One component per document + index.ts (LEGAL_BODIES).
 src/components/Commitment.tsx   The live commit-roll-reveal widget.
+src/components/CardFan.tsx      Judgement's key art, dealt not photographed.
+public/art/             Two screenshots of the real Chaupal boards, webp.
 src/app/icon.svg        Favicon. A die face showing three, on the diagonal.
 src/app/opengraph-image.tsx     Share card, typographic, no photo.
 ```
+
+### The look: art-forward, and why each piece is allowed to be there
+
+The first version of this site was a typographic essay capped at `--page:
+64rem` with no imagery at all. It was accurate and it read as a manifesto, not
+as a studio. The redesign widens the chrome and puts the games on the page.
+
+- **Two container widths.** `--page-wide: 84rem` is what the masthead, the
+  footer, and every section wrapper use, via `.shell--wide`. `--page: 64rem`
+  now only caps the *reading* blocks: `.docs`, `.docnav`, `.ceremony`. That
+  split is what lets a document page keep a comfortable measure while its
+  wordmark, heading and footer still share one left edge with the home page.
+  The four document pages carry `shell shell--wide` for exactly this reason;
+  removing it puts the h1 to the right of the wordmark, which is how the
+  regression looked when it happened.
+- **The hero bleeds.** `.stage` aligns its copy to the shell with
+  `padding-inline-start: max(var(--gutter), calc((100% - var(--page-wide)) / 2
+  + var(--gutter)))`. That is `100%`, not `100vw`, on purpose: with `100vw` a
+  scrollbar shifts the headline out of alignment with the wordmark above it.
+  On mobile the art takes `order: -1` so it sits above the copy, while the
+  `h1` stays first in the DOM for screen readers and crawlers.
+- **The board art is real.** `public/art/chaupal-ludo.webp` and
+  `chaupal-snakes-and-ladders.webp` are captures of the live Chaupal
+  deployment, not mockups. `GameArt` in `brand.ts` documents that rule. If a
+  board is redesigned these are stale and must be recaptured, because a studio
+  site arguing for checkability cannot ship a picture of a game that does not
+  exist.
+- **Judgement's art is dealt, not drawn.** A card game has no public object to
+  photograph: the table is the hands, and the hands are private. So
+  `CardFan.tsx` deals seat one's round-seven hand with the same `dealRound`
+  the real table uses, from a seed written into the source. Publishing that
+  seed is the point of the comment on it: it is exactly why that seed must
+  never deal a real hand. Judgement's `art` is `null` in `brand.ts`, and that
+  `null` is what selects the fan.
+- **Per-card rotation uses inline `style`**, setting `--turn` and `--lift`
+  custom properties. This is legal under the static CSP because `style-src`
+  carries `'unsafe-inline'`, which covers style attributes. It is the reason
+  the fan does not need a client component or a stylesheet per card.
+- **`next/image` everywhere, never `<img>`.** `core-web-vitals` is on and
+  would warn. Dimensions come from `brand.ts`, the hero carries `priority`,
+  and both image rules set `display: block` to kill the 1px inline-layout
+  baseline sliver under the picture.
+- **Motion is opt-out.** The `arrive` entrance and every hover transform sit
+  inside `@media (prefers-reduced-motion: no-preference)`.
+- **`GAMES_LINK` replaced `GAMES_ANCHOR`.** It is an object (`{path, label}`)
+  so the header can spread it alongside `NAV` and no nav label is spelled
+  twice. It is deliberately **not** in `ROUTES`, because `sitemap.ts` maps
+  over all of `ROUTES` and `/#games` is an anchor, not a page.
+
+Verified by screenshot at desktop and mobile, in both colour schemes, plus
+`/fair-play`, `/legal` and `/about`. One trap worth writing down: full-page
+CDP captures of this site render a ghost of the footer over the masthead. It
+is a `captureBeyondViewport` compositing artifact, not a layout bug.
+`elementFromPoint` in that band returns the masthead, and a viewport-only
+capture is clean.
 
 ### Three things that will bite whoever picks this up
 

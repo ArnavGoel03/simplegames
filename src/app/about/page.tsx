@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 export default function AboutPage() {
   return (
-    <section className="shell band band--flush">
+    <section className="shell shell--wide band band--flush">
       <div className="prose">
         <p className="eyebrow">About</p>
         <h1>One person, two games, no house edge.</h1>

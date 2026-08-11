@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 
 export default function LegalIndexPage() {
   return (
-    <section className="shell band band--flush">
+    <section className="shell shell--wide band band--flush">
       <div className="prose">
         <p className="eyebrow">Legal</p>
         <h1>Seven documents, written to be read.</h1>

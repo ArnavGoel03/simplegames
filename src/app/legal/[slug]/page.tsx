@@ -40,7 +40,7 @@ export default async function LegalDocPage({ params }: { params: Promise<Params>
   const Body = LEGAL_BODIES[doc.slug as LegalSlug];
 
   return (
-    <article className="shell band band--flush">
+    <article className="shell shell--wide band band--flush">
       <div className="prose">
         <p className="eyebrow">
           <Link href={LEGAL_INDEX_PATH}>Legal</Link>

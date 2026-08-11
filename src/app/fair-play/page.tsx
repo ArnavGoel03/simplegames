@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 
 export default function FairPlayPage() {
   return (
-    <section className="shell band band--flush">
+    <section className="shell shell--wide band band--flush">
       <div className="prose">
         <p className="eyebrow">Fair play</p>
         <h1>What the games prove, and what they do not.</h1>

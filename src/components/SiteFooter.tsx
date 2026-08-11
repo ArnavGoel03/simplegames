@@ -4,7 +4,7 @@ import { LEGAL_DOCS, LEGAL_INDEX_PATH, legalPath } from "@/lib/legal";
 
 export function SiteFooter() {
   return (
-    <footer className="shell colophon">
+    <footer className="shell shell--wide colophon">
       {/* The games themselves, because every page other than the home page
           argues for them and then offers no way to go and play one. */}
       <nav className="colophon__games" aria-label="Games">

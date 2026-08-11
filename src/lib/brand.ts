@@ -75,6 +75,16 @@ export const ROUTES = [
 export const NAV = ROUTES.filter((route) => route.inNav);
 
 /**
+ * The games section of the home page.
+ *
+ * A fragment rather than a route, so it is deliberately not in ROUTES: the
+ * sitemap is built from that list and an anchor is not a page. It carries a
+ * label anyway, because the header sets it beside the real routes and a nav
+ * label written twice is a nav label that will disagree with itself.
+ */
+export const GAMES_LINK = { path: "/#games", label: "Games" } as const;
+
+/**
  * Who is accountable for the work. One click deep, never fabricated.
  *
  * There is deliberately no location. An unstated one is honest; a stale one is
@@ -86,6 +96,22 @@ export const MAKER = {
 } as const;
 
 export type GameStatus = "live" | "building";
+
+/**
+ * Key art for a game.
+ *
+ * Every one of these is a screenshot of the real thing, taken from the live
+ * deployment and cropped, never an illustration of a game that does not look
+ * like that. A studio page that shows art the game does not match is making a
+ * claim it cannot keep, which is the one thing this site is not allowed to do.
+ * Dimensions are carried because the layout must not move while they load.
+ */
+export interface GameArt {
+  readonly src: string;
+  readonly width: number;
+  readonly height: number;
+  readonly alt: string;
+}
 
 export interface Game {
   readonly id: string;
@@ -103,6 +129,11 @@ export interface Game {
   readonly status: GameStatus;
   /** Null while a game is still being built, so a link is never dead. */
   readonly url: string | null;
+  /**
+   * Null when the game has nothing real to show yet. A tile then falls back to
+   * type, which is honest, rather than to a placeholder, which is not.
+   */
+  readonly art: GameArt | null;
 }
 
 export const GAMES: readonly Game[] = [
@@ -115,6 +146,12 @@ export const GAMES: readonly Game[] = [
     players: "2 to 4 players",
     status: "live",
     url: "https://chaupal-games.vercel.app",
+    art: {
+      src: "/art/chaupal-snakes-and-ladders.webp",
+      width: 1100,
+      height: 1220,
+      alt: "A Snakes and Ladders board mid-game in Chaupal, with two pieces waiting on the start row.",
+    },
   },
   {
     id: "judgement",
@@ -128,8 +165,25 @@ export const GAMES: readonly Game[] = [
     // deployment until it has a domain of its own. The link goes to the page
     // rather than the studio's idea of where it ought to live.
     url: "https://chaupal-games.vercel.app/judgement",
+    // Judgement's tile deals a real hand instead of showing a photograph. A
+    // card game's table is its players' hands, and those are private, so there
+    // is nothing to photograph that would not be a staged lie.
+    art: null,
   },
 ] as const;
+
+/**
+ * The studio's own key art, for the top of the home page.
+ *
+ * It is the Ludo board from a real game on Chaupal, which is the most
+ * photographable thing the studio has made.
+ */
+export const HERO_ART: GameArt = {
+  src: "/art/chaupal-ludo.webp",
+  width: 1600,
+  height: 915,
+  alt: "A Ludo board in Chaupal, seen in perspective, with four red and four green pieces in their yards.",
+};
 
 /**
  * The live games, for anywhere that offers a way to go and play rather than a
