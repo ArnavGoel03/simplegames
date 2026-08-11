@@ -14,9 +14,9 @@ export default function AboutPage() {
         <p className="eyebrow">About</p>
         <h1>One person, two games, no house edge.</h1>
         <p>
-          {STUDIO_NAME} is <strong>{MAKER.name}</strong>, working from {MAKER.where}. There is no
-          team, no office and no investor, which is worth saying plainly because a studio site that
-          implies otherwise is the first small lie in a product that claims to be checkable.
+          {STUDIO_NAME} is <strong>{MAKER.name}</strong>. There is no team, no office and no
+          investor, which is worth saying plainly because a studio site that implies otherwise is
+          the first small lie in a product that claims to be checkable.
         </p>
 
         <h2>Why it exists</h2>

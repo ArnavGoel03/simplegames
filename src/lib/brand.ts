@@ -69,10 +69,15 @@ export const ROUTES = [
 
 export const NAV = ROUTES.filter((route) => route.inNav);
 
-/** Who is accountable for the work. One click deep, never fabricated. */
+/**
+ * Who is accountable for the work. One click deep, never fabricated.
+ *
+ * There is deliberately no location. An unstated one is honest; a stale one is
+ * a small lie on a site whose entire argument is that it does not ask to be
+ * taken on faith.
+ */
 export const MAKER = {
   name: "Arnav Goel",
-  where: "Bengaluru",
 } as const;
 
 export type GameStatus = "live" | "building";

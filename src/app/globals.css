@@ -166,14 +166,32 @@ a {
   padding-block: 2rem 3rem;
   color: var(--muted);
   font-size: var(--step-small);
-  display: flex;
-  justify-content: space-between;
-  gap: 1rem;
-  flex-wrap: wrap;
+  display: grid;
+  gap: 1.5rem;
 }
 
 .colophon a {
   color: var(--muted);
+}
+
+.colophon a:hover {
+  color: var(--ink);
+}
+
+/* Every legal document is reachable from every page. Wrapping rather than
+   scrolling, because a footer that scrolls sideways on a phone hides exactly
+   the links a person went looking for. */
+.colophon__legal {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
+}
+
+.colophon__base {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 
 /* ---------- hero ---------- */
@@ -463,6 +481,136 @@ a.game:hover {
   text-transform: uppercase;
   color: var(--muted);
   margin-bottom: 1.25rem;
+}
+
+.eyebrow a {
+  color: inherit;
+}
+
+.eyebrow a:hover {
+  color: var(--ink);
+}
+
+/* ---------- legal documents ---------- */
+
+/* The opening paragraph of a legal page carries the whole answer, so it is set
+   at the reader's size rather than the footnote size the rest of the internet
+   reserves for terms. */
+.lede {
+  font-size: var(--step-lead);
+  color: var(--ink);
+}
+
+.docdate {
+  font-family: var(--font-mono);
+  font-size: var(--step-label);
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+
+.prose ul {
+  display: grid;
+  gap: 0.75rem;
+  padding-left: 1.1rem;
+  color: var(--muted);
+}
+
+.prose li {
+  padding-left: 0.25rem;
+}
+
+.prose li::marker {
+  color: var(--rule-strong);
+}
+
+/* Documents are long. Give the headings more air than a short page needs, so
+   that scrolling one reads as a sequence of sections rather than a wall. */
+.prose--doc {
+  margin-top: clamp(2rem, 5vw, 2.75rem);
+}
+
+.prose--doc h2 {
+  margin-top: 2.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--rule);
+}
+
+/* The index of documents. A list of links, but each one has to answer "is this
+   the page I want" without being opened, so the summary is not optional. */
+.docs {
+  margin-top: clamp(2.5rem, 6vw, 3.5rem);
+  display: grid;
+  gap: 0;
+  border-top: 1px solid var(--rule);
+  list-style: none;
+  padding: 0;
+}
+
+.docs__item {
+  border-bottom: 1px solid var(--rule);
+}
+
+.docs__link {
+  display: grid;
+  gap: 0.4rem;
+  padding-block: 1.5rem;
+  text-decoration: none;
+  color: inherit;
+}
+
+.docs__link:hover .docs__title {
+  color: var(--indigo);
+}
+
+.docs__title {
+  font-family: var(--font-display);
+  font-size: 1.375rem;
+  color: var(--ink);
+}
+
+.docs__summary {
+  max-width: var(--measure);
+  color: var(--muted);
+}
+
+.docs__meta {
+  font-family: var(--font-mono);
+  font-size: var(--step-label);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--rule-strong);
+}
+
+.docnav {
+  margin-top: clamp(3rem, 7vw, 4rem);
+  padding-top: 1.75rem;
+  border-top: 1px solid var(--rule);
+}
+
+.docnav__label {
+  font-family: var(--font-mono);
+  font-size: var(--step-label);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 1rem;
+}
+
+.docnav ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+  list-style: none;
+  padding: 0;
+}
+
+.docnav a {
+  color: var(--muted);
+  text-underline-offset: 3px;
+}
+
+.docnav a:hover {
+  color: var(--indigo);
 }
 
 /* The ceremony, as an ordered list, because the order is the security
