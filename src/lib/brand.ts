@@ -30,7 +30,11 @@ export const STUDIO_DESCRIPTION =
 function resolveUrl(): string {
   const explicit = process.env.NEXT_PUBLIC_SITE_URL?.trim();
   if (explicit) return explicit.replace(/\/+$/, "");
-  return "https://simplegames.vercel.app";
+  // The production alias Vercel actually assigned. simplegames.vercel.app was
+  // already taken, and a canonical tag pointing at somebody else's site is
+  // worse than an ugly one pointing at ours. Set NEXT_PUBLIC_SITE_URL when a
+  // real domain is registered.
+  return "https://simplegames-chi.vercel.app";
 }
 
 export const studio = {
