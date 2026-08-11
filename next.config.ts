@@ -1,0 +1,49 @@
+import type { NextConfig } from "next";
+
+// Nothing here is dynamic: three routes, no database, no images from anywhere
+// but this repository. Everything below is a header rather than a feature.
+const config: NextConfig = {
+  reactStrictMode: true,
+  poweredByHeader: false,
+  async headers() {
+    return [
+      {
+        source: "/:path*",
+        headers: [
+          // No third-party script, style, font or connection is loaded by this
+          // site, so everything below is locked to this origin.
+          //
+          // script-src allows inline because Next ships the route payload as
+          // inline script tags, and the alternative is a nonce, which needs
+          // middleware, which makes every route dynamic and gives up the
+          // static prerender that is the whole reason this site is fast. The
+          // trade is acceptable here specifically because the site renders no
+          // user input at all: three static pages, no forms, no query
+          // parameters read, no content from anywhere but this repository. The
+          // day any of that stops being true, this needs revisiting.
+          {
+            key: "Content-Security-Policy",
+            value: [
+              "default-src 'self'",
+              "script-src 'self' 'unsafe-inline'",
+              "style-src 'self' 'unsafe-inline'",
+              "img-src 'self' data:",
+              "font-src 'self'",
+              "connect-src 'self'",
+              "form-action 'none'",
+              "frame-ancestors 'none'",
+              "base-uri 'self'",
+              "object-src 'none'",
+            ].join("; "),
+          },
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "X-Frame-Options", value: "DENY" },
+          { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
+        ],
+      },
+    ];
+  },
+};
+
+export default config;
