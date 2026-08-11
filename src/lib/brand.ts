@@ -49,10 +49,15 @@ export const studio = {
   // reader here to check the derivation, so it has to land on the repository
   // that actually contains src/lib/fairness.ts.
   github: "https://github.com/ArnavGoel03/simplegames",
-  // The browser chrome above the page, so it has to be the page's own ground
-  // colour: --paper in globals.css. A neutral value here draws a grey band
-  // across the top of the page on a phone.
-  themeColor: "#f1f1f5",
+  // The browser chrome above the page, so each one has to be the page's own
+  // ground colour: --paper in globals.css, in each scheme. A single value here
+  // is a bug rather than a simplification, because the page follows the
+  // reader's colour scheme and one value means a light band above a dark page
+  // on half the phones that open it.
+  themeColor: {
+    light: "#f1f1f5",
+    dark: "#0f0f18",
+  },
 } as const;
 
 /**
@@ -89,6 +94,12 @@ export interface Game {
   readonly blurb: string;
   /** The games it holds, named the way a player would name them. */
   readonly holds: string;
+  /**
+   * How many can sit down, phrased the way a player would ask it. It is the
+   * first question anybody has about a game played with friends, and a card
+   * that answers it saves a click on a game the reader cannot fill a table for.
+   */
+  readonly players: string;
   readonly status: GameStatus;
   /** Null while a game is still being built, so a link is never dead. */
   readonly url: string | null;
@@ -101,6 +112,7 @@ export const GAMES: readonly Game[] = [
     blurb:
       "Board games rolled from dice you can check. Start a room, send the link, no signup and no install.",
     holds: "Ludo, Snakes and Ladders",
+    players: "2 to 4 players",
     status: "live",
     url: "https://chaupal-games.vercel.app",
   },
@@ -110,7 +122,25 @@ export const GAMES: readonly Game[] = [
     blurb:
       "The trick-taking game where you bid exactly how many you will win, and overshooting costs you as much as falling short.",
     holds: "Judgement, also called Kachuful",
-    status: "building",
-    url: null,
+    players: "3 or 4 players",
+    status: "live",
+    // Judgement has its own page and its own table, both served from Chaupal's
+    // deployment until it has a domain of its own. The link goes to the page
+    // rather than the studio's idea of where it ought to live.
+    url: "https://chaupal-games.vercel.app/judgement",
   },
 ] as const;
+
+/**
+ * The live games, for anywhere that offers a way to go and play rather than a
+ * description of the catalogue. Derived, so a game going live is one edit.
+ */
+export const PLAYABLE = GAMES.filter(
+  (game): game is Game & { url: string } => game.url !== null,
+);
+
+// Counted rather than written, because "Two games" hardcoded above a list of
+// three is the kind of stale copy nobody thinks to check.
+const COUNT_WORDS = ["No", "One", "Two", "Three", "Four", "Five", "Six"] as const;
+
+export const GAME_COUNT_WORD: string = COUNT_WORDS[GAMES.length] ?? String(GAMES.length);

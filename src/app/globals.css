@@ -178,6 +178,25 @@ a {
   color: var(--ink);
 }
 
+/* The one row in the footer that is an invitation rather than an index, so it
+   is set in the page's own ink instead of the muted grey the rest carries. */
+.colophon__games {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
+  font-size: var(--step-body);
+}
+
+.colophon__games a {
+  color: var(--ink);
+  text-decoration-color: var(--rule-strong);
+  text-underline-offset: 0.25em;
+}
+
+.colophon__games a:hover {
+  color: var(--indigo);
+}
+
 /* Every legal document is reachable from every page. Wrapping rather than
    scrolling, because a footer that scrolls sideways on a phone hides exactly
    the links a person went looking for. */
@@ -300,6 +319,52 @@ a {
   animation: none;
 }
 
+/* The hand. Rank and pip, at a card's proportions, because the point of
+   showing it is that a reader recognises it as a hand at a glance and then
+   goes and checks the arithmetic. */
+.hand {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.card {
+  width: 2.25rem;
+  height: 3.15rem;
+  display: grid;
+  place-content: center;
+  gap: 0.05rem;
+  border: 1px solid var(--rule-strong);
+  background: var(--paper-raised);
+  font-family: var(--font-mono);
+  line-height: 1;
+  color: var(--ink);
+  animation: settle 260ms ease-out both;
+}
+
+.card--red {
+  color: var(--flag);
+}
+
+.card__rank {
+  font-size: 0.875rem;
+  text-align: center;
+}
+
+.card__suit {
+  font-size: 1rem;
+  text-align: center;
+}
+
+/* Face down is the waiting state, so it carries the page's own hatching rather
+   than a printed card back: nothing has been dealt yet and it should not look
+   as though something has. */
+.card--face-down {
+  background: var(--paper);
+  border-style: dashed;
+  animation: none;
+}
+
 @keyframes settle {
   from {
     opacity: 0;
@@ -412,6 +477,11 @@ a.game:hover {
 .game__blurb {
   color: var(--muted);
   max-width: 38ch;
+}
+
+.game__meta {
+  font-size: var(--step-small);
+  color: var(--muted);
 }
 
 .game__status {

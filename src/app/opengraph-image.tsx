@@ -39,10 +39,11 @@ export default function OpengraphImage() {
 
         <div style={{ display: "flex", flexDirection: "column", gap: 28 }}>
           <div style={{ fontSize: 78, lineHeight: 1.05, letterSpacing: "-0.02em", maxWidth: 950 }}>
-            Every roll is decided before we know who it helps.
+            Every roll and every deal is settled before we know who it helps.
           </div>
           <div style={{ fontSize: 30, color: "#62627d", maxWidth: 820 }}>
-            Board and card games whose dice you can check afterwards, instead of trusting.
+            Board and card games whose dice and shuffles you can check afterwards, instead of
+            trusting.
           </div>
         </div>
 

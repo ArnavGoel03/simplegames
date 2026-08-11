@@ -18,7 +18,7 @@ developer-of-record for both, and it owns the legal surface for both.
 |---|---|---|---|
 | **Simple Games** | Studio site. The argument, the fairness explainer, all legal docs. | `ArnavGoel03/simplegames` (public) | https://simplegames-chi.vercel.app |
 | **Chaupal** | Ludo and Snakes and Ladders. Dice you can verify afterwards. | `ArnavGoel03/chaupal` (**private**) | https://chaupal-games.vercel.app |
-| **Judgement** | Trick-taking card game (Kachuful). Being built inside the Chaupal monorepo. | same monorepo | not yet |
+| **Judgement** | Trick-taking card game (Kachuful). Lives inside the Chaupal monorepo. | same monorepo | https://chaupal-games.vercel.app/judgement |
 
 Three domains are planned, one per row. None are registered.
 
@@ -46,8 +46,12 @@ Push to `main` auto-deploys. The GitHub integration is connected and working.
 src/lib/brand.ts        Single source: studio name, tagline, routes, nav,
                         the GAMES array, MAKER, resolveUrl().
 src/lib/legal.ts        Single source for the legal surface (see §3).
-src/lib/fairness.ts     A byte-mirror of packages/fairness/src/rng.ts in
-                        chaupal. DANGER: see "the mirror" below.
+src/lib/fairness.ts     A byte-mirror of packages/fairness/src/rng.ts and
+                        shuffle.ts in chaupal. See "the mirror" below.
+src/lib/cards.ts        A byte-mirror of packages/cards/src/{deck,rounds,deal}
+                        .ts in chaupal. The deck order is FROZEN.
+src/lib/mirror.test.ts  Holds both mirrors to what the real code answered.
+src/lib/__vectors__/    Those answers, plus a README on regenerating them.
 src/app/page.tsx        Home. Runs the real ceremony live in the browser.
 src/app/fair-play/      The long explanation of the ceremony.
 src/app/about/          Who is accountable. No team, no office, no investor.
@@ -61,12 +65,20 @@ src/app/opengraph-image.tsx     Share card, typographic, no photo.
 
 ### Three things that will bite whoever picks this up
 
-**The mirror.** `src/lib/fairness.ts` here is a hand-copy of
-`packages/fairness/src/rng.ts` in chaupal. The home page runs it live and
-claims it is the code the games run. If the chaupal file changes and this one
-does not, **the home page starts quietly lying.** Check the pair every release
-until they share a real package. Making them share a package is the correct
-fix and nobody has done it.
+**The mirror.** `src/lib/fairness.ts` and `src/lib/cards.ts` here are
+hand-copies of `packages/fairness/src/{rng,shuffle}.ts` and
+`packages/cards/src/{deck,rounds,deal}.ts` in chaupal. The home page runs them
+live and claims they are the code the games run. If the chaupal files change
+and these do not, **the home page starts quietly lying.**
+
+Half of that is now a machine's job rather than a promise to look carefully.
+`npm test` replays vectors recorded from the real implementation, so a drift on
+**this** side fails 19 tests. It was calibrated by breaking the deck order on
+purpose: four tests failed, and passed again on the revert. What it cannot see
+is chaupal moving underneath it, which leaves the vectors stale and passing.
+Regenerate them when the chaupal derivation changes, per
+`src/lib/__vectors__/README.md`. One shared package is still the correct fix
+and nobody has done it.
 
 **`STUDIO_ID` is frozen.** `STUDIO_ID = "simplegames"` in `brand.ts` is the
 intended token issuer and audience for one account across all products.
@@ -168,11 +180,20 @@ code change.
 
 ---
 
-## 4. Judgement: in progress, other agent
+## 4. Judgement: live, and linked from here
 
-Being built inside `~/dev/chaupal` by a separate agent session. As of the last
-look, `main` was at `25a5551 feat: bid, play and a per-seat state frame in the
-protocol`, and `feat/cards-engine` had been merged.
+Shipped inside `~/dev/chaupal` and live at
+`https://chaupal-games.vercel.app/judgement`: its own page, its own card table
+(`components/cards/`), lobby seating for 3 or 4, bidding, score pad and a
+finish screen. The studio site now lists it as live and links to it, and the
+footer of every page offers both games.
+
+It is a route on Chaupal's deployment rather than a site of its own, and the
+studio site links the real URL rather than the one the plan wanted. When
+Judgement gets a domain, `GAMES` in `brand.ts` is the single edit.
+
+Earlier in the build, `main` was at `25a5551 feat: bid, play and a per-seat
+state frame in the protocol`, and `feat/cards-engine` had been merged.
 
 **The design and the plan are written and committed:**
 
@@ -226,13 +247,15 @@ entirely before this). Committed as `ad13577` and pushed.
 2. **Register domains** for `simplegames` and `judgement`. Then set
    `NEXT_PUBLIC_SITE_URL` on the Vercel project and the canonical-URL hardcode
    in `resolveUrl()` stops mattering.
-3. **Finish Judgement.** Per-seat redaction is the risky part.
+3. **Judgement is live.** Per-seat redaction was the risky part and is the
+   thing to re-audit first if a leak is ever suspected.
 4. **Studio-scoped auth.** Chaupal's `TOKEN_ISSUER` / `TOKEN_AUDIENCE` /
    cookie names are product-scoped and must become studio-scoped before one
    account works across apps. Open question: whether Clerk satellite domains
    are available on the current plan.
-5. **Make `fairness.ts` a shared package** instead of a hand-copy, so the home
-   page cannot drift into lying.
+5. **Make `fairness.ts` and `cards.ts` a shared package** instead of
+   hand-copies. `npm test` now catches a drift on this side; only a shared
+   package catches a drift on chaupal's.
 6. **Watch the Vercel deploy cap.** 100 deploys/day is account-wide and now has
    to cover three projects. Skipped monorepo builds still count. A refusal
    shows up as a 402, and after that a `git push` silently does nothing.

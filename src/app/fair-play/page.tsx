@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
+import { DECK } from "@/lib/cards";
 import { REJECTION_CEILING, SEED_BYTES } from "@/lib/fairness";
 
 export const metadata: Metadata = {
   title: "Fair play",
   description:
-    "How the dice are derived: a seed committed to before the game, revealed after it, and rolls anyone can recompute.",
+    "How the dice and the deal are derived: a seed committed to before the game, revealed after it, and rolls and shuffles anyone can recompute.",
   alternates: { canonical: "/fair-play" },
 };
 
@@ -15,9 +16,9 @@ export default function FairPlayPage() {
         <p className="eyebrow">Fair play</p>
         <h1>What the games prove, and what they do not.</h1>
         <p>
-          Most online dice are a call to a random number generator on a server you cannot see. That
-          is almost always honest and it is never checkable, which are different things. These
-          games are built so the second one is true as well.
+          Most online dice, and every online shuffle, are a call to a random number generator on a
+          server you cannot see. That is almost always honest and it is never checkable, which are
+          different things. These games are built so the second one is true as well.
         </p>
       </div>
 
@@ -52,6 +53,23 @@ export default function FairPlayPage() {
             </p>
           </div>
         </li>
+        <li data-step="also during">
+          <div className="prose">
+            <p>
+              A deal comes off the same seed. All {DECK.length} cards are shuffled by walking the
+              deck from the back and swapping each card with one chosen by the same HMAC, again
+              discarding any byte that would favour a low position, so the order is{" "}
+              <strong>uniform rather than merely scrambled</strong>. The round number goes into the
+              shuffle, so each deal of a match is independent and all of them still check out
+              against the one number revealed at the end.
+            </p>
+            <p>
+              A card can never be read off a die. Every message signed for a deal carries a label
+              that no message signed for a roll can carry, so the two derivations cannot collide
+              even though they share a seed.
+            </p>
+          </div>
+        </li>
         <li data-step="after">
           <div className="prose">
             <p>
@@ -67,10 +85,11 @@ export default function FairPlayPage() {
       <div className="prose prose--gap">
         <h2>What this does not cover</h2>
         <p>
-          It proves the dice were not rigged. It does not prove the person on the other side of the
-          table is not looking at your screen, and it does not make a hidden hand of cards visible
-          before it should be. Those are ordinary software problems, handled by not sending a
-          player information they have not earned yet, and you have to take our word for that part.
+          It proves the dice and the deal were not rigged. It does not prove the person on the
+          other side of the table is not looking at your screen, and it does not by itself keep a
+          hand of cards out of the other players&rsquo; browsers. That second one is an ordinary
+          software problem, handled by sending each player only what they have earned the right to
+          see, and you have to take our word for that part.
         </p>
         <p>
           The source is public, which is the only reason our word is worth anything on it.
