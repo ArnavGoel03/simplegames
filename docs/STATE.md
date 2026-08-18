@@ -16,9 +16,16 @@ developer-of-record for both, and it owns the legal surface for both.
 
 | | What it is | Repo | Live |
 |---|---|---|---|
-| **Simple Games** | Studio site. The argument, the fairness explainer, all legal docs. | `ArnavGoel03/simplegames` (public) | https://simplegames-chi.vercel.app |
-| **Chaupal** | Ludo and Snakes and Ladders. Dice you can verify afterwards. | `ArnavGoel03/chaupal` (**private**) | https://chaupal-games.vercel.app |
-| **Judgement** | Trick-taking card game (Kachuful). Lives inside the Chaupal monorepo. | same monorepo | https://chaupal-games.vercel.app/judgement |
+| **Simple Games** | Studio site. The argument, the fairness explainer, all legal docs. | `ArnavGoel03/simplegames` (public) | https://simplegames.goelhome.workers.dev |
+| **Chaupal** | Ludo and Snakes and Ladders. Dice you can verify afterwards. | `ArnavGoel03/chaupal` (**private**) | https://chaupal-games.goelhome.workers.dev |
+| **Taash** | The card room: Judgement, 29, Call Break, Pachisa, 3-2-5, and three games of patience. Lives inside the Chaupal monorepo. | same monorepo | https://judgement-cards.goelhome.workers.dev |
+
+**Every one of those addresses moved on 18 August 2026, and the old ones are
+dead.** Vercel soft blocked the account for bandwidth on 17 August and every
+site on it, this one included, began answering `402` to everybody. All three are
+now Cloudflare Workers, built on a laptop and uploaded, which costs nothing and
+spends no build minutes. `brand.ts` names the new addresses; the vercel.app ones
+are where they go back to if that block ever clears.
 
 Three domains are planned, one per row. None are registered.
 

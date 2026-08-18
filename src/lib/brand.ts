@@ -30,11 +30,13 @@ export const STUDIO_DESCRIPTION =
 function resolveUrl(): string {
   const explicit = process.env.NEXT_PUBLIC_SITE_URL?.trim();
   if (explicit) return explicit.replace(/\/+$/, "");
-  // The production alias Vercel actually assigned. simplegames.vercel.app was
-  // already taken, and a canonical tag pointing at somebody else's site is
-  // worse than an ugly one pointing at ours. Set NEXT_PUBLIC_SITE_URL when a
-  // real domain is registered.
-  return "https://simplegames-chi.vercel.app";
+  // Where this site is actually served from. It was on Vercel until that
+  // account was blocked for bandwidth and every site on it started answering
+  // `402` to everybody, this one included: a studio site that will not load is
+  // worse than an ugly hostname, and a canonical tag pointing at a dead address
+  // is worse than both. Set NEXT_PUBLIC_SITE_URL when a real domain is
+  // registered, which is the day this line stops mattering.
+  return "https://simplegames.goelhome.workers.dev";
 }
 
 export const studio = {
@@ -145,7 +147,8 @@ export const GAMES: readonly Game[] = [
     holds: "Ludo, Snakes and Ladders",
     players: "2 to 4 players",
     status: "live",
-    url: "https://chaupal-games.vercel.app",
+    // On Cloudflare, for the reason `resolveUrl` gives above.
+    url: "https://chaupal-games.goelhome.workers.dev",
     art: {
       src: "/art/chaupal-snakes-and-ladders.webp",
       width: 1100,
@@ -154,17 +157,22 @@ export const GAMES: readonly Game[] = [
     },
   },
   {
-    id: "judgement",
-    name: "Judgement",
+    // Renamed from "judgement" when the card room stopped being one game. The
+    // room is called Taash, which is simply what a deck of cards is called
+    // across northern India, and Judgement is now the first of eight games in
+    // it rather than the whole of it.
+    id: "taash",
+    name: "Taash",
     blurb:
-      "The trick-taking game where you bid exactly how many you will win, and overshooting costs you as much as falling short.",
-    holds: "Judgement, also called Kachuful",
-    players: "3 or 4 players",
+      "Five card games for a table and three games of patience for one, dealt from a shuffle nobody at the table chose. Judgement, where you bid exactly how many you will win, is the one it started as.",
+    holds: "Judgement, 29, Call Break, Pachisa, 3-2-5, FreeCell, Klondike, Spider",
+    players: "1 to 10 players",
     status: "live",
-    // Judgement has its own page and its own table, both served from Chaupal's
-    // deployment until it has a domain of its own. The link goes to the page
-    // rather than the studio's idea of where it ought to live.
-    url: "https://chaupal-games.vercel.app/judgement",
+    // Its own deployment now, and on Cloudflare rather than Vercel. The link
+    // goes to the room rather than to any one game in it: every game inside is
+    // one press from here, and a studio that deep-linked to one of eight would
+    // be picking a favourite.
+    url: "https://judgement-cards.goelhome.workers.dev",
     // Judgement's tile deals a real hand instead of showing a photograph. A
     // card game's table is its players' hands, and those are private, so there
     // is nothing to photograph that would not be a staged lie.

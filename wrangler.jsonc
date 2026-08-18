@@ -1,0 +1,25 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  // The studio site. Named for what it is, and the name is also the address:
+  // this Worker answers on simplegames.goelhome.workers.dev, which is what
+  // `src/lib/brand.ts` resolves to and therefore what every canonical tag, OG
+  // image and sitemap entry on the site points at.
+  "name": "simplegames",
+  // Built by `opennextjs-cloudflare build`, never by hand. It wraps the Next
+  // server output in a Worker entrypoint and writes the client bundle out to
+  // assets beside it.
+  "main": ".open-next/worker.js",
+  // The same date the game sites pin. Two sites out of one studio drifting apart
+  // on the runtime's version is two runtimes to reason about for no gain.
+  "compatibility_date": "2026-08-09",
+  // Required by the adapter: Next's server half reaches for Node builtins even
+  // when the application code does not.
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "observability": { "enabled": true }
+  // No secrets and no bindings, which is the whole shape of this site: five
+  // pages, no database, no accounts, no analytics, nothing to leak.
+}

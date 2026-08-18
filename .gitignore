@@ -5,5 +5,10 @@ next-env.d.ts
 *.tsbuildinfo
 .env*.local
 .vercel
+
+# The Cloudflare adapter's build output and wrangler's local state. The site is
+# built on this machine and uploaded, so neither belongs in the repository.
+.open-next/
+.wrangler/
 .DS_Store
 .env*
