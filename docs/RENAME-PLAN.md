@@ -742,6 +742,201 @@ shared-secret session table would have forced a rewrite.
 the session cookie. Correct for four apps you own. Worth remembering the day
 something untrusted needs a subdomain.
 
+## 16. Verification: the gate this rename has to pass
+
+The rename touches cookies, token claims, storage keys, hash inputs, four
+deployments and a WebSocket host. Most of those fail **silently**: a wrong
+`postMessage` source does not throw, a cookie that stops being sent just looks
+like a logged-out user, and a stale registry URL 404s only for the person who
+clicked it. A green `pnpm gate` proves none of it.
+
+So this section is the real gate. Three layers, and the rename is not done until
+all three are green.
+
+### Layer 0: the baseline, captured BEFORE anything changes
+
+Without a before, an after proves nothing. Run this on the untouched tree and
+keep the output; every later check diffs against it.
+
+```bash
+mkdir -p /tmp/rename-baseline && cd ~/dev/chaupal
+pnpm gate 2>&1 | tail -40 > /tmp/rename-baseline/gate.txt
+node scripts/probe-rooms.mjs 2>&1 > /tmp/rename-baseline/rooms.txt
+for u in https://chaupal-games.goelhome.workers.dev \
+         https://judgement-cards.goelhome.workers.dev \
+         https://draw-games.netlify.app \
+         https://lattice-games.netlify.app \
+         https://glasstablegames.goelhome.workers.dev; do
+  printf '%s %s\n' "$(curl -s -o /dev/null -w '%{http_code}' "$u")" "$u"
+done > /tmp/rename-baseline/status.txt
+```
+
+A baseline that is already red is a baseline, not a blocker: record it, so a
+failure after the rename is not blamed on the rename.
+
+### Layer 1: `scripts/check-brand.mjs`, a gate that fails on leakage
+
+Drop into the monorepo and add to the `test` chain beside `check:dashes`. This
+is what makes every future rename mechanical rather than archaeological.
+
+```js
+// Fails the build if the studio's name leaks outside the one file that owns it.
+// Prose says the studio's name; code derives it.
+import { readFileSync } from "node:fs";
+import { globSync } from "node:fs";
+
+const OWNED = ["packages/brand/src/index.ts"];
+const PROSE = [/^docs\//, /^README\.md$/, /^CLAUDE\.md$/, /\.test\.ts$/];
+const NEEDLES = [/Glass Table Games/i, /glasstablegames?/i];
+
+const files = globSync("{packages,apps,scripts}/**/*.{ts,tsx,mjs,css,json}", {
+  exclude: (p) => p.includes("node_modules") || p.includes(".next"),
+});
+
+const bad = [];
+for (const file of files) {
+  if (OWNED.includes(file) || PROSE.some((re) => re.test(file))) continue;
+  const text = readFileSync(file, "utf8");
+  text.split("\n").forEach((line, i) => {
+    if (NEEDLES.some((re) => re.test(line))) bad.push(`${file}:${i + 1}: ${line.trim()}`);
+  });
+}
+
+if (bad.length) {
+  console.error("The studio's name is hardcoded outside packages/brand:\n" + bad.join("\n"));
+  process.exit(1);
+}
+console.log(`check:brand ok (${files.length} files)`);
+```
+
+### Layer 2: `scripts/verify-rename.mjs`, the residual and consistency sweep
+
+```js
+// Three assertions a typechecker cannot make.
+import { execSync } from "node:child_process";
+import { NAMESPACE, GAMES, CARD_ROOM, STUDIO, SITE_ORIGINS } from "@glass-table/brand";
+
+const fail = [];
+
+// 1. Every surviving "chaupal" means the game, its URL, or a test fixture.
+const ALLOWED = [/GAMES\.chaupal/, /chaupal-games\./, /chaupal\.example/, /id: "chaupal"/,
+                 /name: "Chaupal"/, /open square at the centre/];
+const hits = execSync(
+  `grep -rIn --exclude-dir={.git,node_modules,.next,out} -i 'chaupal' packages apps scripts || true`,
+  { encoding: "utf8" },
+).split("\n").filter(Boolean).filter((line) => !ALLOWED.some((re) => re.test(line)));
+if (hits.length) fail.push(`Unexplained 'chaupal':\n${hits.join("\n")}`);
+
+// 2. The namespace is still a legal cookie name, storage key and JWT claim.
+if (!/^[a-z][a-z0-9]*$/.test(NAMESPACE)) fail.push(`NAMESPACE illegal: ${NAMESPACE}`);
+
+// 3. Every registry URL is under the studio domain, and origins derive cleanly.
+for (const game of Object.values(GAMES)) {
+  if (!game.url.startsWith("https://")) fail.push(`${game.id}: not https`);
+  if (!game.url.includes(new URL(STUDIO.url).hostname.replace(/^www\./, "")))
+    fail.push(`${game.id}: ${game.url} is not under ${STUDIO.url}`);
+}
+if (new Set(SITE_ORIGINS).size !== SITE_ORIGINS.length) fail.push("SITE_ORIGINS has duplicates");
+
+if (fail.length) { console.error(fail.join("\n\n")); process.exit(1); }
+console.log(`verify-rename ok: ${Object.keys(GAMES).length} games, ${SITE_ORIGINS.length} origins`);
+```
+
+### Layer 3: `scripts/verify-live.mjs`, end to end against the real deployments
+
+This is the one that catches what the others cannot. Run it after every deploy.
+
+```js
+// Every assertion here is about a running system, not a build artefact.
+const DOMAIN = "glasstablegames.com";
+const HOSTS = ["", "chaupal.", "cards.", "draw.", "lattice.", "accounts."].map((s) => `https://${s}${DOMAIN}`);
+const fail = [];
+const ok = [];
+
+for (const url of HOSTS) {
+  try {
+    const res = await fetch(url, { redirect: "manual" });
+    // 1. It answers, and not with the 402 that started all of this.
+    if (res.status >= 400) { fail.push(`${url} -> ${res.status}`); continue; }
+    const html = await res.text();
+
+    // 2. The canonical tag points at itself, not at a dead vercel.app alias.
+    const canon = html.match(/<link rel="canonical" href="([^"]+)"/)?.[1];
+    if (canon && !canon.includes(DOMAIN)) fail.push(`${url}: canonical still ${canon}`);
+
+    // 3. No dead brand anywhere in the shipped HTML.
+    if (/Simple Games/.test(html)) fail.push(`${url}: still says Simple Games`);
+    if (/vercel\.app/.test(html)) fail.push(`${url}: still links a vercel.app host`);
+
+    // 4. The session cookie is scoped to the parent domain, which is the whole
+    //    point of the subdomain move. Host-only here means one sign-in per game.
+    const cookie = res.headers.get("set-cookie") ?? "";
+    if (cookie && !new RegExp(`Domain=\\.?${DOMAIN}`).test(cookie))
+      fail.push(`${url}: cookie is host-only: ${cookie.split(";")[0]}`);
+
+    ok.push(`${url} ${res.status}`);
+  } catch (error) { fail.push(`${url} threw ${error.message}`); }
+}
+
+// 5. The realtime Worker answers on its custom domain over TLS.
+const rt = await fetch(`https://realtime.${DOMAIN}/health`).catch((e) => ({ status: e.message }));
+if (rt.status !== 200) fail.push(`realtime.${DOMAIN} -> ${rt.status}`);
+
+// 6. A cross-origin POST from a stranger is still refused.
+const hostile = await fetch(`https://chaupal.${DOMAIN}/api/identity/guest`, {
+  method: "POST", headers: { origin: "https://evil.example" },
+});
+if (hostile.status < 400) fail.push(`CSRF: cross-origin POST accepted (${hostile.status})`);
+
+console.log(ok.join("\n"));
+if (fail.length) { console.error("\nFAILED\n" + fail.join("\n")); process.exit(1); }
+```
+
+### The two things no script can check
+
+Both are release gates. Neither is optional.
+
+1. **Google sign-in, clicked by a human, end to end.** `MESSAGE_SOURCE` changed
+   on both sides of a `postMessage`; a mismatch fails silently and no status
+   code shows it.
+2. **A real room, two browsers, on two different subdomains.** Sign in on
+   `chaupal.`, then open `cards.` and confirm you are still signed in. That
+   single check proves the cookie `Domain`, the CSRF classifier, the Worker
+   allowlist and `parseRoomId` all agree. Existing harness:
+   `node scripts/smoke-room.mjs https://chaupal.glasstablegames.com` and
+   `node scripts/probe-tables.mjs https://cards.glasstablegames.com`.
+
+### Rollout order, with a stop at every gate
+
+Staged deliberately, cheapest and least-coupled first, so a failure is caught
+while only one thing has moved.
+
+| # | Step | Gate before continuing | Rollback |
+|---|---|---|---|
+| 1 | Code rename, nothing deployed | `pnpm gate` + `check:brand` + `verify-rename` | `git reset --hard` |
+| 2 | Deploy **Draw** only (Netlify, no accounts, lowest blast radius) | `verify-live` for `draw.` + open the site | Redeploy previous |
+| 3 | Point `draw.` DNS at it | Resolve, TLS, 200, canonical | Delete the DNS record |
+| 4 | Deploy the card room and Chaupal | `verify-live` for both | Redeploy previous |
+| 5 | Cookie `Domain` goes to `.glasstablegames.com` | **Two-browser cross-subdomain sign-in** | Revert the one constant |
+| 6 | New realtime Worker, old one left running | Two-browser room on the new host | Point env back at the old Worker |
+| 7 | Delete the old Worker, retire old hostnames | 24h with no errors in observability | Redeploy it from git |
+
+Step 6 keeping the old Worker alive is what makes this reversible. Deleting it
+before a verified room is the one irreversible mistake available here.
+
+### Acceptance: the rename is done when all of these are true
+
+- [ ] `pnpm gate` green, including `check:brand` and `verify-rename`
+- [ ] `verify-live` green against all six hostnames
+- [ ] Baseline diff shows no route that was 200 before is now anything else
+- [ ] Google sign-in completes, by hand
+- [ ] One sign-in works across two different subdomains, by hand
+- [ ] A two-browser room plays a full round on the new Worker
+- [ ] A daily puzzle loads and its printed seed matches the new prefix
+- [ ] The studio site's mirror test still passes untouched
+- [ ] `grep -rIn -i chaupal` returns only the game, its URL, and the fixtures
+- [ ] Old Worker deleted only after 24h clean
+
 ## 15. Fairness roadmap: stronger schemes, and when each earns its cost
 
 Recorded 19 Aug 2026. **None of this is pre-launch work.** Eleven finished games
