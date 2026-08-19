@@ -15,7 +15,7 @@
  */
 export const STUDIO_ID = "simplegames";
 
-export const STUDIO_NAME = "Simple Games";
+export const STUDIO_NAME = "Glass Table Games";
 
 /**
  * What the studio does, in the fewest words that are still true. Not a slogan:
@@ -25,7 +25,7 @@ export const STUDIO_NAME = "Simple Games";
 export const STUDIO_TAGLINE = "Games you can check";
 
 export const STUDIO_DESCRIPTION =
-  "Simple Games builds board and card games for playing with friends. Every roll is committed to before it happens and published afterwards, so nobody has to take our word for it.";
+  "Glass Table Games builds board and card games for playing with friends. Every roll is committed to before it happens and published afterwards, so nobody has to take our word for it.";
 
 function resolveUrl(): string {
   const explicit = process.env.NEXT_PUBLIC_SITE_URL?.trim();
@@ -36,7 +36,7 @@ function resolveUrl(): string {
   // worse than an ugly hostname, and a canonical tag pointing at a dead address
   // is worse than both. Set NEXT_PUBLIC_SITE_URL when a real domain is
   // registered, which is the day this line stops mattering.
-  return "https://simplegames.goelhome.workers.dev";
+  return "https://glasstablegames.goelhome.workers.dev";
 }
 
 export const studio = {
@@ -136,6 +136,17 @@ export interface Game {
    * type, which is honest, rather than to a placeholder, which is not.
    */
   readonly art: GameArt | null;
+  /**
+   * What the tile shows when `art` is null.
+   *
+   * `cards` deals a real hand with the real dealing function, which is a true
+   * picture of a card game and a false one of anything else. It was the only
+   * fallback here while the card room was the only game without a photograph,
+   * and the day a drawing game and a word game arrived it started showing them
+   * both holding a hand of cards they do not have. `type` is the neutral
+   * answer: the game's name, set large, claiming nothing.
+   */
+  readonly fallback: "cards" | "type";
 }
 
 export const GAMES: readonly Game[] = [
@@ -155,6 +166,7 @@ export const GAMES: readonly Game[] = [
       height: 1220,
       alt: "A Snakes and Ladders board mid-game in Chaupal, with two pieces waiting on the start row.",
     },
+    fallback: "type",
   },
   {
     // Renamed from "judgement" when the card room stopped being one game. The
@@ -177,6 +189,36 @@ export const GAMES: readonly Game[] = [
     // card game's table is its players' hands, and those are private, so there
     // is nothing to photograph that would not be a staged lie.
     art: null,
+    fallback: "cards",
+  },
+  {
+    id: "draw",
+    name: "Draw",
+    blurb:
+      "One person draws it and everybody else races to name it. Or the whole table draws the same word at once and then votes on whose is best.",
+    holds: "Draw, Everyone Draws",
+    players: "2 to 12 players",
+    status: "live",
+    // On Netlify rather than Cloudflare, because it moved off Vercel while that
+    // account was blocked and there has been no reason to move it twice.
+    url: "https://draw-games.netlify.app",
+    // No art yet. A tile with nothing real to show falls back to type, which is
+    // honest, where a placeholder would not be. A capture from the live game
+    // replaces this the moment one is taken.
+    art: null,
+    fallback: "type",
+  },
+  {
+    id: "lattice",
+    name: "Lattice",
+    blurb:
+      "Words that cross, on a board that says what counts. Play it at a table with friends, or alone against the board.",
+    holds: "Lattice, solo or at a table",
+    players: "2 to 4 players",
+    status: "live",
+    url: "https://lattice-games.netlify.app",
+    art: null,
+    fallback: "type",
   },
 ] as const;
 

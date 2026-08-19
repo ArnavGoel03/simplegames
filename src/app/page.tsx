@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { CardFan } from "@/components/CardFan";
 import { Commitment } from "@/components/Commitment";
+import { TitlePlate } from "@/components/TitlePlate";
 import { GAME_COUNT_WORD, GAMES, GAMES_LINK, HERO_ART, PLAYABLE, STUDIO_TAGLINE } from "@/lib/brand";
 
 /**
@@ -76,8 +77,10 @@ export default function HomePage() {
                       height={game.art.height}
                       sizes="(min-width: 60rem) 45vw, 100vw"
                     />
-                  ) : (
+                  ) : game.fallback === "cards" ? (
                     <CardFan />
+                  ) : (
+                    <TitlePlate name={game.name} />
                   )}
                 </div>
                 <div className="title__body">

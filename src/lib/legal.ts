@@ -15,7 +15,7 @@ import { STUDIO_NAME } from "./brand";
  * it converts a person trying to reach you into a person with a complaint and
  * evidence that you ignored them.
  */
-export const LEGAL_EMAIL = "simplegames.studio@gmail.com";
+export const LEGAL_EMAIL = "glasstablegames.studio@gmail.com";
 
 /**
  * The law these documents are read under, and the courts that would hear a

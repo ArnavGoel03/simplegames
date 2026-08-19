@@ -1,6 +1,6 @@
-# Simple Games: state of play
+# Glass Table Games: state of play
 
-Last updated 11 August 2026. This is the pick-it-up-later document for the
+Last updated 19 August 2026. This is the pick-it-up-later document for the
 whole studio effort: the studio site, Chaupal, and Judgement. Read this first
 in any new session, then go to the file it points you at.
 
@@ -9,14 +9,44 @@ session should have to re-derive.
 
 ---
 
+## 0. The name is on trial, and only this repo carries it
+
+Renamed from **Simple Games** to **Glass Table Games** on 19 August 2026, on
+this site alone, deliberately. `simplegames.com` is held since 2001 and
+unbuyable; `glasstablegames.com` is unregistered and picked out of a sweep of
+about 1,200 candidates, recorded in `docs/DOMAIN-SHORTLIST.md`.
+
+It is a trial rather than a migration, so the expensive and irreversible parts
+were all skipped on purpose:
+
+- **The domain is not bought.** The site answers on
+  `glasstablegames.goelhome.workers.dev`.
+- **Neither repo is renamed**, and no directory moved. `ArnavGoel03/simplegames`
+  is still the repo, which is why `studio.github` still points there and is
+  correct.
+- **The Chaupal monorepo is untouched.** `@chaupal/*`, `NAMESPACE`, the six
+  frozen hash literals in `packages/fairness` and `packages/daily`: none of them
+  moved. Nobody is signed out and no published commitment stopped verifying.
+- **`packages/brand` still says `STUDIO.name = "Simple Games"`**, so the games
+  say Simple Games while this site says Glass Table Games. Two names coexisting
+  is the correct state for a trial and is one line to fix later.
+- **`STUDIO_ID` still reads `"simplegames"`** for the same reason: it is a wire
+  identifier, not a display string.
+
+The full migration, if the name survives living with it, is planned in detail at
+`~/.claude/plans/mighty-chasing-crab.md`. Everything here is one `git revert`
+away from undone.
+
+---
+
 ## 1. The shape of the thing
 
-**Simple Games** is a studio brand sitting above two game sites. It is the
+**Glass Table Games** is a studio brand sitting above the game sites. It is the
 developer-of-record for both, and it owns the legal surface for both.
 
 | | What it is | Repo | Live |
 |---|---|---|---|
-| **Simple Games** | Studio site. The argument, the fairness explainer, all legal docs. | `ArnavGoel03/simplegames` (public) | https://simplegames.goelhome.workers.dev |
+| **Glass Table Games** | Studio site. The argument, the fairness explainer, all legal docs. | `ArnavGoel03/simplegames` (public) | https://glasstablegames.goelhome.workers.dev |
 | **Chaupal** | Ludo and Snakes and Ladders. Dice you can verify afterwards. | `ArnavGoel03/chaupal` (**private**) | https://chaupal-games.goelhome.workers.dev |
 | **Taash** | The card room: Judgement, 29, Call Break, Pachisa, 3-2-5, and three games of patience. Lives inside the Chaupal monorepo. | same monorepo | https://judgement-cards.goelhome.workers.dev |
 
@@ -39,7 +69,7 @@ without trusting us. Everything else on the site serves that sentence.
 
 ---
 
-## 2. Simple Games studio site: DONE and live
+## 2. Glass Table Games studio site: DONE and live
 
 `~/dev/simplegames`. Next 16.3.0, React 19.2.8, TypeScript **pinned to 6.0.3**
 exactly, eslint pinned `9.39.5`. 17 routes, every single one prerendered. No
@@ -69,7 +99,9 @@ src/components/legal/   One component per document + index.ts (LEGAL_BODIES).
 src/components/Commitment.tsx   The live commit-roll-reveal widget.
 src/components/CardFan.tsx      Judgement's key art, dealt not photographed.
 public/art/             Two screenshots of the real Chaupal boards, webp.
-src/app/icon.svg        Favicon. A die face showing three, on the diagonal.
+src/app/icon.svg        Favicon. The mark: a glass pane with two pieces.
+src/components/StudioMark.tsx   The mark, animated. A frost that clears.
+src/components/TitlePlate.tsx   Typographic fallback for a game with no art.
 src/app/opengraph-image.tsx     Share card, typographic, no photo.
 ```
 
@@ -104,8 +136,11 @@ as a studio. The redesign widens the chrome and puts the games on the page.
   `CardFan.tsx` deals seat one's round-seven hand with the same `dealRound`
   the real table uses, from a seed written into the source. Publishing that
   seed is the point of the comment on it: it is exactly why that seed must
-  never deal a real hand. Judgement's `art` is `null` in `brand.ts`, and that
-  `null` is what selects the fan.
+  never deal a real hand. Taash's `art` is `null` in `brand.ts` and its
+  `fallback` is `"cards"`, which together select the fan. Draw and Lattice are
+  also `art: null` but `fallback: "type"`: a dealt hand is a true picture of a
+  card game and a false one of a drawing game, and for a while both of them
+  were shown holding cards they do not have.
 - **Per-card rotation uses inline `style`**, setting `--turn` and `--lift`
   custom properties. This is legal under the static CSP because `style-src`
   carries `'unsafe-inline'`, which covers style attributes. It is the reason
@@ -145,7 +180,9 @@ Regenerate them when the chaupal derivation changes, per
 `src/lib/__vectors__/README.md`. One shared package is still the correct fix
 and nobody has done it.
 
-**`STUDIO_ID` is frozen.** `STUDIO_ID = "simplegames"` in `brand.ts` is the
+**`STUDIO_ID` is frozen, and deliberately did not follow the rename** (§0).
+It is a wire identifier rather than a display string. `STUDIO_ID =
+"simplegames"` in `brand.ts` is the
 intended token issuer and audience for one account across all products.
 Changing it signs every player out everywhere. Chaupal currently ships
 product-scoped `TOKEN_ISSUER` / `TOKEN_AUDIENCE` / cookie names of `chaupal`;
@@ -234,7 +271,7 @@ one. The parent-facing point is the honest one: a room is shared by link.
 
 ### BLOCKER: the contact address does not exist
 
-`LEGAL_EMAIL = "simplegames.studio@gmail.com"`. **This mailbox has not been
+`LEGAL_EMAIL = "glasstablegames.studio@gmail.com"`. **This mailbox has not been
 created.** There is a `PENDING` comment on it in `legal.ts`.
 
 All seven documents point at it, including the accessibility complaints route
@@ -306,7 +343,7 @@ entirely before this). Committed as `ad13577` and pushed.
 
 ## 6. Open items, in priority order
 
-1. **Create `simplegames.studio@gmail.com`.** Seven live legal documents point
+1. **Create `glasstablegames.studio@gmail.com`.** Seven live legal documents point
    at an address nobody can receive at. Arnav's task. Blocks the legal surface
    being real.
 2. **Register domains** for `simplegames` and `judgement`. Then set

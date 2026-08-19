@@ -1,10 +1,10 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   // The studio site. Named for what it is, and the name is also the address:
-  // this Worker answers on simplegames.goelhome.workers.dev, which is what
+  // this Worker answers on glasstablegames.goelhome.workers.dev, which is what
   // `src/lib/brand.ts` resolves to and therefore what every canonical tag, OG
   // image and sitemap entry on the site points at.
-  "name": "simplegames",
+  "name": "glasstablegames",
   // Built by `opennextjs-cloudflare build`, never by hand. It wraps the Next
   // server output in a Worker entrypoint and writes the client bundle out to
   // assets beside it.

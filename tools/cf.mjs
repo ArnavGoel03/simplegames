@@ -21,7 +21,7 @@
 import { spawnSync } from "node:child_process";
 
 /** Where this Worker answers. `name` in `wrangler.jsonc` decides it. */
-const SITE_URL = "https://simplegames.goelhome.workers.dev";
+const SITE_URL = "https://glasstablegames.goelhome.workers.dev";
 
 const COMMANDS = new Set(["build", "preview", "deploy", "upload"]);
 const [command, ...rest] = process.argv.slice(2);

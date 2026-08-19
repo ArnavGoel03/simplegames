@@ -1,6 +1,6 @@
-# Simple Games
+# Glass Table Games
 
-The studio site. Three routes, no database, no analytics, no third-party request of any kind.
+The studio site. Five routes, no database, no analytics, no third-party request of any kind.
 
 - `/` says what the studio does and demonstrates it: a real commit, roll and reveal ceremony run in the reader's own browser.
 - `/fair-play` explains the derivation, and is honest about what it does not cover.

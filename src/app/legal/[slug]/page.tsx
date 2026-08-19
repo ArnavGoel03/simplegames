@@ -62,7 +62,7 @@ export default async function LegalDocPage({ params }: { params: Promise<Params>
       </div>
 
       <nav className="docnav" aria-label="Other legal documents">
-        {/* No possessive: "Simple Games's" is what a name ending in s does to one. */}
+        {/* No possessive: "Glass Table Games's" is what a name ending in s does to one. */}
         <p className="docnav__label">The rest of the legal pages</p>
         <ul>
           {LEGAL_DOCS.filter((other) => other.slug !== doc.slug).map((other) => (

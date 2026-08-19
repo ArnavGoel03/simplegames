@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { StudioMark } from "@/components/StudioMark";
 import { GAMES_LINK, NAV, STUDIO_NAME } from "@/lib/brand";
 
 // The games come first, because that is what a studio is for. The anchor is
@@ -10,6 +11,7 @@ export function SiteHeader() {
   return (
     <header className="shell shell--wide masthead">
       <Link href="/" className="wordmark">
+        <StudioMark />
         {STUDIO_NAME}
       </Link>
       <nav aria-label="Primary">

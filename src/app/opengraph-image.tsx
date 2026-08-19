@@ -1,5 +1,5 @@
 import { ImageResponse } from "next/og";
-import { STUDIO_NAME, STUDIO_TAGLINE } from "@/lib/brand";
+import { GAMES, STUDIO_NAME, STUDIO_TAGLINE } from "@/lib/brand";
 
 // The card people see when the link is pasted into a chat. A blank one reads
 // as an unfinished site, which is the opposite of the argument this site makes.
@@ -28,11 +28,25 @@ export default function OpengraphImage() {
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
+          {/* The same mark as src/app/icon.svg, at card size. Written out
+              rather than imported because Satori renders this to a PNG on its
+              own and cannot read an external file or a custom property. */}
           <svg width="52" height="52" viewBox="0 0 32 32">
             <rect width="32" height="32" rx="7" fill="#3b3bd0" />
-            <circle cx="9" cy="23" r="3" fill="#ffffff" />
-            <circle cx="16" cy="16" r="3" fill="#ffffff" />
-            <circle cx="23" cy="9" r="3" fill="#ffffff" />
+            <rect
+              x="6.5"
+              y="6.5"
+              width="19"
+              height="19"
+              rx="4"
+              fill="#ffffff"
+              fillOpacity="0.18"
+              stroke="#ffffff"
+              strokeOpacity="0.6"
+              strokeWidth="2"
+            />
+            <circle cx="12.6" cy="19.4" r="2.9" fill="#ffffff" />
+            <circle cx="19.4" cy="12.6" r="2.9" fill="#ffffff" />
           </svg>
           <div style={{ fontSize: 34, letterSpacing: "-0.01em" }}>{STUDIO_NAME}</div>
         </div>
@@ -57,8 +71,10 @@ export default function OpengraphImage() {
             paddingTop: 28,
           }}
         >
-          <div>Chaupal</div>
-          <div>Judgement</div>
+          {/* Named from the registry rather than by hand, because a card that
+              still lists a game the studio renamed is the kind of stale copy
+              nobody thinks to check. */}
+          <div>{GAMES.map((game) => game.name).join("  ·  ")}</div>
           <div>Free, no account, no install</div>
         </div>
       </div>
