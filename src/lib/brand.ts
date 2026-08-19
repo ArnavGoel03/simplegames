@@ -202,9 +202,10 @@ export const GAMES: readonly Game[] = [
     // On Netlify rather than Cloudflare, because it moved off Vercel while that
     // account was blocked and there has been no reason to move it twice.
     url: "https://draw-games.netlify.app",
-    // No art yet. A tile with nothing real to show falls back to type, which is
-    // honest, where a placeholder would not be. A capture from the live game
-    // replaces this the moment one is taken.
+    // No art yet, and not for want of trying: a Draw room shows an empty canvas
+    // and "waiting for somebody to join" until a second player arrives, so
+    // there is nothing to photograph that a person would recognise as the game.
+    // The moment a real two-player round can be captured, it replaces this.
     art: null,
     fallback: "type",
   },
@@ -217,7 +218,15 @@ export const GAMES: readonly Game[] = [
     players: "2 to 4 players",
     status: "live",
     url: "https://lattice-games.netlify.app",
-    art: null,
+    // A capture of the real solo board on the live deployment, taken from
+    // /solo after dealing: the premium squares this game is actually printed
+    // with, and a real opening rack.
+    art: {
+      src: "/art/lattice-solo-board.webp",
+      width: 1500,
+      height: 1600,
+      alt: "A Lattice board at the start of a solo game, its premium squares laid out and a rack of seven letters below it.",
+    },
     fallback: "type",
   },
 ] as const;

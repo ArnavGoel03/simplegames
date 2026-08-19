@@ -781,16 +781,23 @@ a.title:hover .title__art img {
 }
 
 /*
-  The typographic fallback, for a game with no photograph yet. Indigo wash
-  rather than felt, because felt is the colour of a card table and this stands
-  in for games that are not played on one.
+  The typographic fallback, for a game with no photograph yet.
+
+  Paper rather than indigo. An accent-coloured block is a claim for attention,
+  and a tile that is standing in for a missing photograph has not earned one:
+  beside two real captures it read as the loudest thing on the page while being
+  the only thing on it that is not a photograph of a game.
 */
 .plate {
   height: 100%;
   display: grid;
   place-items: center;
   padding: 1.5rem;
-  background: var(--indigo-wash);
+  background: var(--paper-raised);
+  background-image: linear-gradient(var(--rule) 1px, transparent 1px),
+    linear-gradient(90deg, var(--rule) 1px, transparent 1px);
+  background-size: 2.25rem 2.25rem;
+  background-position: center;
 }
 
 .plate__name {
@@ -798,8 +805,10 @@ a.title:hover .title__art img {
   font-variation-settings: "SOFT" 30, "WONK" 1;
   font-size: clamp(2.25rem, 6vw, 3.5rem);
   letter-spacing: -0.03em;
-  color: var(--indigo);
+  color: var(--ink);
   line-height: 1;
+  background: var(--paper-raised);
+  padding-inline: 0.75rem;
 }
 
 .title__body {

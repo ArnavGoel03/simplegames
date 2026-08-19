@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   bytesToHex,
   commitSeed,
@@ -56,6 +56,9 @@ async function begin(): Promise<Ceremony> {
 export function Commitment() {
   const [state, setState] = useState<Ceremony | null>(null);
   const [busy, setBusy] = useState(false);
+  // Whether the ceremony is still running itself. It stops the moment a reader
+  // takes a step by hand, so the two never race for the same transition.
+  const auto = useRef(true);
 
   // The seed is random, so it cannot exist during the server render without
   // the two renders disagreeing. The pending markup below is what the page
@@ -70,28 +73,60 @@ export function Commitment() {
     };
   }, []);
 
-  async function roll() {
-    if (!state) return;
+  // Both steps take the ceremony they are acting on rather than reading it from
+  // state, and write back only if it is still the current one. That is what
+  // makes a timer and a button press safe to race: the loser's write is
+  // discarded instead of resurrecting a ceremony the reader has already left.
+  const roll = useCallback(async (current: Ceremony) => {
+    if (current.stage !== "committed") return;
     setBusy(true);
-    const rolls = await rollSeries(state.seed, DICE);
-    const hands = await dealRound(state.seed, ROUND, SEATS, HAND);
-    setState({ ...state, rolls, hand: hands[0], stage: "rolled" });
+    const rolls = await rollSeries(current.seed, DICE);
+    const hands = await dealRound(current.seed, ROUND, SEATS, HAND);
+    setState((live) =>
+      live === current ? { ...current, rolls, hand: hands[0], stage: "rolled" } : live,
+    );
     setBusy(false);
-  }
+  }, []);
 
-  async function reveal() {
-    if (!state) return;
+  const reveal = useCallback(async (current: Ceremony) => {
+    if (current.stage !== "rolled") return;
     setBusy(true);
-    const verified = await verifyCommitment(state.seed, state.commitment);
-    setState({ ...state, stage: "revealed", verified });
+    const verified = await verifyCommitment(current.seed, current.commitment);
+    setState((live) => (live === current ? { ...current, stage: "revealed", verified } : live));
     setBusy(false);
-  }
+  }, []);
 
-  async function again() {
+  const again = useCallback(async () => {
+    auto.current = true;
     setBusy(true);
     setState(await begin());
     setBusy(false);
-  }
+  }, []);
+
+  /*
+    The ceremony performs itself once, on arrival.
+
+    It used to wait to be pressed, which meant the first thing a reader saw on
+    the page arguing that nothing here needs to be taken on faith was a row of
+    empty boxes and five question marks. A proof nobody ran is indistinguishable
+    from a proof that does not work.
+
+    The beats are deliberate rather than instant: the fingerprint has to be
+    visibly published *before* the dice fill, because that ordering is the whole
+    claim. Pressing anything hands control over and stops the timers.
+  */
+  useEffect(() => {
+    if (!auto.current || !state) return;
+    if (state.stage === "committed") {
+      const timer = setTimeout(() => void roll(state), 1100);
+      return () => clearTimeout(timer);
+    }
+    if (state.stage === "rolled") {
+      const timer = setTimeout(() => void reveal(state), 1500);
+      return () => clearTimeout(timer);
+    }
+    return;
+  }, [state, roll, reveal]);
 
   const stage = state?.stage;
 
@@ -152,7 +187,10 @@ export function Commitment() {
           come off one seed and neither can be read from the other.
         </p>
         {stage === "committed" ? (
-          <button type="button" className="button" onClick={roll} disabled={busy}>
+          <button type="button" className="button" onClick={() => {
+              auto.current = false;
+              void roll(state!);
+            }} disabled={busy}>
             Roll and deal
           </button>
         ) : null}
@@ -171,7 +209,10 @@ export function Commitment() {
           above, and recompute every face and every card for themselves.
         </p>
         {stage === "rolled" ? (
-          <button type="button" className="button" onClick={reveal} disabled={busy}>
+          <button type="button" className="button" onClick={() => {
+              auto.current = false;
+              void reveal(state!);
+            }} disabled={busy}>
             Reveal the number
           </button>
         ) : null}
@@ -180,7 +221,7 @@ export function Commitment() {
             <p className="verdict" role="status">
               {state?.verified ? "Checked in your browser: it matches" : "It does not match"}
             </p>
-            <button type="button" className="button button--quiet" onClick={again} disabled={busy}>
+            <button type="button" className="button button--quiet" onClick={() => void again()} disabled={busy}>
               Run it again
             </button>
           </>
