@@ -30,13 +30,13 @@ export const STUDIO_DESCRIPTION =
 function resolveUrl(): string {
   const explicit = process.env.NEXT_PUBLIC_SITE_URL?.trim();
   if (explicit) return explicit.replace(/\/+$/, "");
-  // Where this site is actually served from. It was on Vercel until that
-  // account was blocked for bandwidth and every site on it started answering
-  // `402` to everybody, this one included: a studio site that will not load is
-  // worse than an ugly hostname, and a canonical tag pointing at a dead address
-  // is worse than both. Set NEXT_PUBLIC_SITE_URL when a real domain is
-  // registered, which is the day this line stops mattering.
-  return "https://glasstablegames.goelhome.workers.dev";
+  // The studio's own domain, registered 19 August 2026. Before it there was a
+  // Vercel address, then a workers.dev one after that account was blocked for
+  // bandwidth and every site on it began answering `402`. Both were stopgaps
+  // and both are still reachable; this is the address the site claims as its
+  // own, so it is the one every canonical tag, share card and sitemap entry is
+  // built from.
+  return "https://glasstablegames.com";
 }
 
 export const studio = {
@@ -167,7 +167,7 @@ export const GAMES: readonly Game[] = [
     players: "2 to 4 players",
     status: "live",
     // On Cloudflare, for the reason `resolveUrl` gives above.
-    url: "https://chaupal-games.goelhome.workers.dev",
+    url: "https://chaupal.glasstablegames.com",
     art: {
       src: "/art/chaupal-snakes-and-ladders.webp",
       width: 1100,
@@ -192,7 +192,7 @@ export const GAMES: readonly Game[] = [
     // goes to the room rather than to any one game in it: every game inside is
     // one press from here, and a studio that deep-linked to one of eight would
     // be picking a favourite.
-    url: "https://taash.goelhome.workers.dev",
+    url: "https://taash.glasstablegames.com",
     // Judgement's tile deals a real hand instead of showing a photograph. A
     // card game's table is its players' hands, and those are private, so there
     // is nothing to photograph that would not be a staged lie.
@@ -211,7 +211,7 @@ export const GAMES: readonly Game[] = [
     // uploaded, which spends no build minutes anywhere. Draw and Lattice sat on
     // Netlify for a few weeks in between, and those copies are still answering:
     // they are stale and are to be retired, not linked.
-    url: "https://draw-games.goelhome.workers.dev",
+    url: "https://draw.glasstablegames.com",
     // No art yet, and not for want of trying: a Draw room shows an empty canvas
     // and "waiting for somebody to join" until a second player arrives, so
     // there is nothing to photograph that a person would recognise as the game.
@@ -227,7 +227,7 @@ export const GAMES: readonly Game[] = [
     holds: "Lattice, solo or at a table",
     players: "2 to 4 players",
     status: "live",
-    url: "https://lattice-games.goelhome.workers.dev",
+    url: "https://lattice.glasstablegames.com",
     // A capture of the real solo board on the live deployment, taken from
     // /solo after dealing: the premium squares this game is actually printed
     // with, and a real opening rack.

@@ -5,6 +5,20 @@
   // `src/lib/brand.ts` resolves to and therefore what every canonical tag, OG
   // image and sitemap entry on the site points at.
   "name": "glasstablegames",
+  // The studio's own address, at the apex rather than under a label: it is
+  // the domain the game sites are subdomains of. `custom_domain` has
+  // Cloudflare create the record, issue the certificate and register the
+  // route together on deploy. The workers.dev name keeps answering too, which
+  // is what makes this safe to roll out while the old address is still linked.
+  "routes": [
+    { "pattern": "glasstablegames.com", "custom_domain": true },
+    // www is attached so it reaches this Worker at all. Unattached it
+    // answered 530, which is Cloudflare saying it has a name and nowhere to
+    // send it. What it does once it arrives is a permanent redirect, in
+    // next.config.ts, so there is one address for this site rather than two
+    // serving the same pages.
+    { "pattern": "www.glasstablegames.com", "custom_domain": true }
+  ],
   // Built by `opennextjs-cloudflare build`, never by hand. It wraps the Next
   // server output in a Worker entrypoint and writes the client bundle out to
   // assets beside it.

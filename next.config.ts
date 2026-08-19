@@ -19,6 +19,31 @@ const config: NextConfig = {
     which on this page means a dark rectangle where a board should be.
   */
   images: { unoptimized: true },
+  /*
+    One address for this site, not two.
+
+    www had to be attached to the Worker to reach it at all, so this is what
+    happens when it does: a permanent redirect to the apex, carrying the path.
+    Serving the same pages on both names would split the site in a crawler's
+    index and make the canonical tag the only thing holding them together,
+    which is a weaker guarantee than simply not having a second address.
+  */
+  async redirects() {
+    // Two rules rather than one, because `:path*` matches zero segments and
+    // then does not substitute: the bare host redirected to a URL with a
+    // literal ":path*" in it. `:path+` requires at least one segment, so the
+    // root is handled on its own and everything below it keeps its path.
+    const host = [{ type: "host" as const, value: "www.glasstablegames.com" }];
+    return [
+      { source: "/", has: host, destination: "https://glasstablegames.com/", permanent: true },
+      {
+        source: "/:path+",
+        has: host,
+        destination: "https://glasstablegames.com/:path+",
+        permanent: true,
+      },
+    ];
+  },
   async headers() {
     return [
       {
