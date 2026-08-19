@@ -742,6 +742,156 @@ shared-secret session table would have forced a rewrite.
 the session cookie. Correct for four apps you own. Worth remembering the day
 something untrusted needs a subdomain.
 
+## 14. The studio site shows two games. There are eleven.
+
+Verified live on 19 Aug 2026, every one returning 200:
+
+```
+chaupal-games.goelhome.workers.dev                    Chaupal
+judgement-cards.goelhome.workers.dev                  Taash, the card room
+  /judgement  /twentynine  /callbreak  /pachisa  /threetwofive
+  /solitaire/freecell  /solitaire/klondike  /solitaire/spider
+draw-games.netlify.app                                Draw
+lattice-games.netlify.app                             Lattice
+```
+
+**Three registries disagree about all of this**, which is the same class of bug
+as the studio name:
+
+| Source | Says |
+|---|---|
+| studio site `src/lib/brand.ts` | `*.goelhome.workers.dev` (correct today) |
+| monorepo `packages/brand/src/index.ts` | `*.vercel.app` (dead) |
+| `docs/DEPLOYS.md` | Netlify for Draw and Lattice (correct today) |
+
+Section 13 replaces every one of them with a subdomain, which collapses the
+three into one answer.
+
+### Structure
+
+Four site tiles, not eleven, because four sites is what exists: Chaupal, Taash,
+Draw, Lattice. The eight card and patience games are listed inside the Taash
+tile rather than competing with it, which matches how `CARD_ROOM` already models
+them. Note the card room is called **Taash** now, and the studio site's second
+tile already says so while `GAMES.judgement` in the monorepo does not.
+
+### The hard part: art
+
+`GameArt` in the studio repo carries a rule with teeth: every image is a
+screenshot of the real thing, taken from the live deployment and cropped, never
+an illustration. A studio page that shows art the game does not match makes a
+claim it cannot keep, on the one site whose argument is that it never asks to be
+taken on faith.
+
+So two new tiles need real captures at fixed dimensions (the layout must not
+move while they load), plus captures for the eight card games if they are shown
+individually inside the Taash tile. Use `~/.claude/scripts/shot.mjs` against the
+live URLs above. Budget 45 to 60 minutes, and look at every image before calling
+it done.
+
+Blurbs and taglines come from the monorepo registry, which already has one line
+per game written for exactly this purpose.
+
+## 15. Fairness roadmap: stronger schemes, and when each earns its cost
+
+Recorded 19 Aug 2026. **None of this is pre-launch work.** Eleven finished games
+and zero players means the bottleneck is that nobody has been asked to check a
+proof yet, not the strength of the proof. This section exists so the options are
+written down rather than re-derived the day somebody challenges a roll.
+
+### What exists today
+
+Commit-reveal with client entropy and a signed attestation: a server seed
+derived under a domain tag (`derive.ts:57`), combined with per-seat client seeds
+(`derive.ts:113`), committed before play and revealed after, with participants
+bound into an Ed25519-signed digest (`attest.ts`). That is already stronger than
+nearly every casual games site, and the Ed25519 attestation is genuinely
+unusual at this tier.
+
+### Its two real weaknesses
+
+1. **Selective abort.** Commit, watch how the game develops, kill the ones you
+   dislike. Nothing in a commit-reveal scheme prevents an operator discarding
+   rounds, and no published seed reveals that it happened.
+2. **Self-asserted timestamps.** You publish the commitment and you also publish
+   when you published it. A sceptic cannot rule out back-dating, because every
+   artefact in the chain is produced by the party being trusted.
+
+### The hard constraint any upgrade must respect
+
+`packages/fairness` is deliberately zero-dependency with no DOM or Node types,
+so the Worker, the web apps, a future React Native client and the pure logic
+packages can all import it. Anything needing WASM or a heavy curve library must
+live in a separate package that only the server or a verification page imports,
+never in the shared derivation path.
+
+And the version discipline: any change to derivation means a new `v3` directory
+and tag, with `v2` kept alive forever to verify games already played. That is
+the permanent cost of touching a hash input after launch.
+
+### Option A: public timestamping (cheapest, best value)
+
+Batch each day's commitments into a Merkle root and anchor the root in a public
+append-only log that you do not control, such as Sigstore's Rekor, or an RFC
+3161 timestamping authority.
+
+- **Fixes:** self-asserted timestamps. "The commitment existed before the game"
+  becomes provable by a third party.
+- **Cost:** low. One daily job, plus an inclusion proof stored beside each game.
+- **Dependency impact:** none on the shared path. Verification is ordinary
+  signature and Merkle checks.
+- **Verdict:** do this first, the day real players exist.
+
+### Option B: ECVRF (RFC 9381)
+
+A verifiable random function. For a given input, the output is uniquely
+determined by your private key, and anyone can verify it with the public key.
+
+- **Fixes:** grinding and selective abort at the seed level. You cannot produce
+  two valid outputs for one input, so there is nothing to choose between.
+- **Removes:** the reveal step entirely, which simplifies the ceremony.
+- **Cost:** a real VRF implementation. `jose` does not provide one, so this is a
+  new crypto dependency in code that must run in a Worker and a browser.
+- **Verdict:** worth it only if grinding becomes an actual accusation.
+
+### Option C: a public randomness beacon (drand)
+
+The League of Entropy publishes threshold-signed randomness on a fixed schedule.
+Commit to using round N before round N exists; when it lands, nobody can argue
+you influenced it, because you were never a party to it.
+
+- **Fixes:** everything about operator influence, completely. Strongest trust
+  story available.
+- **Cost:** BLS12-381 verification, which means WASM, which breaks the
+  zero-dependency rule above unless quarantined. Round latency does not suit
+  turn-by-turn dice.
+- **Best fit:** the daily seeds, where latency is irrelevant and the story is
+  excellent: today's deal comes from the League of Entropy, not from us.
+- **Related:** drand timelock encryption (tlock) lets you encrypt to a future
+  round, which is another route to killing abort attacks.
+
+### Option D: player-side randomness (MPC coin flip)
+
+Every player commits, then all reveal, and the seed is the hash of all
+contributions. No trusted server at all.
+
+- **Already half-built:** seat seeds are mixed in today via `combineOrder`.
+- **Blocker:** last-revealer advantage. Whoever reveals last sees the outcome
+  first and can abort. Fixing it needs verifiable secret sharing or a timelock,
+  which is where this converges with Option C anyway.
+
+### Option E: blockchain block hashes (rejected)
+
+Commonly used and strictly worse than drand: validators and miners can influence
+or withhold blocks. Records here only so it is not proposed again.
+
+### Recommended sequence
+
+1. Ship the studio and get players. Nothing below matters before that.
+2. Public timestamping (A) once anyone cares enough to check.
+3. drand (C) for daily seeds only, quarantined in its own package.
+4. VRF (B) only if selective abort becomes a live accusation.
+
 ## 16. Verification: the gate this rename has to pass
 
 The rename touches cookies, token claims, storage keys, hash inputs, four
@@ -936,153 +1086,3 @@ before a verified room is the one irreversible mistake available here.
 - [ ] The studio site's mirror test still passes untouched
 - [ ] `grep -rIn -i chaupal` returns only the game, its URL, and the fixtures
 - [ ] Old Worker deleted only after 24h clean
-
-## 15. Fairness roadmap: stronger schemes, and when each earns its cost
-
-Recorded 19 Aug 2026. **None of this is pre-launch work.** Eleven finished games
-and zero players means the bottleneck is that nobody has been asked to check a
-proof yet, not the strength of the proof. This section exists so the options are
-written down rather than re-derived the day somebody challenges a roll.
-
-### What exists today
-
-Commit-reveal with client entropy and a signed attestation: a server seed
-derived under a domain tag (`derive.ts:57`), combined with per-seat client seeds
-(`derive.ts:113`), committed before play and revealed after, with participants
-bound into an Ed25519-signed digest (`attest.ts`). That is already stronger than
-nearly every casual games site, and the Ed25519 attestation is genuinely
-unusual at this tier.
-
-### Its two real weaknesses
-
-1. **Selective abort.** Commit, watch how the game develops, kill the ones you
-   dislike. Nothing in a commit-reveal scheme prevents an operator discarding
-   rounds, and no published seed reveals that it happened.
-2. **Self-asserted timestamps.** You publish the commitment and you also publish
-   when you published it. A sceptic cannot rule out back-dating, because every
-   artefact in the chain is produced by the party being trusted.
-
-### The hard constraint any upgrade must respect
-
-`packages/fairness` is deliberately zero-dependency with no DOM or Node types,
-so the Worker, the web apps, a future React Native client and the pure logic
-packages can all import it. Anything needing WASM or a heavy curve library must
-live in a separate package that only the server or a verification page imports,
-never in the shared derivation path.
-
-And the version discipline: any change to derivation means a new `v3` directory
-and tag, with `v2` kept alive forever to verify games already played. That is
-the permanent cost of touching a hash input after launch.
-
-### Option A: public timestamping (cheapest, best value)
-
-Batch each day's commitments into a Merkle root and anchor the root in a public
-append-only log that you do not control, such as Sigstore's Rekor, or an RFC
-3161 timestamping authority.
-
-- **Fixes:** self-asserted timestamps. "The commitment existed before the game"
-  becomes provable by a third party.
-- **Cost:** low. One daily job, plus an inclusion proof stored beside each game.
-- **Dependency impact:** none on the shared path. Verification is ordinary
-  signature and Merkle checks.
-- **Verdict:** do this first, the day real players exist.
-
-### Option B: ECVRF (RFC 9381)
-
-A verifiable random function. For a given input, the output is uniquely
-determined by your private key, and anyone can verify it with the public key.
-
-- **Fixes:** grinding and selective abort at the seed level. You cannot produce
-  two valid outputs for one input, so there is nothing to choose between.
-- **Removes:** the reveal step entirely, which simplifies the ceremony.
-- **Cost:** a real VRF implementation. `jose` does not provide one, so this is a
-  new crypto dependency in code that must run in a Worker and a browser.
-- **Verdict:** worth it only if grinding becomes an actual accusation.
-
-### Option C: a public randomness beacon (drand)
-
-The League of Entropy publishes threshold-signed randomness on a fixed schedule.
-Commit to using round N before round N exists; when it lands, nobody can argue
-you influenced it, because you were never a party to it.
-
-- **Fixes:** everything about operator influence, completely. Strongest trust
-  story available.
-- **Cost:** BLS12-381 verification, which means WASM, which breaks the
-  zero-dependency rule above unless quarantined. Round latency does not suit
-  turn-by-turn dice.
-- **Best fit:** the daily seeds, where latency is irrelevant and the story is
-  excellent: today's deal comes from the League of Entropy, not from us.
-- **Related:** drand timelock encryption (tlock) lets you encrypt to a future
-  round, which is another route to killing abort attacks.
-
-### Option D: player-side randomness (MPC coin flip)
-
-Every player commits, then all reveal, and the seed is the hash of all
-contributions. No trusted server at all.
-
-- **Already half-built:** seat seeds are mixed in today via `combineOrder`.
-- **Blocker:** last-revealer advantage. Whoever reveals last sees the outcome
-  first and can abort. Fixing it needs verifiable secret sharing or a timelock,
-  which is where this converges with Option C anyway.
-
-### Option E: blockchain block hashes (rejected)
-
-Commonly used and strictly worse than drand: validators and miners can influence
-or withhold blocks. Records here only so it is not proposed again.
-
-### Recommended sequence
-
-1. Ship the studio and get players. Nothing below matters before that.
-2. Public timestamping (A) once anyone cares enough to check.
-3. drand (C) for daily seeds only, quarantined in its own package.
-4. VRF (B) only if selective abort becomes a live accusation.
-
-## 14. The studio site shows two games. There are eleven.
-
-Verified live on 19 Aug 2026, every one returning 200:
-
-```
-chaupal-games.goelhome.workers.dev                    Chaupal
-judgement-cards.goelhome.workers.dev                  Taash, the card room
-  /judgement  /twentynine  /callbreak  /pachisa  /threetwofive
-  /solitaire/freecell  /solitaire/klondike  /solitaire/spider
-draw-games.netlify.app                                Draw
-lattice-games.netlify.app                             Lattice
-```
-
-**Three registries disagree about all of this**, which is the same class of bug
-as the studio name:
-
-| Source | Says |
-|---|---|
-| studio site `src/lib/brand.ts` | `*.goelhome.workers.dev` (correct today) |
-| monorepo `packages/brand/src/index.ts` | `*.vercel.app` (dead) |
-| `docs/DEPLOYS.md` | Netlify for Draw and Lattice (correct today) |
-
-Section 13 replaces every one of them with a subdomain, which collapses the
-three into one answer.
-
-### Structure
-
-Four site tiles, not eleven, because four sites is what exists: Chaupal, Taash,
-Draw, Lattice. The eight card and patience games are listed inside the Taash
-tile rather than competing with it, which matches how `CARD_ROOM` already models
-them. Note the card room is called **Taash** now, and the studio site's second
-tile already says so while `GAMES.judgement` in the monorepo does not.
-
-### The hard part: art
-
-`GameArt` in the studio repo carries a rule with teeth: every image is a
-screenshot of the real thing, taken from the live deployment and cropped, never
-an illustration. A studio page that shows art the game does not match makes a
-claim it cannot keep, on the one site whose argument is that it never asks to be
-taken on faith.
-
-So two new tiles need real captures at fixed dimensions (the layout must not
-move while they load), plus captures for the eight card games if they are shown
-individually inside the Taash tile. Use `~/.claude/scripts/shot.mjs` against the
-live URLs above. Budget 45 to 60 minutes, and look at every image before calling
-it done.
-
-Blurbs and taglines come from the monorepo registry, which already has one line
-per game written for exactly this purpose.
