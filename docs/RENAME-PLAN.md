@@ -1,16 +1,20 @@
 # Rename the studio and the shared layer to Glass Table Games
 
-> **Status: NOT EXECUTED.** Written 18 August 2026. Nothing in either repo has
-> been changed. This document is the full execution record; a future session
-> should be able to run it cold without re-deriving anything.
+> **Status, 19 August 2026: section 0 is DONE. Sections 1 to 16 are NOT
+> EXECUTED.**
 >
-> **Blocked on:** registering `glasstablegames.com` (your call: hold the push
-> until the domain exists so the canonical URL is right in the first commit).
-> Secondary block: the Vercel account-wide 402 means nothing deploys anyway.
+> The studio site is renamed, has a new mark, lists all four game sites, and is
+> live at `https://glasstablegames.goelhome.workers.dev`. The monorepo is
+> untouched: no `@chaupal/*` sweep, no `NAMESPACE` rotation, no frozen hash
+> literal moved, so nobody is signed out and no published commitment stopped
+> verifying. The games still say Simple Games, which is the correct state for a
+> trial.
 >
-> **Companion file already on disk:** `~/dev/simplegames/docs/DOMAIN-SHORTLIST.md`
-> (uncommitted) holds the ~450-name sweep, the finalists and why each runner-up
-> lost. Move it to `docs/` in the renamed repo when this runs.
+> **Blocked on:** living with the name for a few days, then registering
+> `glasstablegames.com`. Everything after that is section 16's gate.
+>
+> **Companion file:** `docs/DOMAIN-SHORTLIST.md` holds the sweep of about 1,200
+> candidates, the finalists, and why each runner-up lost.
 
 ---
 
