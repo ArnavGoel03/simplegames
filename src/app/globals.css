@@ -761,7 +761,14 @@ a.title:hover {
   position: relative;
   aspect-ratio: 16 / 10;
   overflow: clip;
-  background: var(--felt-deep);
+  /*
+    What a reader looks at while the picture is still arriving. It used to be
+    --felt-deep, which is very nearly black: on a cold open the page showed a
+    black rectangle inside a white card for as long as the image took, which
+    reads as something broken rather than as something loading. The card fan
+    paints its own felt in `.fan`, so nothing depended on this being green.
+  */
+  background: var(--rule);
   border-bottom: 1px solid var(--rule);
 }
 

@@ -120,7 +120,15 @@ export interface Game {
   readonly name: string;
   /** What it is, in one line, for someone who has never heard of it. */
   readonly blurb: string;
-  /** The games it holds, named the way a player would name them. */
+  /**
+   * The games it holds, named the way a player would name them.
+   *
+   * REQUIRED, and enforced by brand.test.ts. This site lists sites rather than
+   * games, and nothing in the word "Taash" tells a reader that Call Break is
+   * behind it. This is the line that answers "what do I actually get", so a
+   * tile without one is asking to be clicked on trust, which is the one thing
+   * this site does not do. A site holding a single game names that game.
+   */
   readonly holds: string;
   /**
    * How many can sit down, phrased the way a player would ask it. It is the
@@ -184,7 +192,7 @@ export const GAMES: readonly Game[] = [
     // goes to the room rather than to any one game in it: every game inside is
     // one press from here, and a studio that deep-linked to one of eight would
     // be picking a favourite.
-    url: "https://judgement-cards.goelhome.workers.dev",
+    url: "https://taash.goelhome.workers.dev",
     // Judgement's tile deals a real hand instead of showing a photograph. A
     // card game's table is its players' hands, and those are private, so there
     // is nothing to photograph that would not be a staged lie.
@@ -199,9 +207,11 @@ export const GAMES: readonly Game[] = [
     holds: "Draw, Everyone Draws",
     players: "2 to 12 players",
     status: "live",
-    // On Netlify rather than Cloudflare, because it moved off Vercel while that
-    // account was blocked and there has been no reason to move it twice.
-    url: "https://draw-games.netlify.app",
+    // Every site in the studio is a Cloudflare Worker now, built on a laptop and
+    // uploaded, which spends no build minutes anywhere. Draw and Lattice sat on
+    // Netlify for a few weeks in between, and those copies are still answering:
+    // they are stale and are to be retired, not linked.
+    url: "https://draw-games.goelhome.workers.dev",
     // No art yet, and not for want of trying: a Draw room shows an empty canvas
     // and "waiting for somebody to join" until a second player arrives, so
     // there is nothing to photograph that a person would recognise as the game.
@@ -217,7 +227,7 @@ export const GAMES: readonly Game[] = [
     holds: "Lattice, solo or at a table",
     players: "2 to 4 players",
     status: "live",
-    url: "https://lattice-games.netlify.app",
+    url: "https://lattice-games.goelhome.workers.dev",
     // A capture of the real solo board on the live deployment, taken from
     // /solo after dealing: the premium squares this game is actually printed
     // with, and a real opening rack.

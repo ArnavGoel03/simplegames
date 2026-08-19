@@ -5,6 +5,20 @@ import type { NextConfig } from "next";
 const config: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+  /*
+    The optimiser is off, and measurement is why.
+
+    Every image here is already a hand-cropped webp committed to this
+    repository, so there is nothing left for it to do: asking the deployed site
+    for the same picture at `w=384` and at `w=3840` returned byte-identical
+    62KB both times. What it did add was a dynamic route in front of a static
+    file, so each picture cost a Worker invocation and missed the immutable
+    edge caching that `/art/*.webp` gets for free as an asset.
+
+    The visible symptom was the tile art arriving seconds late on a cold open,
+    which on this page means a dark rectangle where a board should be.
+  */
+  images: { unoptimized: true },
   async headers() {
     return [
       {
