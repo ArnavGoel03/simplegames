@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Fraunces, IBM_Plex_Mono, IBM_Plex_Sans } from "next/font/google";
 import { SiteFooter } from "@/components/SiteFooter";
+import { ServiceWorker } from "@/components/ServiceWorker";
 import { SiteHeader } from "@/components/SiteHeader";
 import { STUDIO_NAME, STUDIO_TAGLINE, studio } from "@/lib/brand";
 import "./globals.css";
@@ -49,6 +50,37 @@ export const metadata: Metadata = {
   },
   twitter: { card: "summary" },
   alternates: { canonical: "/" },
+  /*
+    Every icon this site has, declared together.
+
+    They are not interchangeable and each exists because one platform will not
+    take the others. The SVG is what a current browser prefers and the only one
+    that stays sharp at any size. The ICO is what Windows, older browsers and
+    Google's favicon crawler still ask for at /favicon.ico, and this site
+    answered 404 there for its whole life. The PNGs are what a manifest needs.
+    And apple-touch-icon is what Safari uses for a bookmark, a Start Page tile
+    and a home screen: with none present it draws a grey square with the first
+    letter of the title in it, which is why a bookmark to this studio once said
+    "G".
+  */
+  icons: {
+    icon: [
+      { url: "/icon.svg", type: "image/svg+xml", sizes: "any" },
+      { url: "/icon-192.png", type: "image/png", sizes: "192x192" },
+      { url: "/icon-512.png", type: "image/png", sizes: "512x512" },
+      { url: "/favicon.ico", sizes: "16x16 32x32 48x48" },
+    ],
+    apple: [{ url: "/apple-touch-icon.png", type: "image/png", sizes: "180x180" }],
+    shortcut: ["/favicon.ico"],
+  },
+  manifest: "/manifest.webmanifest",
+  appleWebApp: {
+    // What iOS reads when the site is kept on a home screen: it opens without
+    // browser chrome and the status bar takes the page's own ground.
+    capable: true,
+    title: STUDIO_NAME,
+    statusBarStyle: "default",
+  },
 };
 
 export const viewport: Viewport = {
@@ -68,6 +100,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <SiteHeader />
         <main>{children}</main>
         <SiteFooter />
+        <ServiceWorker />
       </body>
     </html>
   );

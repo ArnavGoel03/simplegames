@@ -66,8 +66,8 @@ its own sake.
 
 Constraints: inline SVG plus CSS, no JavaScript, no dependency. Uses
 `currentColor` so it inherits both themes. Honours `prefers-reduced-motion` by
-rendering the cleared state immediately. Reuses the existing `src/app/icon.svg`
-slot for the favicon and feeds `src/app/opengraph-image.tsx` for share cards.
+rendering the cleared state immediately. The still version is `public/icon.svg`
+for the favicon and it feeds `src/app/opengraph-image.tsx` for share cards.
 
 ### Three deploy gotchas, found by reading rather than guessing
 

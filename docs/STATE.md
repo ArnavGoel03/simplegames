@@ -99,7 +99,7 @@ src/components/legal/   One component per document + index.ts (LEGAL_BODIES).
 src/components/Commitment.tsx   The live commit-roll-reveal widget.
 src/components/CardFan.tsx      Judgement's key art, dealt not photographed.
 public/art/             Two screenshots of the real Chaupal boards, webp.
-src/app/icon.svg        Favicon. The mark: a glass pane with two pieces.
+public/icon.svg         Favicon. The mark: a glass pane with two pieces.
 src/components/StudioMark.tsx   The mark, animated. A frost that clears.
 src/components/TitlePlate.tsx   Typographic fallback for a game with no art.
 src/app/opengraph-image.tsx     Share card, typographic, no photo.

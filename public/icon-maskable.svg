@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="512" height="512">
+  <!--
+    The same mark on a full bleed indigo ground, and the source the maskable
+    PNG in the manifest is rendered from.
+
+    Android crops an installed icon to a circle or a squircle and keeps only
+    the middle 80 percent, so the pane is scaled to 0.72 and the rounded
+    rectangle behind it is gone: a corner radius that gets cropped anyway just
+    costs the mark its safe area. Nothing declares this file directly, because
+    a manifest cannot take an SVG as maskable, so it is here to be re-rendered
+    from rather than to be served.
+  --><rect width="32" height="32" fill="#3b3bd0"/><g transform="translate(16 16) scale(0.72) translate(-16 -16)"><rect
+    x="6.5"
+    y="6.5"
+    width="19"
+    height="19"
+    rx="4"
+    fill="#ffffff"
+    fill-opacity="0.18"
+    stroke="#ffffff"
+    stroke-opacity="0.6"
+    stroke-width="2"
+  />
+  <circle cx="12.6" cy="19.4" r="2.9" fill="#ffffff" />
+  <circle cx="19.4" cy="12.6" r="2.9" fill="#ffffff" /></g></svg>

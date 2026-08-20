@@ -28,7 +28,7 @@ export default function OpengraphImage() {
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
-          {/* The same mark as src/app/icon.svg, at card size. Written out
+          {/* The same mark as public/icon.svg, at card size. Written out
               rather than imported because Satori renders this to a PNG on its
               own and cannot read an external file or a custom property. */}
           <svg width="52" height="52" viewBox="0 0 32 32">

@@ -5,12 +5,19 @@
     Two pieces rather than three, and a heavy rim rather than a thin one,
     because this has to survive 16 pixels. At that size a stroke under about
     2 units disappears and a third piece turns the middle to mush. The indigo
-    is --indigo from globals.css, the one accent the site has, written out
+    is the indigo token from globals.css, the one accent the site has, written
     because a static file cannot read a custom property.
 
     The animated version of the same mark is src/components/StudioMark.tsx,
     where the pane's shadows sit underneath the glass. A favicon cannot afford
     that much detail, so here the rim carries the meaning on its own.
+
+    It lives in public/ rather than in the app/icon.svg convention slot, and on
+    purpose. Cloudflare serves public/ as a static asset ahead of the Worker,
+    so the same file in both places is not a spare copy: the asset silently
+    wins and the route never runs, which is how the two drifted a comment apart
+    before this was noticed. One file, served for free, declared once in
+    src/app/layout.tsx alongside every other icon.
   -->
   <rect width="32" height="32" rx="7" fill="#3b3bd0" />
   <rect
