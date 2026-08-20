@@ -244,14 +244,14 @@ export const GAMES: readonly Game[] = [
 /**
  * The studio's own key art, for the top of the home page.
  *
- * It is the Ludo board from a real game on Chaupal, which is the most
+ * It is the Ludo board from a real game on Circuit, which is the most
  * photographable thing the studio has made.
  */
 export const HERO_ART: GameArt = {
   src: "/art/chaupal-ludo.webp",
   width: 1600,
   height: 915,
-  alt: "A Ludo board in Chaupal, seen in perspective, with four red and four green pieces in their yards.",
+  alt: "A Ludo board in Circuit, seen in perspective, with four red and four green pieces in their yards.",
 };
 
 /**
