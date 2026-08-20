@@ -1,7 +1,7 @@
 # Glass Table Games: state of play
 
-Last updated 19 August 2026. This is the pick-it-up-later document for the
-whole studio effort: the studio site, Chaupal, and Judgement. Read this first
+Last updated 21 August 2026. This is the pick-it-up-later document for the
+whole studio effort: the studio site and the four game sites. Read this first
 in any new session, then go to the file it points you at.
 
 Written because three repos, two agents and one afternoon is more than any
@@ -9,55 +9,65 @@ session should have to re-derive.
 
 ---
 
-## 0. The name is on trial, and only this repo carries it
+## 0. The name is settled, and every site carries it
 
-Renamed from **Simple Games** to **Glass Table Games** on 19 August 2026, on
-this site alone, deliberately. `simplegames.com` is held since 2001 and
-unbuyable; `glasstablegames.com` is unregistered and picked out of a sweep of
-about 1,200 candidates, recorded in `docs/DOMAIN-SHORTLIST.md`.
+Renamed from **Simple Games** to **Glass Table Games** on 19 August 2026, and
+the trial it started as is over. `simplegames.com` is held since 2001 and
+unbuyable; `glasstablegames.com` was unregistered, was picked out of a sweep of
+about 1,200 candidates recorded in `docs/DOMAIN-SHORTLIST.md`, and is now the
+studio's own domain with the games on subdomains of it.
 
-It is a trial rather than a migration, so the expensive and irreversible parts
-were all skipped on purpose:
+What was deliberately skipped during the trial has since been done, in this
+order, on 19 and 20 August:
 
-- **The domain is not bought.** The site answers on
-  `glasstablegames.goelhome.workers.dev`.
-- **Neither repo is renamed**, and no directory moved. `ArnavGoel03/simplegames`
-  is still the repo, which is why `studio.github` still points there and is
-  correct.
-- **The Chaupal monorepo is untouched.** `@chaupal/*`, `NAMESPACE`, the six
-  frozen hash literals in `packages/fairness` and `packages/daily`: none of them
-  moved. Nobody is signed out and no published commitment stopped verifying.
-- **`packages/brand` still says `STUDIO.name = "Simple Games"`**, so the games
-  say Simple Games while this site says Glass Table Games. Two names coexisting
-  is the correct state for a trial and is one line to fix later.
-- **`STUDIO_ID` still reads `"simplegames"`** for the same reason: it is a wire
-  identifier, not a display string.
+- **The domain is registered.** The studio answers at `glasstablegames.com`,
+  with `www` attached and permanently redirecting to the apex.
+- **The games moved onto subdomains** and were renamed to say what each one is
+  rather than what category it sits in: Chaupal became **Circuit**
+  (`circuit.`), Taash became **Deal** (`deal.`), Draw became **Charade**
+  (`charade.`), and Lattice kept its name (`lattice.`).
+- **The monorepo carries the studio name.** `packages/brand` has
+  `STUDIO_NAME = "Glass Table Games"`, a `RETIRED_NAMES` list, and a check that
+  fails when an old name reappears.
+- **The namespace rotated** to `NAMESPACE = "glasstable"`, which is the token
+  issuer and the prefix on cookies and storage keys. It was done while the
+  number of live accounts was zero, which was the only window in which it was
+  free.
+- **This site holds no wire identifier at all.** The `STUDIO_ID` that used to
+  sit in `src/lib/brand.ts` claimed to be that token issuer, was never used by
+  anything here, and after the rotation was simply a copy that disagreed. It is
+  gone, and `packages/brand` is the one place that knows.
 
-The full migration, if the name survives living with it, is planned in detail at
-`~/.claude/plans/mighty-chasing-crab.md`. Everything here is one `git revert`
-away from undone.
+Both older addresses still answer: the Vercel one, and the workers.dev one that
+replaced it when that Vercel account was blocked for bandwidth and every site
+on it began returning `402`.
 
 ---
 
 ## 1. The shape of the thing
 
 **Glass Table Games** is a studio brand sitting above the game sites. It is the
-developer-of-record for both, and it owns the legal surface for both.
+developer-of-record for all four, and it owns the legal surface for all four.
 
 | | What it is | Repo | Live |
 |---|---|---|---|
-| **Glass Table Games** | Studio site. The argument, the fairness explainer, all legal docs. | `ArnavGoel03/simplegames` (public) | https://glasstablegames.goelhome.workers.dev |
-| **Chaupal** | Ludo and Snakes and Ladders. Dice you can verify afterwards. | `ArnavGoel03/chaupal` (**private**) | https://chaupal-games.goelhome.workers.dev |
-| **Taash** | The card room: Judgement, 29, Call Break, Pachisa, 3-2-5, and three games of patience. Lives inside the Chaupal monorepo. | same monorepo | https://judgement-cards.goelhome.workers.dev |
+| **Glass Table Games** | Studio site. The argument, the fairness explainer, all legal docs. | `ArnavGoel03/simplegames` (public) | https://glasstablegames.com |
+| **Circuit** | Ludo and Snakes and Ladders. Dice you can verify afterwards. | `ArnavGoel03/chaupal` (**private**), `apps/web` | https://circuit.glasstablegames.com |
+| **Deal** | The card room: Judgement, 29, Call Break, Pachisa, 3-2-5, and three games of patience. | same monorepo, `apps/judgement` | https://deal.glasstablegames.com |
+| **Charade** | Everybody draws, everybody else races to name it. | same monorepo, `apps/draw` | https://charade.glasstablegames.com |
+| **Lattice** | Words that cross, on a board that says what counts. | same monorepo, `apps/lattice` | https://lattice.glasstablegames.com |
 
-**Every one of those addresses moved on 18 August 2026, and the old ones are
-dead.** Vercel soft blocked the account for bandwidth on 17 August and every
-site on it, this one included, began answering `402` to everybody. All three are
-now Cloudflare Workers, built on a laptop and uploaded, which costs nothing and
-spends no build minutes. `brand.ts` names the new addresses; the vercel.app ones
-are where they go back to if that block ever clears.
+**One domain, five deploys.** Every site is a Cloudflare Worker built on a
+laptop and uploaded, which costs nothing and spends no build minutes. Each is
+its own Worker with its own `wrangler.jsonc`, and each attaches its hostname as
+a `custom_domain` so Cloudflare issues the certificate and the route together.
+The realtime Worker is separate again and **must never be renamed**: its epoch
+key lives in Durable Object storage, which a rename orphans.
 
-Three domains are planned, one per row. None are registered.
+The addresses moved twice before landing here. Vercel soft blocked the account
+for bandwidth on 17 August 2026 and every site on it began answering `402`, so
+everything went to `*.goelhome.workers.dev` on 18 August, and onto this domain
+on 20 August. Both older addresses still answer.
 
 **Why the studio exists.** Two games needed one accountable name, one account
 system, and one set of legal documents. Writing terms three times is how three
@@ -75,7 +85,12 @@ without trusting us. Everything else on the site serves that sentence.
 exactly, eslint pinned `9.39.5`. 17 routes, every single one prerendered. No
 middleware, no dynamic route, no database, no analytics, no cookies.
 
-Push to `main` auto-deploys. The GitHub integration is connected and working.
+**A push deploys nothing.** There is no GitHub integration on this project and
+no build hook: `git push` updates the repository and the live site keeps serving
+whatever was uploaded last. Shipping is `npm run cf:build` followed by
+`npm run cf:deploy`, in that order and both of them. `cf:deploy` on its own
+re-uploads the stale `.open-next` bundle and reports success, which is exactly
+how a deploy on 21 August went out green while changing nothing.
 
 ### File map
 
@@ -97,9 +112,21 @@ src/app/legal/          Index + [slug] route, 7 docs prerendered by
                         generateStaticParams from LEGAL_DOCS.
 src/components/legal/   One component per document + index.ts (LEGAL_BODIES).
 src/components/Commitment.tsx   The live commit-roll-reveal widget.
-src/components/CardFan.tsx      Judgement's key art, dealt not photographed.
-public/art/             Two screenshots of the real Chaupal boards, webp.
-public/icon.svg         Favicon. The mark: a glass pane with two pieces.
+src/components/CardFan.tsx      Deal's key art, dealt not photographed.
+public/art/             Screenshots of the real boards, webp.
+public/icon.svg         Favicon. The mark: a glass pane with two pieces. In
+                        public/ rather than app/, because Cloudflare serves an
+                        asset ahead of the Worker and a copy in both places is
+                        a copy that drifts.
+public/favicon.ico      16, 32 and 48, for Windows and for crawlers.
+public/apple-touch-icon.png     180. Without it Safari draws a grey "G".
+public/icon-{192,512}.png       What a manifest needs.
+public/icon-maskable-512.png    The same mark, full bleed, for Android's crop.
+public/icon-maskable.svg        The source that PNG is rendered from.
+public/sw.js            Service worker. Pages network first, hashed assets
+                        cache first, and only a 200 is ever stored.
+src/app/manifest.ts     The manifest, every string derived from brand.ts.
+src/components/ServiceWorker.tsx  Registers it, after load, failing quietly.
 src/components/StudioMark.tsx   The mark, animated. A frost that clears.
 src/components/TitlePlate.tsx   Typographic fallback for a game with no art.
 src/app/opengraph-image.tsx     Share card, typographic, no photo.
@@ -126,12 +153,13 @@ as a studio. The redesign widens the chrome and puts the games on the page.
   On mobile the art takes `order: -1` so it sits above the copy, while the
   `h1` stays first in the DOM for screen readers and crawlers.
 - **The board art is real.** `public/art/chaupal-ludo.webp` and
-  `chaupal-snakes-and-ladders.webp` are captures of the live Chaupal
-  deployment, not mockups. `GameArt` in `brand.ts` documents that rule. If a
+  `chaupal-snakes-and-ladders.webp` are captures of the live Circuit
+  deployment, not mockups. The filenames keep the old name; renaming a
+  committed asset costs a cache-busting redeploy and buys nothing. `GameArt` in `brand.ts` documents that rule. If a
   board is redesigned these are stale and must be recaptured, because a studio
   site arguing for checkability cannot ship a picture of a game that does not
   exist.
-- **Judgement's art is dealt, not drawn.** A card game has no public object to
+- **Deal's art is dealt, not drawn.** A card game has no public object to
   photograph: the table is the hands, and the hands are private. So
   `CardFan.tsx` deals seat one's round-seven hand with the same `dealRound`
   the real table uses, from a seed written into the source. Publishing that
@@ -180,20 +208,21 @@ Regenerate them when the chaupal derivation changes, per
 `src/lib/__vectors__/README.md`. One shared package is still the correct fix
 and nobody has done it.
 
-**`STUDIO_ID` is frozen, and deliberately did not follow the rename** (§0).
-It is a wire identifier rather than a display string. `STUDIO_ID =
-"simplegames"` in `brand.ts` is the
-intended token issuer and audience for one account across all products.
-Changing it signs every player out everywhere. Chaupal currently ships
-product-scoped `TOKEN_ISSUER` / `TOKEN_AUDIENCE` / cookie names of `chaupal`;
-those have to become studio-scoped before any cross-app login works. That
-migration has not started.
+**The wire identifier is not here** (§0). It used to be, as `STUDIO_ID =
+"simplegames"`, described as the token issuer and audience for one account
+across every product. This site has no accounts and issues nothing, so it was
+never that; the monorepo's `NAMESPACE`, now `glasstable`, always was. The
+rotation happened on 20 August while the number of live accounts was zero,
+which was the only window in which signing everybody out cost nothing. Do not
+reintroduce a copy of it here.
 
-**The canonical URL is a workaround.** `simplegames.vercel.app` was already
-taken by somebody else, so Vercel assigned `simplegames-chi.vercel.app` and
-`resolveUrl()` hardcodes it. A canonical tag pointing at a stranger's site is
-worse than an ugly one pointing at ours. Set `NEXT_PUBLIC_SITE_URL` the moment
-a real domain exists and the hardcode stops mattering.
+**The canonical URL is hardcoded, and that is fine now.** `resolveUrl()`
+returns `https://glasstablegames.com` unless `NEXT_PUBLIC_SITE_URL` says
+otherwise, and `tools/cf.mjs` sets that variable on every build because the
+site is built on a laptop where none of Cloudflare's own build variables
+exist. Every canonical tag, share card, sitemap entry and robots line is
+inlined at build time from it, which is why the address cannot be read from
+the request.
 
 ### Deliberate constraints, do not "fix" these
 
@@ -282,17 +311,18 @@ code change.
 
 ---
 
-## 4. Judgement: live, and linked from here
+## 4. Deal: live, on its own subdomain
 
-Shipped inside `~/dev/chaupal` and live at
-`https://chaupal-games.vercel.app/judgement`: its own page, its own card table
-(`components/cards/`), lobby seating for 3 or 4, bidding, score pad and a
-finish screen. The studio site now lists it as live and links to it, and the
-footer of every page offers both games.
+Shipped inside `~/dev/chaupal` as `apps/judgement` and live at
+`https://deal.glasstablegames.com`: its own card table (`components/cards/`),
+lobby seating, bidding, score pad and a finish screen. It began as a route on
+Circuit's deployment called Judgement, became its own site, and was renamed
+Deal on 20 August when it stopped being one game: Judgement is now the first of
+eight in it. The studio site lists it as live and links it, and the footer of
+every page offers all four games.
 
-It is a route on Chaupal's deployment rather than a site of its own, and the
-studio site links the real URL rather than the one the plan wanted. When
-Judgement gets a domain, `GAMES` in `brand.ts` is the single edit.
+Every one of those addresses lives in `GAMES` in `brand.ts`, which is the
+single edit when one of them moves.
 
 Earlier in the build, `main` was at `25a5551 feat: bid, play and a per-seat
 state frame in the protocol`, and `feat/cards-engine` had been merged.
@@ -307,9 +337,9 @@ The rules engine lives in `packages/cards`. The protocol work is in
 
 ### The architectural decision behind it
 
-Reuse the internals, replace the entire front. Judgement shares the fairness
+Reuse the internals, replace the entire front. Deal shares the fairness
 ceremony, the identity layer, the rating system and the realtime room with
-Chaupal, but gets its own route group and a UI built only for cards. The point
+Circuit, but gets its own front end built only for cards. The point
 was never to bolt cards onto a board-game interface.
 
 Everything is being written so most of it could migrate to a native app later
@@ -336,31 +366,41 @@ leak. Anyone touching the room layer should assume this is where the bug is.
 ## 5. Atlas
 
 Both projects are indexed. `~/dev/atlas/src/data/projects.ts` gained a
-`simplegames` entry and a `chaupal` entry (Chaupal was missing from Atlas
-entirely before this). Committed as `ad13577` and pushed.
+`simplegames` entry and a `chaupal` entry (the monorepo was missing from Atlas
+entirely before this). Committed as `ad13577` and pushed. Neither entry has
+been retitled for the rename, and the repository directories still carry the
+old names too, which is deliberate: a repo rename breaks every clone, remote
+and deploy hook pointing at it, and buys a tidier name.
 
 ---
 
 ## 6. Open items, in priority order
 
-1. **Create `glasstablegames.studio@gmail.com`.** Seven live legal documents point
-   at an address nobody can receive at. Arnav's task. Blocks the legal surface
-   being real.
-2. **Register domains** for `simplegames` and `judgement`. Then set
-   `NEXT_PUBLIC_SITE_URL` on the Vercel project and the canonical-URL hardcode
-   in `resolveUrl()` stops mattering.
-3. **Judgement is live.** Per-seat redaction was the risky part and is the
+1. **Create `glasstablegames.studio@gmail.com`.** Seven live legal documents
+   point at an address nobody can receive at. Arnav's task. Blocks the legal
+   surface being real.
+2. **One sign-in across the subdomains, now unblocked.** The reason it could
+   not work is gone: the games used to sit on unrelated hosts with no common
+   parent a cookie may name, and they now all sit under `glasstablegames.com`.
+   `cookieDomain()` in `packages/identity/src/session.ts` reads
+   `SESSION_COOKIE_DOMAIN` and defaults to undefined on purpose, so this is
+   setting that variable to `.glasstablegames.com` on each game Worker and
+   redeploying. It is deliberately not done yet, because it rescopes the
+   session cookie on four live sites and wants signing in on one subdomain and
+   loading another, by hand, in the same sitting.
+3. **Per-seat redaction in Deal** was the risky part of that build and is the
    thing to re-audit first if a leak is ever suspected.
-4. **Studio-scoped auth.** Chaupal's `TOKEN_ISSUER` / `TOKEN_AUDIENCE` /
-   cookie names are product-scoped and must become studio-scoped before one
-   account works across apps. Open question: whether Clerk satellite domains
-   are available on the current plan.
-5. **Make `fairness.ts` and `cards.ts` a shared package** instead of
-   hand-copies. `npm test` now catches a drift on this side; only a shared
-   package catches a drift on chaupal's.
-6. **Watch the Vercel deploy cap.** 100 deploys/day is account-wide and now has
-   to cover three projects. Skipped monorepo builds still count. A refusal
-   shows up as a 402, and after that a `git push` silently does nothing.
+4. **Make `fairness.ts` and `cards.ts` a shared package** instead of
+   hand-copies. `npm test` here catches a drift on this side; only a shared
+   package catches a drift on the monorepo's.
+5. **Charade has no key art.** Its tile falls back to a type plate while the
+   other three carry a screenshot of the real thing. That is the honest
+   fallback rather than a placeholder, and it is still the weakest tile on the
+   page. Fixing it means a real drawing captured from the live game.
+6. **The sections after 0 of `docs/RENAME-PLAN.md` are history, not a plan.**
+   Most of what they describe has happened, out of the order they propose.
+   Sections 12 to 16 (a brand-free package scope, the checks that fail on
+   leakage, the fairness roadmap) are the parts still worth reading forward.
 
 ---
 

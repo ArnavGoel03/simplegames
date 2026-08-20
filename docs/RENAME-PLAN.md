@@ -1,17 +1,23 @@
 # Rename the studio and the shared layer to Glass Table Games
 
-> **Status, 19 August 2026: section 0 is DONE. Sections 1 to 16 are NOT
-> EXECUTED.**
+> **Status, 21 August 2026: the rename happened, and not in this order.**
 >
-> The studio site is renamed, has a new mark, lists all four game sites, and is
-> live at `https://glasstablegames.goelhome.workers.dev`. The monorepo is
-> untouched: no `@chaupal/*` sweep, no `NAMESPACE` rotation, no frozen hash
-> literal moved, so nobody is signed out and no published commitment stopped
-> verifying. The games still say Simple Games, which is the correct state for a
-> trial.
+> Section 0 was a trial: rename the studio site only, live with the name, commit
+> to nothing. The name survived it. `glasstablegames.com` was registered on
+> 19 August and by 20 August the studio answered on the apex, the four games
+> answered on `circuit.`, `deal.`, `charade.` and `lattice.`, three of them
+> under new names, `packages/brand` carried `STUDIO_NAME` with a check that
+> fails when a retired name comes back, and `NAMESPACE` had rotated to
+> `glasstable` while the number of live accounts was zero.
 >
-> **Blocked on:** living with the name for a few days, then registering
-> `glasstablegames.com`. Everything after that is section 16's gate.
+> So sections 1 to 11 are history rather than instructions. They are kept
+> because they record what each step cost and which order was actually safe,
+> not because anybody should execute them again. **What is still worth reading
+> forward is 12 (make the next rename a one-liner), 14 (the studio site shows
+> two games, there are eleven), 15 (the fairness roadmap) and 16 (the gate).**
+>
+> The live state of all five sites is in `docs/STATE.md`, which is the file to
+> read first.
 >
 > **Companion file:** `docs/DOMAIN-SHORTLIST.md` holds the sweep of about 1,200
 > candidates, the finalists, and why each runner-up lost.

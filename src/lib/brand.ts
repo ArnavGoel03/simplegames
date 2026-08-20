@@ -5,15 +5,17 @@
 // header, the footer. A second copy of any of these is a bug, because copies
 // drift silently and the wrong one is usually the one a crawler read.
 
-/**
- * The studio's stable identifier.
- *
- * FROZEN. This is not a display string. It is the issuer and audience stamped
- * into every session token across every product the studio ships, so changing
- * it invalidates every live session and signs every player out. It was chosen
- * while the number of accounts in existence was zero. Leave it alone.
- */
-export const STUDIO_ID = "simplegames";
+/*
+  There is no STUDIO_ID here, deliberately.
+
+  This file used to carry one, described as the issuer and audience stamped
+  into every session token. That was never true of this site, which has no
+  accounts and issues nothing, and it stopped being true of the studio on
+  20 August 2026, when the games rotated their namespace to `glasstable`.
+  A frozen wire identifier belongs to the code that signs with it, which is
+  `NAMESPACE` in the games monorepo's `packages/brand`. A second copy over
+  here could only ever be a copy that disagrees, and for a while it was.
+*/
 
 export const STUDIO_NAME = "Glass Table Games";
 
@@ -40,7 +42,6 @@ function resolveUrl(): string {
 }
 
 export const studio = {
-  id: STUDIO_ID,
   name: STUDIO_NAME,
   tagline: STUDIO_TAGLINE,
   description: STUDIO_DESCRIPTION,
