@@ -397,7 +397,13 @@ and deploy hook pointing at it, and buys a tidier name.
    other three carry a screenshot of the real thing. That is the honest
    fallback rather than a placeholder, and it is still the weakest tile on the
    page. Fixing it means a real drawing captured from the live game.
-6. **The sections after 0 of `docs/RENAME-PLAN.md` are history, not a plan.**
+6. **Circuit's manifest name is the odd one out.** Deal, Charade and Lattice
+   install as "Name: what it is"; Circuit installs as just "Circuit", because
+   `apps/web/src/app/manifest.ts` passes `site.name` for both `name` and
+   `short_name` while the other three build the long form. One line, and it
+   wants the Circuit Worker redeployed from `main`, not from whatever feature
+   branch the monorepo is sitting on.
+7. **The sections after 0 of `docs/RENAME-PLAN.md` are history, not a plan.**
    Most of what they describe has happened, out of the order they propose.
    Sections 12 to 16 (a brand-free package scope, the checks that fail on
    leakage, the fairness roadmap) are the parts still worth reading forward.
