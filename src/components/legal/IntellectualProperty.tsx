@@ -1,4 +1,4 @@
-import { MAKER, STUDIO_NAME, studio } from "@/lib/brand";
+import { GAMES, MAKER, STUDIO_NAME, studio } from "@/lib/brand";
 import { LEGAL_EMAIL } from "@/lib/legal";
 
 export function IntellectualProperty() {
@@ -36,9 +36,13 @@ export function IntellectualProperty() {
 
       <h2>3. The names and the look</h2>
       <p>
-        {STUDIO_NAME}, Chaupal and the wordmarks, page design and written copy on this site belong
-        to {MAKER.name}. Do not use them in a way that suggests a game is made by, endorsed by or
-        connected to {STUDIO_NAME} when it is not.
+        {/* Named from the registry rather than written out. This clause listed
+            "Chaupal" for weeks after that site was renamed, so it claimed a name
+            nobody used and claimed none of the ones in use. A legal page naming
+            the wrong thing is worse than one naming nothing. */}
+        {STUDIO_NAME}, {GAMES.map((game) => game.name).join(", ")} and the wordmarks, page design
+        and written copy on this site belong to {MAKER.name}. Do not use them in a way that
+        suggests a game is made by, endorsed by or connected to {STUDIO_NAME} when it is not.
       </p>
       <p>
         Referring to {STUDIO_NAME} by name in order to write about it, review it, criticise it or
