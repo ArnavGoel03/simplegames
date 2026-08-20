@@ -91,6 +91,11 @@ describe("the games registry", () => {
   it.each(GAMES.map((game) => [game.name, game] as const))(
     "%s only deals cards as art if it is the card room",
     (_name, game) => {
+      // Asserted against the id rather than the name on purpose. The card room
+      // was called Judgement, then Taash, and is now Deal; the id has not moved
+      // once, because an id is a key and a name is a label. A test written
+      // against the label would have failed twice and taught nothing either
+      // time.
       if (game.fallback === "cards") expect(game.id).toBe("taash");
     },
   );

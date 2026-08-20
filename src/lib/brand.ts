@@ -160,19 +160,19 @@ export interface Game {
 export const GAMES: readonly Game[] = [
   {
     id: "chaupal",
-    name: "Chaupal",
+    name: "Circuit",
     blurb:
       "Board games rolled from dice you can check. Start a room, send the link, no signup and no install.",
     holds: "Ludo, Snakes and Ladders",
     players: "2 to 4 players",
     status: "live",
     // On Cloudflare, for the reason `resolveUrl` gives above.
-    url: "https://chaupal.glasstablegames.com",
+    url: "https://circuit.glasstablegames.com",
     art: {
       src: "/art/chaupal-snakes-and-ladders.webp",
       width: 1100,
       height: 1220,
-      alt: "A Snakes and Ladders board mid-game in Chaupal, with two pieces waiting on the start row.",
+      alt: "A Snakes and Ladders board mid-game in Circuit, with two pieces waiting on the start row.",
     },
     fallback: "type",
   },
@@ -182,7 +182,7 @@ export const GAMES: readonly Game[] = [
     // across northern India, and Judgement is now the first of eight games in
     // it rather than the whole of it.
     id: "taash",
-    name: "Taash",
+    name: "Deal",
     blurb:
       "Five card games for a table and three games of patience for one, dealt from a shuffle nobody at the table chose. Judgement, where you bid exactly how many you will win, is the one it started as.",
     holds: "Judgement, 29, Call Break, Pachisa, 3-2-5, FreeCell, Klondike, Spider",
@@ -192,7 +192,7 @@ export const GAMES: readonly Game[] = [
     // goes to the room rather than to any one game in it: every game inside is
     // one press from here, and a studio that deep-linked to one of eight would
     // be picking a favourite.
-    url: "https://taash.glasstablegames.com",
+    url: "https://deal.glasstablegames.com",
     // Judgement's tile deals a real hand instead of showing a photograph. A
     // card game's table is its players' hands, and those are private, so there
     // is nothing to photograph that would not be a staged lie.
@@ -201,17 +201,17 @@ export const GAMES: readonly Game[] = [
   },
   {
     id: "draw",
-    name: "Draw",
+    name: "Charade",
     blurb:
       "One person draws it and everybody else races to name it. Or the whole table draws the same word at once and then votes on whose is best.",
-    holds: "Draw, Everyone Draws",
+    holds: "Charade, Everyone Draws",
     players: "2 to 12 players",
     status: "live",
     // Every site in the studio is a Cloudflare Worker now, built on a laptop and
     // uploaded, which spends no build minutes anywhere. Draw and Lattice sat on
     // Netlify for a few weeks in between, and those copies are still answering:
     // they are stale and are to be retired, not linked.
-    url: "https://draw.glasstablegames.com",
+    url: "https://charade.glasstablegames.com",
     // No art yet, and not for want of trying: a Draw room shows an empty canvas
     // and "waiting for somebody to join" until a second player arrives, so
     // there is nothing to photograph that a person would recognise as the game.
