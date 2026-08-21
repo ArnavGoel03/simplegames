@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { studio, STUDIO_NAME, STUDIO_TAGLINE } from "@/lib/brand";
+import { PLAYABLE, playPath, studio, STUDIO_NAME, STUDIO_TAGLINE } from "@/lib/brand";
 
 // What the studio is, to an operating system.
 //
@@ -33,6 +33,18 @@ export default function manifest(): MetadataRoute.Manifest {
     orientation: "any",
     categories: ["games", "entertainment"],
     lang: studio.lang,
+    // What a long press on the installed icon offers, which is the reason this
+    // site is worth installing rather than the four games: one icon on a home
+    // screen and the whole studio behind it. Every entry is an in-scope path
+    // that redirects, because a manifest may not name a shortcut outside its
+    // own scope and each game is its own origin. See `playPath`.
+    shortcuts: PLAYABLE.map((game) => ({
+      name: `Play ${game.name}`,
+      short_name: game.name,
+      description: game.holds,
+      url: playPath(game),
+      icons: [{ src: "/icon-192.png", sizes: "192x192", type: "image/png" }],
+    })),
     icons: [
       // Order matters less than purpose. `any` is the icon as drawn; `maskable`
       // is the same mark on a full bleed ground, because Android crops to a

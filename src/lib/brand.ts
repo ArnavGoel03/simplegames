@@ -263,6 +263,23 @@ export const PLAYABLE = GAMES.filter(
   (game): game is Game & { url: string } => game.url !== null,
 );
 
+/**
+ * The path on this site that sends somebody to a game, one per live game.
+ *
+ * It exists because of how an installed app is allowed to behave. A web
+ * manifest may only list shortcuts that fall inside its own scope, and every
+ * game is a different origin, so "Charade" cannot be a shortcut on the studio's
+ * icon by pointing at Charade. It can point here, and here redirects.
+ *
+ * Which makes the studio worth installing on its own: one icon on a home
+ * screen, and a long press on it lists the four games. `next.config.ts` builds
+ * the redirects from this and `app/manifest.ts` builds the shortcuts from it,
+ * so a game arriving or moving is still one edit in `GAMES` above.
+ */
+export function playPath(game: Game): string {
+  return `/play/${game.name.toLowerCase()}`;
+}
+
 // Counted rather than written, because "Two games" hardcoded above a list of
 // three is the kind of stale copy nobody thinks to check.
 const COUNT_WORDS = ["No", "One", "Two", "Three", "Four", "Five", "Six"] as const;

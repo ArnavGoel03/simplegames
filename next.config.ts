@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { PLAYABLE, playPath } from "./src/lib/brand";
 
 // Nothing here is dynamic: three routes, no database, no images from anywhere
 // but this repository. Everything below is a header rather than a feature.
@@ -29,12 +30,25 @@ const config: NextConfig = {
     which is a weaker guarantee than simply not having a second address.
   */
   async redirects() {
+    // The four in-scope paths an installed studio app's shortcuts point at.
+    // A manifest shortcut may not leave its own scope and every game is its own
+    // origin, so the shortcut lands here and this sends it on. Temporary rather
+    // than permanent on purpose: a permanent redirect is cached by the browser
+    // forever, and the day a game moves the shortcut would keep going to the
+    // old address on every device that had ever used it.
+    const games = PLAYABLE.map((game) => ({
+      source: playPath(game),
+      destination: game.url,
+      permanent: false,
+    }));
+
     // Two rules rather than one, because `:path*` matches zero segments and
     // then does not substitute: the bare host redirected to a URL with a
     // literal ":path*" in it. `:path+` requires at least one segment, so the
     // root is handled on its own and everything below it keeps its path.
     const host = [{ type: "host" as const, value: "www.glasstablegames.com" }];
     return [
+      ...games,
       { source: "/", has: host, destination: "https://glasstablegames.com/", permanent: true },
       {
         source: "/:path+",
