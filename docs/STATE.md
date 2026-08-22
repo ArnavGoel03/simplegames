@@ -3,7 +3,7 @@
 > **Picking this up cold?** `docs/HANDOVER-2026-08-22.md` is the cross-repo
 > handover: what is live, what the traps are, and what is open in priority order.
 
-Last updated 21 August 2026. This is the pick-it-up-later document for the
+Last updated 22 August 2026. This is the pick-it-up-later document for the
 whole studio effort: the studio site and the four game sites. Read this first
 in any new session, then go to the file it points you at.
 
