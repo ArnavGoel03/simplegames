@@ -211,6 +211,27 @@ Regenerate them when the chaupal derivation changes, per
 `src/lib/__vectors__/README.md`. One shared package is still the correct fix
 and nobody has done it.
 
+**A retired name cannot come back, and the check is what says so.** As of
+22 August, `src/lib/names.test.ts` fails the suite on two things: any of
+`Simple Games`, `Chaupal` or `Taash` appearing anywhere a reader can see it,
+and `Glass Table Games` spelled out anywhere except `brand.ts`. Comments are
+exempt from both, JSX comments included, because the history of what a thing
+used to be called is written in them deliberately.
+
+It exists because the games monorepo proved the drift is real rather than
+theoretical: the day the studio was renamed, fifteen strings across four apps
+went on offering "Your Simple Games account" to players, and the board site
+called itself Chaupal in its 404, its share line and three route descriptions,
+every one of them because the name had been spelled out instead of read from
+the registry. This site was clean that day, which is not the same as being
+safe. `scripts/check-names.mjs` in the monorepo is the same two rules, so the
+two halves of one studio cannot disagree about what counts.
+
+It was seen to fail before it was believed: a probe file carrying both a
+retired name and the studio name failed both rules and named the line, and the
+tree went green again when it was deleted. If a rename ever happens again,
+appending to `RETIRED` there is the last step of it.
+
 **The wire identifier is not here** (§0). It used to be, as `STUDIO_ID =
 "simplegames"`, described as the token issuer and audience for one account
 across every product. This site has no accounts and issues nothing, so it was
