@@ -1,9 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
 import { CardFan } from "@/components/CardFan";
+import { JsonLd } from "@/components/JsonLd";
 import { Commitment } from "@/components/Commitment";
 import { TitlePlate } from "@/components/TitlePlate";
 import { GAME_COUNT_WORD, GAMES, GAMES_LINK, HERO_ART, PLAYABLE, STUDIO_TAGLINE } from "@/lib/brand";
+import { gameCatalogue, webSite } from "@/lib/structured-data";
 
 /**
  * The three things the studio does not ask a player for. Written here rather
@@ -21,6 +23,13 @@ export default function HomePage() {
 
   return (
     <>
+      {/* The site, and what is on it. A front page that lists four games on
+          four other origins has to say that is what it is doing, or a crawler
+          reads it as a page of outbound links. Every field is read off the same
+          registry the tiles below are drawn from, so the list a crawler is given
+          and the list a reader sees cannot come apart. */}
+      <JsonLd data={webSite()} />
+      <JsonLd data={gameCatalogue()} />
       <section className="stage">
         <div className="stage__copy">
           <p className="kicker">{STUDIO_TAGLINE}</p>

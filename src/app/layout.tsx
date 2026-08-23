@@ -1,9 +1,11 @@
 import type { Metadata, Viewport } from "next";
 import { Fraunces, IBM_Plex_Mono, IBM_Plex_Sans } from "next/font/google";
+import { JsonLd } from "@/components/JsonLd";
 import { SiteFooter } from "@/components/SiteFooter";
 import { ServiceWorker } from "@/components/ServiceWorker";
 import { SiteHeader } from "@/components/SiteHeader";
 import { STUDIO_NAME, STUDIO_TAGLINE, studio } from "@/lib/brand";
+import { studioNode } from "@/lib/structured-data";
 import "./globals.css";
 
 // Fraunces carries the personality. SOFT rounds the terminals and WONK swaps
@@ -48,7 +50,11 @@ export const metadata: Metadata = {
     title: `${STUDIO_NAME}, ${STUDIO_TAGLINE.toLowerCase()}`,
     description: studio.description,
   },
-  twitter: { card: "summary" },
+  // The card this site actually ships is 1200 by 630, which is what
+  // `summary_large_image` shows and what `summary` crops into a small square
+  // beside the text. All four game sites use the large one; this one did not,
+  // so the studio's own link was the worst looking of the five.
+  twitter: { card: "summary_large_image" },
   alternates: { canonical: "/" },
   /*
     Every icon this site has, declared together.
@@ -97,6 +103,18 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       className={`${fraunces.variable} ${plexSans.variable} ${plexMono.variable}`}
     >
       <body>
+        {/* Who publishes this, on every page rather than on the front page
+            alone.
+
+            Every game of this studio is on its own origin, so a crawler meets
+            five websites, and five websites by the same author is not the same
+            claim as one studio with four sites. What joins them is this node,
+            declared with the same `@id` here and on all four games, so the
+            organisation read on one is the organisation read on the others
+            rather than a new one with a familiar name. It is also what every
+            `publisher` on every page points at, and a reference to an id nothing
+            defines says nothing at all. See src/lib/structured-data.ts. */}
+        <JsonLd data={studioNode()} />
         <SiteHeader />
         <main>{children}</main>
         <SiteFooter />
