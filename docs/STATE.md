@@ -443,3 +443,84 @@ and deploy hook pointing at it, and buys a tidier name.
 - Look at the rendered output before calling visual work done. A green build
   cannot see a bulleted list that should not have bullets, which is exactly
   the bug a screenshot caught here.
+
+## 8. What search sees, 26 August 2026
+
+The studio was not findable by name, and the reason turned out to be two
+separate things with two different answers.
+
+**The name is a shopping query and will stay one.** Searching the three words
+returns glass chess sets, a glass poker table and a drinking game before any
+organic result: the whole first screen is a product carousel. Nothing on this
+site changes that, because the words describe a category of object that people
+buy. The token that can be owned is the domain spelled as one word, and the
+demand that is worth ranking for is not the studio at all. It is the games:
+Ludo with friends, Call Break, 29, a Scrabble-like, a drawing game. Those
+queries belong to the four game sites, whose titles and descriptions already
+aim at them.
+
+**The domain is a week old with almost no links into it.** Search Console on
+26 August: 4 pages indexed, 24 not, of which 19 are "Crawled, currently not
+indexed", which is Google saying it has seen them and has not decided they are
+worth keeping. That is the ordinary state of a new domain nobody links to, and
+the only cure is links and time. Technically the site was already clean: every
+host answers 200, carries a canonical, a description, JSON-LD and a sitemap,
+allows crawling, and the apex holds the Search Console verification TXT, which
+makes one Domain property that covers all five hosts.
+
+### What shipped for it
+
+- **IndexNow, on all five sites.** A push protocol: rather than wait to be
+  crawled, a site posts the addresses it wants read. Bing, Yandex, Seznam and
+  Naver share one endpoint. **Google does not take part**, so this is a Bing
+  and Yandex measure and nothing more. Here it is `npm run indexnow`, which
+  reads the key back out of `public/<key>.txt` and submits every address in the
+  live sitemap. The monorepo has the same thing at `scripts/indexnow.mjs`,
+  deriving its hosts from `packages/brand` and its pages from each sitemap.
+  Run it after a deploy, never before: the key file has to be reachable at the
+  address being claimed.
+- **`tools/site-url.mjs`.** The canonical origin was written down twice, in
+  `brand.ts` and again in `cf.mjs`. It is read out of `brand.ts` now, so the
+  build wrapper and the submitter cannot target an address the site does not
+  claim.
+- **The rooms Worker answers `robots.txt`.** A crawler followed the socket
+  address off a game page, got the 426 that is the correct answer to a request
+  that is not an upgrade, and filed it as a broken page on the domain. That is
+  the "Blocked due to other 4xx issue" row. The refusal was right and the
+  report was right, so the fix is to stop crawlers asking.
+- **The links index carries the studio.** `~/dev/links` had no entry for it at
+  all, so the portfolio's listing was the only page anywhere pointing here.
+  Every string on that entry is this site's own, taken from `brand.ts`.
+
+### What is still open on it
+
+1. **Bing Webmaster Tools does not exist yet**, which is the account the
+   IndexNow work is really for. Importing from Search Console carries the
+   verification and the sitemaps across in one step. Recorded below.
+2. **Links are the whole game for Google.** Three to five from places that are
+   not his own sites would do more than everything above put together.
+3. **Two lines in `~/dev/links` now enumerate five subjects for six volumes**:
+   the sentence under the name and the meta description. Both are the owner's
+   words, so they were left alone rather than reworded.
+
+## Blocked on me
+
+Steps below need a human. They are read by `pnpm owner` in `~/dev/atlas`, which
+collects them from every repo and puts them in the Atlas briefing, so a step
+recorded here cannot quietly evaporate the way one relayed in chat does.
+
+Format: one record per blank-line-separated group, `key: value` per line.
+`what` is required. `command` is what to run, `cwd` is where it must run,
+`why` is why it cannot be done by an agent, `raised` is when it was first
+raised, and adding `done: YYYY-MM-DD` clears it. Silence is not a status: an
+item with no `done` date is still owed.
+
+```owner-actions
+what: Create `glasstablegames.studio@gmail.com`. Seven live legal documents point at an address nobody can receive at.
+why: account signup.
+raised: 2026-08-22
+
+what: Sign in to Bing Webmaster Tools and use "Import from Google Search Console", which carries the verification and every sitemap across in one step. The IndexNow submissions already going out land in that account, and Bing indexes a new domain far faster than Google does.
+why: account signup plus a dashboard step.
+raised: 2026-08-26
+```
