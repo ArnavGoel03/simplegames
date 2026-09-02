@@ -488,6 +488,15 @@ makes one Domain property that covers all five hosts.
   that is not an upgrade, and filed it as a broken page on the domain. That is
   the "Blocked due to other 4xx issue" row. The refusal was right and the
   report was right, so the fix is to stop crawlers asking.
+- **The apex robots.txt offers every game's sitemap.** Shipped 2026-09-02,
+  deployed and verified over the network the same day: `glasstablegames.com/robots.txt`
+  names its own sitemap and the four game sitemaps, which answer 200 with 17,
+  11, 2 and 4 URLs. A crawler reads the apex before it has any reason to guess
+  at a subdomain, and robots.txt is the one file it is certain to ask for.
+  Cross-host references are honoured because the verification TXT sits on the
+  apex, making one Domain property over all five hosts, which is the same fact
+  the paragraph above rests on. The list derives from `PLAYABLE`, so a game
+  that moves or arrives stays one edit in `GAMES`.
 - **The links index carries the studio.** `~/dev/links` had no entry for it at
   all, so the portfolio's listing was the only page anywhere pointing here.
   Every string on that entry is this site's own, taken from `brand.ts`.
