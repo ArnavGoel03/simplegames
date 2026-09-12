@@ -23,6 +23,7 @@ import { fileURLToPath } from "node:url";
 
 import { SITE_URL } from "./site-url.mjs";
 import { invalidateBuild, sourceFingerprint, stampBuild, verifyBuild } from "./build-state.mjs";
+import { writeHtmlPolicyWorker } from "./html-policy.mjs";
 
 const COMMANDS = new Set(["build", "preview", "deploy", "upload"]);
 const [command, ...rest] = process.argv.slice(2);
@@ -55,6 +56,7 @@ try {
     if (sourceFingerprint(root, SITE_URL) !== fingerprint) {
       throw new Error("cf: source changed during the build. Run npm run cf:build again.");
     }
+    writeHtmlPolicyWorker(root);
     stampBuild(root, fingerprint);
   }
 } catch (error) {

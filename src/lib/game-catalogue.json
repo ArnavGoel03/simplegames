@@ -1,0 +1,74 @@
+{
+  "version": 1,
+  "sites": [
+    {
+      "id": "chaupal",
+      "name": "Circuit",
+      "url": "https://circuit.glasstablegames.com"
+    },
+    {
+      "id": "taash",
+      "name": "Deal",
+      "url": "https://deal.glasstablegames.com",
+      "games": [
+        {
+          "id": "judgement",
+          "name": "Judgement"
+        },
+        {
+          "id": "twentynine",
+          "name": "29"
+        },
+        {
+          "id": "callbreak",
+          "name": "Call Break"
+        },
+        {
+          "id": "pachisa",
+          "name": "Pachisa"
+        },
+        {
+          "id": "threetwofive",
+          "name": "3-2-5"
+        },
+        {
+          "id": "freecell",
+          "name": "FreeCell"
+        },
+        {
+          "id": "klondike",
+          "name": "Klondike"
+        },
+        {
+          "id": "spider",
+          "name": "Spider"
+        },
+        {
+          "id": "rummy",
+          "name": "Rummy"
+        }
+      ]
+    },
+    {
+      "id": "draw",
+      "name": "Charade",
+      "url": "https://charade.glasstablegames.com"
+    },
+    {
+      "id": "lattice",
+      "name": "Lattice",
+      "url": "https://lattice.glasstablegames.com"
+    },
+    {
+      "id": "teenpatti",
+      "name": "Teen Patti",
+      "url": "https://teenpatti.glasstablegames.com",
+      "games": [
+        {
+          "id": "teenpatti",
+          "name": "Teen Patti"
+        }
+      ]
+    }
+  ]
+}

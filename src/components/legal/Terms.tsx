@@ -29,7 +29,7 @@ export function Terms() {
       </p>
       <ul>
         <li>There is nothing to buy. No purchase, subscription, pass or upgrade exists.</li>
-        <li>There is no virtual currency, no chips, no tokens and no in-game economy.</li>
+        <li>No real money</li>
         <li>
           Nothing you can win in a game has value outside the game, and nothing can be cashed out,
           traded, transferred or redeemed for anything at all.

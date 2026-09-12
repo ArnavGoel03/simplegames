@@ -2,7 +2,7 @@
 
 ## 13 September 2026 audit update (supersedes older claims below)
 
-Technical fixes are built and tested, deployment verification is in progress.
+Technical audit fixes are live. All 120 live HTTP/metadata checks pass.
 `docs/AUDIT-2026-09-13.md` is the current work queue and evidence record.
 
 - The studio card mirror drifted from the canonical descending round schedule.
@@ -16,8 +16,8 @@ Technical fixes are built and tested, deployment verification is in progress.
 - Inner pages carry their own share metadata. Legal date and dark button text
   meet AA contrast. Catalogue counts include solo Lattice correctly.
 - `npm test`: 74 tests pass. Lint/typecheck pass; Cloudflare build succeeds.
-  The new `npm run verify:live` was calibrated on production: 30 share-metadata
-  assertions failed before the release.
+  The live verifier was calibrated on production: 30 share-metadata assertions
+  failed before release, and all 120 passed after the merged fixes.
 
 The old claims below that game policies are accurate are superseded. Games now
 use account/session records, chat, persistent room data and diagnostics. Exact
@@ -556,8 +556,12 @@ raised, and adding `done: YYYY-MM-DD` clears it. Silence is not a status: an
 item with no `done` date is still owed.
 
 ```owner-actions
-what: Create `glasstablegames.studio@gmail.com`. Seven live legal documents point at an address nobody can receive at.
-why: account signup.
+what: Approve the exact policy corrections in docs/PROPOSED-COPY-2026-09-13.md. Existing policies incorrectly deny accounts, game cookies, retained data, diagnostics, chat and streaks, and name the wrong hosting provider.
+why: The working charter reserves public wording for the owner. The proposed replacements and code evidence are ready for review.
+raised: 2026-09-13
+
+what: Confirm `glasstablegames.studio@gmail.com` is monitored, and create it if still absent. The old missing-mailbox note has not been independently reverified.
+why: mailbox access or account signup requires the owner.
 raised: 2026-08-22
 
 what: Sign in to Bing Webmaster Tools and use "Import from Google Search Console", which carries the verification and every sitemap across in one step. The IndexNow submissions already going out land in that account, and Bing indexes a new domain far faster than Google does.

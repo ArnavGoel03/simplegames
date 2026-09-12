@@ -13,7 +13,7 @@ function project() {
   const root = mkdtempSync(join(tmpdir(), "studio-deploy-test-"));
   temporary.push(root);
   for (const path of ["tools", "src/lib", "public", "bin"]) mkdirSync(join(root, path), { recursive: true });
-  for (const file of ["cf.mjs", "site-url.mjs", "build-state.mjs"]) {
+  for (const file of ["cf.mjs", "site-url.mjs", "build-state.mjs", "html-policy.mjs"]) {
     const source = new URL(file, import.meta.url);
     if (existsSync(source)) cpSync(source, join(root, "tools", file));
   }
@@ -78,6 +78,14 @@ describe("the Cloudflare command wrapper", () => {
   it("does not certify a source tree changed during the build", () => {
     const p = project();
     expect(p.run("build", { TEST_MUTATE_BUILD: "1" }).status).toBe(1);
+    expect(p.run("deploy").status).toBe(1);
+    expect(p.calls()).toEqual(["build"]);
+  });
+
+  it.each(["worker.js", "worker-no-transform.js"])("refuses an altered %s entry", (entry) => {
+    const p = project();
+    expect(p.run("build").status).toBe(0);
+    writeFileSync(join(p.root, ".open-next", entry), "substituted");
     expect(p.run("deploy").status).toBe(1);
     expect(p.calls()).toEqual(["build"]);
   });
