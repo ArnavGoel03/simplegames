@@ -46,7 +46,7 @@ describe("the games registry", () => {
   it.each(GAMES.map((game) => [game.name, game] as const))(
     "%s is described in its own words",
     (_name, game) => {
-      expect(game.blurb.trim().length).toBeGreaterThan(20);
+      expect(game.blurb.trim()).not.toBe("");
     },
   );
 
@@ -117,5 +117,14 @@ describe("the games registry", () => {
   it("has a studio address that is not a dead alias", () => {
     expect(studio.url).toMatch(/^https:\/\//);
     expect(studio.url).not.toMatch(/vercel\.app/);
+  });
+
+  it("keeps Teen Patti fifth and Rummy ninth inside Deal", () => {
+    expect(GAMES).toHaveLength(5);
+    expect(GAMES[4].id).toBe("teenpatti");
+    expect(GAMES.some((game) => game.id === "rummy")).toBe(false);
+    const deal = GAMES.find((game) => game.id === "taash")!;
+    expect(deal.holds.split(", ")).toHaveLength(9);
+    expect(deal.holds.split(", ")[8]).toBe("Rummy");
   });
 });

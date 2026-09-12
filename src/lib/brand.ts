@@ -1,3 +1,5 @@
+import catalogue from "./game-catalogue.json";
+
 // The studio, authored once.
 //
 // Anything that names the studio, addresses it, or describes it to a machine
@@ -158,17 +160,15 @@ export interface Game {
   readonly fallback: "cards" | "type";
 }
 
-export const GAMES: readonly Game[] = [
+const GAME_PRESENTATION: readonly Omit<Game, "name" | "url">[] = [
   {
     id: "chaupal",
-    name: "Circuit",
     blurb:
       "Board games rolled from dice you can check. Start a room, send the link, no signup and no install.",
     holds: "Ludo, Snakes and Ladders",
     players: "2 to 4 players",
     status: "live",
     // On Cloudflare, for the reason `resolveUrl` gives above.
-    url: "https://circuit.glasstablegames.com",
     art: {
       src: "/art/chaupal-snakes-and-ladders.webp",
       width: 1100,
@@ -183,17 +183,15 @@ export const GAMES: readonly Game[] = [
     // across northern India, and Judgement is now the first of eight games in
     // it rather than the whole of it.
     id: "taash",
-    name: "Deal",
     blurb:
-      "Five card games for a table and three games of patience for one, dealt from a shuffle nobody at the table chose. Judgement, where you bid exactly how many you will win, is the one it started as.",
-    holds: "Judgement, 29, Call Break, Pachisa, 3-2-5, FreeCell, Klondike, Spider",
+      "Six card games for a table and three games of patience for one, dealt from a shuffle nobody at the table chose. Judgement, where you bid exactly how many you will win, is the one it started as.",
+    holds: "",
     players: "1 to 10 players",
     status: "live",
     // Its own deployment now, and on Cloudflare rather than Vercel. The link
     // goes to the room rather than to any one game in it: every game inside is
     // one press from here, and a studio that deep-linked to one of eight would
     // be picking a favourite.
-    url: "https://deal.glasstablegames.com",
     // Judgement's tile deals a real hand instead of showing a photograph. A
     // card game's table is its players' hands, and those are private, so there
     // is nothing to photograph that would not be a staged lie.
@@ -202,7 +200,6 @@ export const GAMES: readonly Game[] = [
   },
   {
     id: "draw",
-    name: "Charade",
     blurb:
       "One person draws it and everybody else races to name it. Or the whole table draws the same word at once and then votes on whose is best.",
     holds: "Charade, Everyone Draws",
@@ -212,7 +209,6 @@ export const GAMES: readonly Game[] = [
     // uploaded, which spends no build minutes anywhere. Draw and Lattice sat on
     // Netlify for a few weeks in between, and those copies are still answering:
     // they are stale and are to be retired, not linked.
-    url: "https://charade.glasstablegames.com",
     // No art yet, and not for want of trying: a Draw room shows an empty canvas
     // and "waiting for somebody to join" until a second player arrives, so
     // there is nothing to photograph that a person would recognise as the game.
@@ -222,13 +218,11 @@ export const GAMES: readonly Game[] = [
   },
   {
     id: "lattice",
-    name: "Lattice",
     blurb:
       "Words that cross, on a board that says what counts. Play it at a table with friends, or alone against the board.",
     holds: "Lattice, solo or at a table",
     players: "1 to 4 players",
     status: "live",
-    url: "https://lattice.glasstablegames.com",
     // A capture of the real solo board on the live deployment, taken from
     // /solo after dealing: the premium squares this game is actually printed
     // with, and a real opening rack.
@@ -240,7 +234,25 @@ export const GAMES: readonly Game[] = [
     },
     fallback: "type",
   },
+  {
+    id: "teenpatti",
+    blurb: "No real money",
+    holds: "",
+    players: "2 to 6 players",
+    status: "live",
+    art: null,
+    fallback: "type",
+  },
 ] as const;
+
+/** Names, destinations and Deal's game order come from the game release. */
+export const GAMES: readonly Game[] = GAME_PRESENTATION.map((presentation) => {
+  const published = catalogue.sites.find((site) => site.id === presentation.id);
+  if (!published) throw new Error(`Missing game catalogue entry: ${presentation.id}`);
+  return { ...presentation, name: published.name,
+    url: presentation.status === "live" ? published.url : null,
+    holds: published.games?.map((game) => game.name).join(", ") ?? presentation.holds };
+});
 
 /**
  * The studio's own key art, for the top of the home page.
@@ -277,7 +289,7 @@ export const PLAYABLE = GAMES.filter(
  * so a game arriving or moving is still one edit in `GAMES` above.
  */
 export function playPath(game: Game): string {
-  return `/play/${game.name.toLowerCase()}`;
+  return `/play/${game.name.toLowerCase().replace(/\s+/g, "-")}`;
 }
 
 // Counted rather than written, because "Two games" hardcoded above a list of

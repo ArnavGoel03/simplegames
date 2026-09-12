@@ -52,6 +52,7 @@ export interface LegalDoc {
 export const LEGAL_DOCS = [
   {
     slug: "terms",
+    updated: "2026-09-13",
     title: "Terms of use",
     summary:
       "What you may do with the games, what is promised, and what is not. Free to play, nothing to buy, no money involved.",

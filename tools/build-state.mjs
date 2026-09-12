@@ -7,6 +7,13 @@ import { join } from "node:path";
 const STAMP = ".open-next/build-state.json";
 const WORKER = ".open-next/assets/sw.js";
 const VERSION = /const VERSION = "([^"]+)";/;
+const ENTRIES = [".open-next/worker.js", ".open-next/worker-no-transform.js"];
+
+function entryHash(root) {
+  const hash = createHash("sha256");
+  for (const path of ENTRIES) hash.update(path).update(readFileSync(join(root, path)));
+  return hash.digest("hex");
+}
 const INPUTS = [
   "src", "public", "tools", "next.config.ts", "open-next.config.ts", "wrangler.jsonc",
   "tsconfig.json", "package.json", "package-lock.json", "pnpm-lock.yaml", ".npmrc",
@@ -45,7 +52,7 @@ export function stampBuild(root, fingerprint) {
   if (!version) throw new Error("cf: generated service worker has no cache version");
   const stamped = worker.replace(VERSION, `const VERSION = ${JSON.stringify(`${version}-${buildId}`)};`);
   writeFileSync(path, stamped);
-  writeFileSync(join(root, STAMP), JSON.stringify({ fingerprint, buildId, workerHash: createHash("sha256").update(stamped).digest("hex") }));
+  writeFileSync(join(root, STAMP), JSON.stringify({ fingerprint, buildId, entryHash: entryHash(root), workerHash: createHash("sha256").update(stamped).digest("hex") }));
 }
 
 export function verifyBuild(root, fingerprint) {
@@ -55,7 +62,7 @@ export function verifyBuild(root, fingerprint) {
   if (stamp.fingerprint !== fingerprint) throw new Error(`cf: source or canonical origin changed since the build. ${rebuild}`);
   const buildId = readFileSync(join(root, ".next/BUILD_ID"), "utf8").trim();
   const workerHash = createHash("sha256").update(readFileSync(join(root, WORKER))).digest("hex");
-  if (stamp.buildId !== buildId || stamp.workerHash !== workerHash || !existsSync(join(root, ".open-next/worker.js"))) {
+  if (stamp.buildId !== buildId || stamp.workerHash !== workerHash || stamp.entryHash !== entryHash(root)) {
     throw new Error(`cf: generated build was replaced or is incomplete. ${rebuild}`);
   }
 }

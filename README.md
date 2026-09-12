@@ -43,3 +43,16 @@ The build stamps the generated service worker and records its input fingerprint.
 ## Current review
 
 `docs/AUDIT-2026-09-13.md` records verified defects, regression calibration and release status. Public policy corrections remain proposed in `docs/PROPOSED-COPY-2026-09-13.md`; the older blanket claims about game accounts and storage are not accurate.
+
+## Game catalogue
+
+`src/lib/game-catalogue.json` is generated from the games' public release
+catalogue. Run `npm run sync:catalogue` after a game release. The studio owns
+presentation; the games own names, destinations and Deal's ordered game list.
+`npm run verify:live` checks both live pages and catalogue drift. Teen Patti is
+the fifth studio entry, while Rummy is the ninth game within Deal.
+
+The sync command also mirrors Circuit's released `runtime-policy.mjs` byte for
+byte into `tools/html-policy.mjs`. Both repositories build the same HTML wrapper;
+live verification rejects a changed catalogue or helper. The wrapper preserves
+cache policy while preventing Cloudflare from injecting analytics scripts.
