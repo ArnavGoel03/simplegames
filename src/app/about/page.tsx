@@ -1,13 +1,13 @@
-import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/metadata";
 import { JsonLd } from "@/components/JsonLd";
 import { breadcrumbs } from "@/lib/structured-data";
-import { GAMES, MAKER, STUDIO_NAME, studio } from "@/lib/brand";
+import { GAME_COUNT_WORD, GAMES, MAKER, STUDIO_NAME, studio } from "@/lib/brand";
 
-export const metadata: Metadata = {
-  title: "About",
-  description: `Who makes ${STUDIO_NAME}, and why the games are built to be checked rather than trusted.`,
-  alternates: { canonical: "/about" },
-};
+export const metadata = pageMetadata(
+  "About",
+  `Who makes ${STUDIO_NAME}, and why the games are built to be checked rather than trusted.`,
+  "/about",
+);
 
 export default function AboutPage() {
   return (
@@ -19,7 +19,7 @@ export default function AboutPage() {
       <section className="shell shell--wide band band--flush">
         <div className="prose">
           <p className="eyebrow">About</p>
-          <h1>One person, two games, no house edge.</h1>
+          <h1>One person, {GAME_COUNT_WORD.toLowerCase()} games, no house edge.</h1>
           <p>
             {STUDIO_NAME} is <strong>{MAKER.name}</strong>. There is no team, no office and no
             investor, which is worth saying plainly because a studio site that implies otherwise is
@@ -41,8 +41,8 @@ export default function AboutPage() {
 
           <h2>What is here</h2>
           <p>
-            {GAMES.map((game) => game.name).join(" and ")}. Both are free, both run in a browser,
-            neither has an account you must make before you can play, and there is nothing to buy.
+            {GAMES.map((game) => game.name).join(" and ")}. All are free, all run in a browser,
+            none has an account you must make before you can play, and there is nothing to buy.
             There are no advertisements and no analytics, so nothing about your game leaves the room
             you played it in.
           </p>

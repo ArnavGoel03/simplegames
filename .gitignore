@@ -12,3 +12,5 @@ next-env.d.ts
 .wrangler/
 .DS_Store
 .env*
+.audit/
+.firecrawl/

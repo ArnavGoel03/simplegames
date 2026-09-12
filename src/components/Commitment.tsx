@@ -23,8 +23,8 @@ import {
 const DICE = 5;
 
 // One seed serves both games, so the demonstration shows both coming out of
-// it. The round and the table size are the smallest ones that make the point:
-// round five of a four player match deals five cards each, which is a hand
+// it. Round five of the canonical four player match deals nine cards each,
+// which is a hand
 // somebody can look at and recognise as a hand.
 const ROUND = 5;
 const SEATS = 4;
@@ -56,9 +56,13 @@ async function begin(): Promise<Ceremony> {
 export function Commitment() {
   const [state, setState] = useState<Ceremony | null>(null);
   const [busy, setBusy] = useState(false);
+  const [failed, setFailed] = useState(false);
   // Whether the ceremony is still running itself. It stops the moment a reader
   // takes a step by hand, so the two never race for the same transition.
   const auto = useRef(true);
+  // React's disabled state takes a render. Lock synchronously so a timer or a
+  // second click cannot begin another action before that render happens.
+  const active = useRef(false);
 
   // The seed is random, so it cannot exist during the server render without
   // the two renders disagreeing. The pending markup below is what the page
@@ -67,6 +71,11 @@ export function Commitment() {
     let live = true;
     void begin().then((next) => {
       if (live) setState(next);
+    }).catch(() => {
+      if (live) {
+        auto.current = false;
+        setFailed(true);
+      }
     });
     return () => {
       live = false;
@@ -78,29 +87,53 @@ export function Commitment() {
   // makes a timer and a button press safe to race: the loser's write is
   // discarded instead of resurrecting a ceremony the reader has already left.
   const roll = useCallback(async (current: Ceremony) => {
-    if (current.stage !== "committed") return;
+    if (current.stage !== "committed" || active.current) return;
+    active.current = true;
     setBusy(true);
-    const rolls = await rollSeries(current.seed, DICE);
-    const hands = await dealRound(current.seed, ROUND, SEATS, HAND);
-    setState((live) =>
-      live === current ? { ...current, rolls, hand: hands[0], stage: "rolled" } : live,
-    );
-    setBusy(false);
+    try {
+      const rolls = await rollSeries(current.seed, DICE);
+      const hands = await dealRound(current.seed, ROUND, SEATS, HAND);
+      setState((live) =>
+        live === current ? { ...current, rolls, hand: hands[0], stage: "rolled" } : live,
+      );
+    } catch {
+      auto.current = false;
+    } finally {
+      active.current = false;
+      setBusy(false);
+    }
   }, []);
 
   const reveal = useCallback(async (current: Ceremony) => {
-    if (current.stage !== "rolled") return;
+    if (current.stage !== "rolled" || active.current) return;
+    active.current = true;
     setBusy(true);
-    const verified = await verifyCommitment(current.seed, current.commitment);
-    setState((live) => (live === current ? { ...current, stage: "revealed", verified } : live));
-    setBusy(false);
+    try {
+      const verified = await verifyCommitment(current.seed, current.commitment);
+      setState((live) => (live === current ? { ...current, stage: "revealed", verified } : live));
+    } catch {
+      auto.current = false;
+    } finally {
+      active.current = false;
+      setBusy(false);
+    }
   }, []);
 
   const again = useCallback(async () => {
+    if (active.current) return;
+    active.current = true;
     auto.current = true;
     setBusy(true);
-    setState(await begin());
-    setBusy(false);
+    try {
+      setState(await begin());
+      setFailed(false);
+    } catch {
+      auto.current = false;
+      setFailed(true);
+    } finally {
+      active.current = false;
+      setBusy(false);
+    }
   }, []);
 
   /*
@@ -118,11 +151,15 @@ export function Commitment() {
   useEffect(() => {
     if (!auto.current || !state) return;
     if (state.stage === "committed") {
-      const timer = setTimeout(() => void roll(state), 1100);
+      const timer = setTimeout(() => {
+        if (auto.current) void roll(state);
+      }, 1100);
       return () => clearTimeout(timer);
     }
     if (state.stage === "rolled") {
-      const timer = setTimeout(() => void reveal(state), 1500);
+      const timer = setTimeout(() => {
+        if (auto.current) void reveal(state);
+      }, 1500);
       return () => clearTimeout(timer);
     }
     return;
@@ -217,14 +254,14 @@ export function Commitment() {
           </button>
         ) : null}
         {stage === "revealed" ? (
-          <>
-            <p className="verdict" role="status">
-              {state?.verified ? "Checked in your browser: it matches" : "It does not match"}
-            </p>
-            <button type="button" className="button button--quiet" onClick={() => void again()} disabled={busy}>
-              Run it again
-            </button>
-          </>
+          <p className="verdict" role="status">
+            {state?.verified ? "Checked in your browser: it matches" : "It does not match"}
+          </p>
+        ) : null}
+        {stage === "revealed" || (!state && failed) ? (
+          <button type="button" className="button button--quiet" onClick={() => void again()} disabled={busy}>
+            Run it again
+          </button>
         ) : null}
       </div>
     </div>

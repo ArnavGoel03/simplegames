@@ -1,15 +1,15 @@
-import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/metadata";
 import { JsonLd } from "@/components/JsonLd";
 import { breadcrumbs } from "@/lib/structured-data";
 import Link from "next/link";
 import { STUDIO_NAME } from "@/lib/brand";
 import { DOCS, EFFECTIVE, LEGAL_EMAIL, legalPath } from "@/lib/legal";
 
-export const metadata: Metadata = {
-  title: "Legal",
-  description: `The terms, privacy, content and accessibility documents for ${STUDIO_NAME}, written to be read rather than clicked past.`,
-  alternates: { canonical: "/legal" },
-};
+export const metadata = pageMetadata(
+  "Legal",
+  `The terms, privacy, content and accessibility documents for ${STUDIO_NAME}, written to be read rather than clicked past.`,
+  "/legal",
+);
 
 export default function LegalIndexPage() {
   return (

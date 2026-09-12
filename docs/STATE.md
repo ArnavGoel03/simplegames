@@ -1,5 +1,36 @@
 # Glass Table Games: state of play
 
+## 13 September 2026 audit update (supersedes older claims below)
+
+Technical fixes are built and tested, deployment verification is in progress.
+`docs/AUDIT-2026-09-13.md` is the current work queue and evidence record.
+
+- The studio card mirror drifted from the canonical descending round schedule.
+  Round five now deals nine cards, with upstream round/trump/hand vectors.
+- Ceremony actions serialize, manual actions stop autoplay, and crypto errors
+  leave a retry action instead of a permanently pending page.
+- Stable artwork URLs refresh, Flight requests bypass the service worker, first
+  install preserves page state, and cache writes tolerate quota refusal.
+- Each Cloudflare build stamps its generated service worker. Deployment refuses
+  a stale source fingerprint or incomplete build.
+- Inner pages carry their own share metadata. Legal date and dark button text
+  meet AA contrast. Catalogue counts include solo Lattice correctly.
+- `npm test`: 74 tests pass. Lint/typecheck pass; Cloudflare build succeeds.
+  The new `npm run verify:live` was calibrated on production: 30 share-metadata
+  assertions failed before the release.
+
+The old claims below that game policies are accurate are superseded. Games now
+use account/session records, chat, persistent room data and diagnostics. Exact
+corrections are drafted in `docs/PROPOSED-COPY-2026-09-13.md`, awaiting the owner
+copy approval requested during this session. The old mailbox-creation blocker
+has not been independently reverified; do not treat its age as proof of status.
+
+Additional requested work: Teen Patti as the fifth studio game, reusing Deal
+infrastructure with account-linked play money (no real money), plus Rummy as
+Deal's ninth game with no separate studio tile. In progress in the isolated
+`~/dev/gtg-teen-patti` worktree; neither is live or advertised here yet.
+
+
 > **Picking this up cold?** `docs/HANDOVER-2026-08-22.md` is the cross-repo
 > handover: what is live, what the traps are, and what is open in priority order.
 

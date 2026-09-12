@@ -19,7 +19,7 @@
 import { describe, expect, it } from "vitest";
 import vectors from "./__vectors__/derivation.json";
 import { bytesToHex, rollDie, shuffleIndices } from "./fairness";
-import { DECK, dealRound, rankLabel, type Card } from "./cards";
+import { cardsInRound, DECK, dealRound, rankLabel, TOTAL_ROUNDS, trumpForRound, type Card } from "./cards";
 
 /** The two character ids the wire protocol carries, which is what the vectors record. */
 const SUIT_CHAR = { spades: "s", hearts: "h", diamonds: "d", clubs: "c" } as const;
@@ -45,6 +45,15 @@ describe("the deck", () => {
   });
 });
 
+describe("the canonical round ladder", () => {
+  it("deals the same hand size and trump as the real table in every round", () => {
+    expect(Array.from({ length: TOTAL_ROUNDS }, (_, index) => ({
+      cards: cardsInRound(index + 1),
+      trump: trumpForRound(index + 1),
+    }))).toEqual(vectors.rounds);
+  });
+});
+
 describe.each(vectors.cases)("seed $seed", (vector) => {
   const seed = seedFromHex(vector.seed);
 
@@ -67,7 +76,7 @@ describe.each(vectors.cases)("seed $seed", (vector) => {
   });
 
   it("deals the hands the table deals", async () => {
-    const hands = await dealRound(seed, 5, 4, 5);
+    const hands = await dealRound(seed, 5, 4, cardsInRound(5));
     expect(hands.map((hand) => hand.map(idOf))).toEqual(vector.round5FourSeats);
   });
 });

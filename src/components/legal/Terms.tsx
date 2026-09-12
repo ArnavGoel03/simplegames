@@ -6,9 +6,9 @@ export function Terms() {
   return (
     <>
       <p className="lede">
-        {STUDIO_NAME} makes {GAMES.map((game) => game.name).join(" and ")}. Both are free, both run
+        {STUDIO_NAME} makes {GAMES.map((game) => game.name).join(" and ")}. All are free, all run
         in a web browser, and there is nothing to buy. These terms are the agreement between you
-        and {STUDIO_NAME} when you use either of them or this site.
+        and {STUDIO_NAME} when you use any of them or this site.
       </p>
 
       <h2>1. What you are agreeing to</h2>

@@ -226,7 +226,7 @@ export const GAMES: readonly Game[] = [
     blurb:
       "Words that cross, on a board that says what counts. Play it at a table with friends, or alone against the board.",
     holds: "Lattice, solo or at a table",
-    players: "2 to 4 players",
+    players: "1 to 4 players",
     status: "live",
     url: "https://lattice.glasstablegames.com",
     // A capture of the real solo board on the live deployment, taken from

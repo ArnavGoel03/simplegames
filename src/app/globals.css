@@ -550,7 +550,7 @@ a.button {
 .button:hover:not(:disabled) {
   background: var(--indigo);
   border-color: var(--indigo);
-  color: #ffffff;
+  color: var(--paper);
 }
 
 .button:disabled {
@@ -1126,7 +1126,7 @@ a.title:hover .title__art img {
   font-size: var(--step-label);
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--rule-strong);
+  color: var(--muted);
 }
 
 .docnav {

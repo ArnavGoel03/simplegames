@@ -2,9 +2,7 @@
 //
 // Two jobs, and it refuses a third. It makes the site installable, because a
 // browser will not offer to install a site that cannot answer a request while
-// offline. And it makes a second visit paint from disk, because every page
-// here is prerendered and none of it changes between deploys, so asking the
-// network first is a round trip spent confirming what is already correct.
+// offline. And it makes immutable assets on a second visit paint from disk.
 //
 // What it deliberately does not do is cache HTML aggressively. A studio site
 // that shows a stale games list is a site claiming a game exists that does not,
@@ -12,10 +10,10 @@
 // network first and fall back to the cache only when the network fails; assets,
 // which are content hashed and therefore immutable, are cache first.
 //
-// The version string is what retires an old cache. Bump it and every client
-// drops the previous one on its next visit.
+// The Cloudflare build stamps this version with its build ID in the generated
+// asset. A new deploy therefore replaces the worker and retires its old caches.
 
-const VERSION = "v1";
+const VERSION = "v2";
 const SHELL = `shell-${VERSION}`;
 const ASSETS = `assets-${VERSION}`;
 
@@ -41,10 +39,24 @@ self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches
       .keys()
-      .then((keys) => Promise.all(keys.filter((key) => !key.endsWith(VERSION)).map((key) => caches.delete(key))))
+      .then((keys) => Promise.all(keys.filter((key) => /^(shell|assets)-/.test(key) && key !== SHELL && key !== ASSETS).map((key) => caches.delete(key))))
       .then(() => self.clients.claim()),
   );
 });
+
+function cached(request) {
+  return caches.match(request).catch(() => undefined);
+}
+
+function remember(event, name, response) {
+  if (response.status !== 200) return;
+  const copy = response.clone();
+  // Offline storage is optional. Quota refusal must not reject the successful
+  // network response, and the worker must stay alive until the write settles.
+  event.waitUntil(
+    caches.open(name).then((cache) => cache.put(event.request, copy)).catch(() => {}),
+  );
+}
 
 self.addEventListener("fetch", (event) => {
   const { request } = event;
@@ -52,21 +64,21 @@ self.addEventListener("fetch", (event) => {
 
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
+  // Next recovers a failed Flight request by navigating to its original URL.
+  // Substituting homepage HTML instead would redirect that recovery home.
+  if (request.headers.has("RSC") || url.searchParams.has("_rsc")) return;
 
   // Immutable by construction: Next content hashes these filenames, so a
   // changed file is a changed URL and a cached one can never be stale.
-  const immutable = url.pathname.startsWith("/_next/static/") || url.pathname.startsWith("/art/");
+  const immutable = url.pathname.startsWith("/_next/static/");
 
   if (immutable) {
     event.respondWith(
-      caches.match(request).then(
+      cached(request).then(
         (hit) =>
           hit ??
           fetch(request).then((response) => {
-            if (response.ok) {
-              const copy = response.clone();
-              void caches.open(ASSETS).then((cache) => cache.put(request, copy));
-            }
+            remember(event, ASSETS, response);
             return response;
           }),
       ),
@@ -74,8 +86,7 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // Everything else, which is pages: the network is the truth, the cache is the
-  // fallback for when there is no network.
+  // Pages and assets with stable names need the network first, including art.
   //
   // Only a 200 is written back. Caching whatever came down would store a 404
   // or a 500 under the URL of a page that exists, and then serve that stored
@@ -84,12 +95,14 @@ self.addEventListener("fetch", (event) => {
   event.respondWith(
     fetch(request)
       .then((response) => {
-        if (response.ok) {
-          const copy = response.clone();
-          void caches.open(SHELL).then((cache) => cache.put(request, copy));
-        }
+        remember(event, SHELL, response);
         return response;
       })
-      .catch(() => caches.match(request).then((hit) => hit ?? caches.match("/"))),
+      .catch(async () => {
+        const hit = await cached(request);
+        if (hit) return hit;
+        if (request.mode === "navigate") return (await cached("/")) ?? Response.error();
+        return Response.error();
+      }),
   );
 });
