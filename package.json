@@ -12,7 +12,8 @@
     "cf:build": "node tools/cf.mjs build",
     "cf:preview": "node tools/cf.mjs preview",
     "cf:deploy": "node tools/cf.mjs deploy",
-    "indexnow": "node tools/indexnow.mjs"
+    "indexnow": "node tools/indexnow.mjs",
+    "verify:live": "node tools/verify-live.mjs"
   },
   "dependencies": {
     "next": "16.3.0",

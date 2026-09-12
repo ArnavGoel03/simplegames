@@ -36,8 +36,15 @@ export function ServiceWorker() {
       that reloads forever, and doing this to somebody mid-game to fix a
       stylesheet would be the worse bug of the two.
     */
+    let controlled = navigator.serviceWorker.controller !== null;
     let reloading = false;
     const onControllerChange = () => {
+      // The first installation claims a fresh page too. Its document already
+      // matches the build, so keep the reader's current demonstration intact.
+      if (!controlled) {
+        controlled = true;
+        return;
+      }
       if (reloading) return;
       reloading = true;
       window.location.reload();

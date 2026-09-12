@@ -1,5 +1,5 @@
 {
-  "generatedFrom": "chaupal packages/fairness/src/{rng,shuffle}.ts and packages/cards/src/{deck,deal}.ts",
+  "generatedFrom": "chaupal packages/fairness/src/{rng,shuffle}.ts and packages/cards/src/{deck,rounds,deal}.ts",
   "deck": [
     "2s",
     "3s",
@@ -253,28 +253,44 @@
           "7c",
           "9c",
           "jc",
-          "4d"
+          "4d",
+          "kh",
+          "9s",
+          "3d",
+          "2h"
         ],
         [
           "qs",
           "2s",
           "kd",
           "3h",
-          "jd"
+          "jd",
+          "8d",
+          "jh",
+          "qd",
+          "5c"
         ],
         [
           "7h",
           "9d",
           "td",
           "tc",
-          "7d"
+          "7d",
+          "ks",
+          "3s",
+          "8c",
+          "ad"
         ],
         [
           "ts",
           "4s",
           "6c",
           "2d",
-          "6s"
+          "6s",
+          "5s",
+          "6d",
+          "2c",
+          "ac"
         ]
       ]
     },
@@ -476,28 +492,44 @@
           "ad",
           "qd",
           "8s",
-          "qs"
+          "qs",
+          "2c",
+          "kh",
+          "9d",
+          "5c"
         ],
         [
           "4s",
           "7s",
           "3h",
           "5s",
-          "8h"
+          "8h",
+          "kd",
+          "6d",
+          "kc",
+          "tc"
         ],
         [
           "jc",
           "6s",
           "8c",
           "ac",
-          "4h"
+          "4h",
+          "9c",
+          "ts",
+          "th",
+          "td"
         ],
         [
           "3s",
           "9h",
           "6h",
           "qc",
-          "7c"
+          "7c",
+          "jh",
+          "jd",
+          "3d",
+          "8d"
         ]
       ]
     },
@@ -699,30 +731,100 @@
           "as",
           "9d",
           "kh",
-          "8s"
+          "8s",
+          "js",
+          "5h",
+          "jc",
+          "qh"
         ],
         [
           "4s",
           "qs",
           "7h",
           "ac",
-          "5d"
+          "5d",
+          "2h",
+          "5s",
+          "6s",
+          "6h"
         ],
         [
           "4h",
           "4c",
           "7c",
           "3c",
-          "2s"
+          "2s",
+          "3s",
+          "3d",
+          "8c",
+          "9c"
         ],
         [
           "2c",
           "7d",
           "kc",
           "td",
-          "ks"
+          "ks",
+          "8d",
+          "ah",
+          "th",
+          "5c"
         ]
       ]
+    }
+  ],
+  "rounds": [
+    {
+      "cards": 13,
+      "trump": "spades"
+    },
+    {
+      "cards": 12,
+      "trump": "diamonds"
+    },
+    {
+      "cards": 11,
+      "trump": "clubs"
+    },
+    {
+      "cards": 10,
+      "trump": "hearts"
+    },
+    {
+      "cards": 9,
+      "trump": "spades"
+    },
+    {
+      "cards": 8,
+      "trump": "diamonds"
+    },
+    {
+      "cards": 7,
+      "trump": "clubs"
+    },
+    {
+      "cards": 6,
+      "trump": "hearts"
+    },
+    {
+      "cards": 5,
+      "trump": "spades"
+    },
+    {
+      "cards": 4,
+      "trump": "diamonds"
+    },
+    {
+      "cards": 3,
+      "trump": "clubs"
+    },
+    {
+      "cards": 2,
+      "trump": "hearts"
+    },
+    {
+      "cards": 1,
+      "trump": "spades"
     }
   ]
 }

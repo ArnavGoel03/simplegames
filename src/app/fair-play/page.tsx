@@ -1,15 +1,14 @@
-import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/metadata";
 import { JsonLd } from "@/components/JsonLd";
 import { breadcrumbs } from "@/lib/structured-data";
 import { DECK } from "@/lib/cards";
 import { REJECTION_CEILING, SEED_BYTES } from "@/lib/fairness";
 
-export const metadata: Metadata = {
-  title: "Fair play",
-  description:
-    "How the dice and the deal are derived: a seed committed to before the game, revealed after it, and rolls and shuffles anyone can recompute.",
-  alternates: { canonical: "/fair-play" },
-};
+export const metadata = pageMetadata(
+  "Fair play",
+  "How the dice and the deal are derived: a seed committed to before the game, revealed after it, and rolls and shuffles anyone can recompute.",
+  "/fair-play",
+);
 
 export default function FairPlayPage() {
   return (
@@ -99,7 +98,8 @@ export default function FairPlayPage() {
             see, and you have to take our word for that part.
           </p>
           <p>
-            The source is public, which is the only reason our word is worth anything on it.
+            The game repositories themselves are not open yet. That is a gap, and saying so is
+            cheaper than being caught at it.
           </p>
         </div>
       </section>

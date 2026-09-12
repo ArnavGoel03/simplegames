@@ -19,8 +19,10 @@
 // that was already built.
 
 import { spawnSync } from "node:child_process";
+import { fileURLToPath } from "node:url";
 
 import { SITE_URL } from "./site-url.mjs";
+import { invalidateBuild, sourceFingerprint, stampBuild, verifyBuild } from "./build-state.mjs";
 
 const COMMANDS = new Set(["build", "preview", "deploy", "upload"]);
 const [command, ...rest] = process.argv.slice(2);
@@ -30,15 +32,32 @@ if (!COMMANDS.has(command)) {
   process.exit(1);
 }
 
-const result = spawnSync("opennextjs-cloudflare", [command, ...rest], {
-  stdio: "inherit",
-  env: {
-    ...process.env,
-    CLOUDFLARE_BUILD: command === "preview" ? "preview" : "production",
-    NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL ?? SITE_URL,
-  },
-});
+try {
+  const root = fileURLToPath(new URL("../", import.meta.url));
+  const fingerprint = sourceFingerprint(root, SITE_URL);
+  if (command === "build") invalidateBuild(root);
+  else verifyBuild(root, fingerprint);
 
-// A signal is not an exit code, and reporting one as success is how a killed
-// build gets deployed by whatever runs next.
-process.exit(result.status ?? 1);
+  const result = spawnSync("opennextjs-cloudflare", [command, ...rest], {
+    cwd: root,
+    stdio: "inherit",
+    env: {
+      ...process.env,
+      CLOUDFLARE_BUILD: command === "preview" ? "preview" : "production",
+      NEXT_PUBLIC_SITE_URL: SITE_URL,
+    },
+  });
+
+  // A signal is not an exit code. Neither a killed build nor a tree edited
+  // during compilation can certify the bundle for a subsequent deployment.
+  if (result.status !== 0) process.exit(result.status ?? 1);
+  if (command === "build") {
+    if (sourceFingerprint(root, SITE_URL) !== fingerprint) {
+      throw new Error("cf: source changed during the build. Run npm run cf:build again.");
+    }
+    stampBuild(root, fingerprint);
+  }
+} catch (error) {
+  console.error(error instanceof Error ? error.message : error);
+  process.exit(1);
+}

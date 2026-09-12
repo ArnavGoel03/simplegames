@@ -35,12 +35,19 @@ export const DECK: readonly Card[] = SUITS.flatMap((suit) =>
   RANKS.map((rank): Card => ({ suit, rank })),
 );
 
-/** Thirteen deals, ascending, ending with the whole deck dealt out. */
+/** Thirteen deals, descending, opening with the whole deck dealt out. */
 export const TOTAL_ROUNDS = 13;
 
-/** Round n deals n cards to each player. */
+function requireRound(round: number): void {
+  if (!Number.isInteger(round) || round < 1 || round > TOTAL_ROUNDS) {
+    throw new Error(`round must be an integer in 1..${TOTAL_ROUNDS}, got ${round}`);
+  }
+}
+
+/** The canonical four-seat ladder counts down from thirteen cards to one. */
 export function cardsInRound(round: number): number {
-  return round;
+  requireRound(round);
+  return TOTAL_ROUNDS + 1 - round;
 }
 
 /**
@@ -51,6 +58,7 @@ export function cardsInRound(round: number): number {
 export const TRUMP_ROTATION: readonly Suit[] = ["spades", "diamonds", "clubs", "hearts"];
 
 export function trumpForRound(round: number): Suit {
+  requireRound(round);
   return TRUMP_ROTATION[(round - 1) % TRUMP_ROTATION.length];
 }
 
