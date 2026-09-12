@@ -14,6 +14,7 @@ export function pageMetadata(title: string, description: string, path: string): 
       url: new URL(path, studio.url).toString(),
       title: `${title}, ${STUDIO_NAME}`,
       description,
+      images: ["/opengraph-image"],
     },
   };
 }
