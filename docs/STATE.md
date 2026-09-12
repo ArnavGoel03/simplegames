@@ -25,10 +25,17 @@ corrections are drafted in `docs/PROPOSED-COPY-2026-09-13.md`, awaiting the owne
 copy approval requested during this session. The old mailbox-creation blocker
 has not been independently reverified; do not treat its age as proof of status.
 
-Additional requested work: Teen Patti as the fifth studio game, reusing Deal
-infrastructure with account-linked play money (no real money), plus Rummy as
-Deal's ninth game with no separate studio tile. In progress in the isolated
-`~/dev/gtg-teen-patti` worktree; neither is live or advertised here yet.
+Teen Patti is live as the fifth studio entry, reusing Deal infrastructure with
+account-linked play money and no real money. Rummy is live as Deal's ninth game,
+with no separate studio tile. Game names, destinations and Deal ordering come
+from the released catalogue; the HTML policy helper is mirrored byte for byte.
+Studio release 0.2.0 (PR 3, source 96f2be2) is deployed as Worker version
+`003ff433-9644-4726-97d7-b2dfbf168eff`. All 83 tests, lint, typecheck, a warning-free
+Cloudflare build, 122 live page/metadata checks and catalogue/helper drift checks
+pass. Game release b6c19a1 passed live multiplayer/SQL and four phone practice
+scenarios. Policy and descriptive-copy drafts remain pending owner approval.
+Final studio screenshots at 1440x1000 and 390x844 were inspected: five tiles,
+Rummy inside Deal, round-5 demo, no horizontal overflow or failed images.
 
 
 > **Picking this up cold?** `docs/HANDOVER-2026-08-22.md` is the cross-repo
