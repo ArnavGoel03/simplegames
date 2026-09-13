@@ -56,7 +56,7 @@ try {
         const response = await page.goto(target.origin, { waitUntil: "domcontentloaded", timeout: 20_000 });
         assert(response?.ok());
         observedSourceHead = await observeSource(page, target.site);
-        const scripts = await page.locator("script:not([src])").evaluateAll(elements => elements.map(element => ({
+        const scripts = await page.locator('script[type="module"][async]:not([src])').evaluateAll(elements => elements.map(element => ({
           source: element.textContent, type: element.type, async: element.async,
         })).filter(item => item.source.includes("__gtg_recovery") && item.source.includes("gtg:app-ready")));
         assert.equal(scripts.length, 1, "Candidate must contain one actual inline recovery bootstrap");

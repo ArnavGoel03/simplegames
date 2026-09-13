@@ -4,6 +4,8 @@ import { chromium, webkit } from "playwright";
 import catalogue from "../src/lib/game-catalogue.json" with { type: "json" };
 import { candidates, observeSource, recordEvidence, instrument } from "./browser-evidence.mjs";
 
+import { waitForReady, dismissFirstGuide } from "./gameplay-controls.mjs";
+
 // Public UI checks only. Both origins are explicit; no local server is started.
 // BROWSER_ENGINE=chromium|webkit, PLAY_ENTRY_CIRCUIT_URL, PLAY_ENTRY_LATTICE_URL.
 const labels = { solo: "Play on your own", friends: "Play with friends", stranger: "Play a stranger" };
@@ -84,7 +86,7 @@ async function pressed(button) {
 }
 
 async function resizePlay(page, game, capture) {
-  await page.keyboard.press("Escape");
+  if (game === "circuit") await dismissFirstGuide(page);
   const surface = page.locator(game === "circuit" ? ".play-board-surface" : '[aria-label="The board, 15 by 15"]');
   await surface.waitFor({ state: "visible" });
   const suffix = game === "circuit" ? "game-state" : "solo-lattice";
@@ -193,7 +195,7 @@ async function run() {
         await entry.getByRole("link", { name: "Play on your own, against the computer", exact: true }).click();
         await page.waitForURL(`${origin}/solo`, { waitUntil: "domcontentloaded" });
         await page.getByRole("heading", { name: "Set up the board", exact: true }).waitFor({ state: "visible" });
-        await page.keyboard.press("Escape");
+        await dismissFirstGuide(page);
         await page.getByRole("button", { name: "Deal the tiles", exact: true }).click();
         await resizePlay(page, game, capture);
       }
@@ -283,6 +285,7 @@ async function run() {
             assert(response?.ok(), `${origin}: HTTP ${response?.status()}`);
             result.observedSourceHead = await observeSource(page, game === "circuit" ? "board" : "words");
             await controls(page).entry.waitFor({ state: "visible" });
+            await waitForReady(page);
             await page.evaluate(() => document.fonts.ready);
             await check({ page, game, origin, traffic, capture, result });
             assert.equal(traffic.guests, 0, "An entry check attempted a guest write");

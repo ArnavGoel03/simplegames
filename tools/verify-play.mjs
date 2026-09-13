@@ -3,6 +3,8 @@ import { mkdir, writeFile } from "node:fs/promises";
 import { chromium, webkit } from "playwright";
 import { candidates, engine, output, observeSource, recordEvidence, instrument } from "./browser-evidence.mjs";
 
+import { waitForReady, dismissFirstGuide } from "./gameplay-controls.mjs";
+
 assert(candidates.length, "In-play checks require immutable candidates");
 await mkdir(output, { recursive: true });
 const browser = await ({ chromium, webkit })[engine].launch({ timeout: 20_000 });
@@ -23,6 +25,7 @@ async function resize(page, site, capture, verify) {
 
 async function casino(page, candidate, capture) {
   await page.goto(`${candidate.origin}/casino/video-poker?mode=practice`, { waitUntil: "domcontentloaded" });
+  await waitForReady(page);
   await page.getByRole("button", { name: "Deal", exact: true }).click();
   const table = page.locator('section.casino-table[data-game="video-poker"][data-phase="playing"]');
   await table.waitFor();
@@ -41,8 +44,9 @@ async function casino(page, candidate, capture) {
 
 async function deal(page, candidate, capture) {
   await page.goto(`${candidate.origin}/solitaire/freecell`, { waitUntil: "domcontentloaded" });
-  await page.keyboard.press("Escape");
-  const table = page.locator(".play-sol");
+  await waitForReady(page);
+  await dismissFirstGuide(page);
+  const table = page.locator('.play-sol:not([aria-hidden="true"])');
   await table.waitFor();
   const pile = table.locator('.play-sol-pile[data-kind="tableau"]').first();
   await pile.waitFor();
@@ -79,9 +83,11 @@ async function draw(page, candidate, capture) {
     socket.send(JSON.stringify({ type: "canvas", strokes: [stroke] }));
   });
   await page.goto(`${candidate.origin}/r/tiger-boat-42`, { waitUntil: "domcontentloaded" });
+  await waitForReady(page);
+  await page.getByRole("button", { name: "Play as guest", exact: true }).click();
   const room = page.locator('.draw-room[data-phase="drawing"][data-round="9"]');
   await room.waitFor();
-  await page.keyboard.press("Escape");
+  await dismissFirstGuide(page);
   const canvas = room.locator("canvas").first();
   const ink = () => canvas.evaluate(element => {
     const pixel = element.getContext("2d").getImageData(Math.floor(element.width * 0.3), Math.floor(element.height * 0.3), 1, 1).data;
@@ -127,8 +133,14 @@ try {
       result.captures.push(file);
     };
     try {
-      await page.goto(candidate.origin, { waitUntil: "domcontentloaded" });
-      result.observedSourceHead = await observeSource(page, candidate.site);
+      // Bind provenance on a separate page so hard navigation does not cancel
+      // the homepage's in-flight prefetches in the gameplay error probe.
+      const provenance = await context.newPage();
+      try {
+        const response = await provenance.goto(candidate.origin, { waitUntil: "domcontentloaded", timeout: 20_000 });
+        assert(response?.ok(), "Candidate provenance failed");
+        result.observedSourceHead = await observeSource(provenance, candidate.site);
+      } finally { await provenance.close(); }
       Object.assign(result, await ({ teenpatti: casino, cards: deal, draw })[candidate.site](page, candidate, capture));
       assert.deepEqual(probe.errors, [], "In-play browser error");
       result.passed = true;
