@@ -29,7 +29,7 @@ import { writeServiceWorker } from "./generate-worker.mjs";
 import { root, identity, buildSource, gateCommand, policy, workerName, previewOrigin } from "./release-context.mjs";
 import { commandOutcome, promoteCandidate, readJson, receiptPath, requireRelease, runRecorded, writeJson } from "./quality/quality-runtime.mjs";
 import { parseUploadedVersion } from "./quality/release-policy.mjs";
-import { prepareStaticCache, requireCanonicalEnvironment, requireFreshNextBuild } from "./quality/open-next-release.mjs";
+import { prepareStaticCache, requireCanonicalEnvironment, requireFreshNextBuild, staticReleaseEnvironment } from "./quality/open-next-release.mjs";
 
 const COMMANDS = new Set(["build", "preview", "deploy", "upload"]);
 const [command, ...rest] = process.argv.slice(2);
@@ -60,7 +60,8 @@ try {
       return requireRelease({ root, site: "studio", identity: identity(), command: gateCommand,
         expectedCandidate: { worker: workerName(), buildSource: buildSource(), origin: previewOrigin(candidate.candidateVersion) }, policy: policy() });
     };
-    await promoteCandidate({ root, site: "studio", cwd: root, env, validate });
+    const releaseEnv = await staticReleaseEnvironment(root, env);
+    await promoteCandidate({ root, site: "studio", cwd: root, env: releaseEnv, validate });
     process.exit(0);
   }
   if (command === "upload") {
@@ -68,7 +69,8 @@ try {
     const path = receiptPath(root, "candidates", "studio.json");
     rmSync(path, { force: true });
     rmSync(receiptPath(root, "releases", "studio.json"), { force: true });
-    const result = await runRecorded("opennextjs-cloudflare", ["upload"], { cwd: root, env, log: receiptPath(root, "candidates", "studio-upload.log") });
+    const releaseEnv = await staticReleaseEnvironment(root, env);
+    const result = await runRecorded("wrangler", ["versions", "upload"], { cwd: root, env: releaseEnv, log: receiptPath(root, "candidates", "studio-upload.log") });
     if (result.exitCode !== 0 || result.signal !== null || result.error) throw new Error("cf: candidate upload failed; no receipt written");
     if (buildSource() !== fingerprint || JSON.stringify(identity()) !== JSON.stringify(before)) throw new Error("cf: source changed during upload");
     const after = verifyBuild(root, fingerprint);

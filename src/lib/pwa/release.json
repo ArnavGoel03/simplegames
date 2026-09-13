@@ -15,7 +15,7 @@
     },
     {
       "name": "asset-recovery.ts",
-      "sha256": "63055cb27f8c4048c256af6172f87dde3c938379c102e7225e17397e711538d8"
+      "sha256": "482dd4c7f365c7d008d5311fc35e0e6efdfb46b474d0dbe1601679281c51b8d6"
     },
     {
       "name": "worker-client.ts",

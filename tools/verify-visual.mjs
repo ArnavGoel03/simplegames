@@ -27,6 +27,11 @@ const baseline = process.env.BASELINE_ONLY === "true";
 async function verifyCasino(page, origin, colorScheme, probe) {
   await page.locator(".casino-feature-picker").waitFor();
   if (await page.locator(".casino-floor-game").count() !== 11) throw new Error("Casino must expose eleven games");
+  // Transformed art below the viewport may be omitted by a full-page capture.
+  // The unchanged scrolled viewport is the paint evidence for this card.
+  await page.locator('.casino-floor-game[data-game="prize-wheel"]').scrollIntoViewIfNeeded();
+  await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+  await page.screenshot({ path: new URL(`casino-${colorScheme}-wheel-visible.jpg`, output).pathname, fullPage: false, type: "jpeg", quality: 85 });
   for (const [name, slug] of [["Blackjack", "blackjack"], ["Slots", "slots"], ["Roulette", "roulette"]]) {
     await page.locator(".casino-feature-picker").getByRole("button", { name, exact: true }).click();
     if (await page.locator("#casino-feature-title").textContent() !== name || await page.locator(".casino-enter").getAttribute("href") !== `/casino/${slug}`) {

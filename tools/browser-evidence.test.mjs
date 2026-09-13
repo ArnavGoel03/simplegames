@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { runInNewContext } from "node:vm";
-import { observeFetchSignals, parseCandidates, siteKey } from "./browser-evidence.mjs";
+import { observeFetchSignals, parseCandidates, predecessorWorkerVersion, siteKey } from "./browser-evidence.mjs";
 
 const candidate = {
   site: "board", candidateVersion: "10000000-0000-4000-8000-000000000000",
@@ -21,6 +21,13 @@ describe("browser candidate binding", () => {
       expect(() => parseCandidates(JSON.stringify([{ ...candidate, ...change }]))).toThrow();
     }
     expect(() => parseCandidates(JSON.stringify([candidate, candidate]))).toThrow();
+  });
+  it("binds game and studio worker source tokens without replacing the studio build ID", () => {
+    const source = "0352930a" + "a".repeat(32);
+    expect(predecessorWorkerVersion("teenpatti-1.3.0-0352930a", source)).toBe("teenpatti-1.3.0-00000000");
+    expect(predecessorWorkerVersion("glasstable-studio-0352930a-oCVO6X3lbA-4CHXlrtyzn", source)).toBe("glasstable-studio-00000000-oCVO6X3lbA-4CHXlrtyzn");
+    expect(() => predecessorWorkerVersion("studio-other-source", source)).toThrow();
+    expect(() => predecessorWorkerVersion("studio-0352930a-0352930a", source)).toThrow();
   });
 });
 

@@ -28,6 +28,14 @@ export function parseCandidates(value) {
 }
 export const candidates = parseCandidates(process.env.RELEASE_CANDIDATES_JSON);
 
+export function predecessorWorkerVersion(version, sourceHead) {
+  const source = sourceHead.slice(0, 8);
+  const parts = version.split("-");
+  assert.equal(parts.filter(part => part === source).length, 1, "Candidate worker version differs from rendered source");
+  // Game versions end with the source token; studio appends its Next build ID.
+  return parts.map(part => part === source ? "00000000" : part).join("-");
+}
+
 const observations = new Map();
 export async function observeSource(page, site) {
   const key = siteKey(site);

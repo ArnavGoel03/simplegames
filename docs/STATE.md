@@ -1,16 +1,17 @@
 ## Quality release candidate, 13 September 2026
 
-Studio 0.5.1 is not live. Native TypeScript 7 and the shared Safari recovery and
-diagnostic changes are integrated. The first adapter gate passed 116 tests plus
-32 shared release checks, typecheck and zero-warning lint. Generated CSS/JS and
-server chunks are now included in the output certificate. Further release review
-is closing skip-build and upload-time cache-mutation gaps before promotion.
+Studio 0.5.1 is not live. Candidate source `0352930` passed 139 Vitest tests,
+33 canonical Node release tests, TypeScript 7, zero-warning lint and its
+production build. Worker `72d6d491-b0ac-40bb-a8f5-74d4807fec62` is an immutable
+preview only. Generated CSS/JS and server chunks are covered by its build
+certificate; skip-build and upload-time mutation paths are guarded.
 
-Chromium and WebKit live-baseline runs completed for all six sites. They exposed
-a missing Circuit homepage release stamp, now repaired in the game candidate.
-Measured release policy is recorded in `docs/quality/browser-baseline.md`. Exact
-candidate browser evidence, the final certified build and production promotion
-are outstanding. The live release is still 0.5.0 below.
+Both browser-engine baselines are complete with measured budgets. All-six
+candidate browser checks remain incomplete: confirmed startup probe timing and
+OpenNext Flight routing defects are being fixed centrally. WebKit offline
+behaviour and desktop Prize Wheel art have independent diagnostic controls.
+The hydration-grace correction is mirrored locally and requires a fresh build.
+No failed browser checks are waived. The live release is still 0.5.0 below.
 
 # Glass Table Games: state of play
 

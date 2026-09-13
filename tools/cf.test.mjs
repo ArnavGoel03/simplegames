@@ -24,21 +24,12 @@ function project() {
   writeFileSync(join(root, "tools/generate-worker.mjs"), "export async function writeServiceWorker() {}\n");
   writeFileSync(join(root, "src/lib/brand.ts"), 'function resolveUrl() { return "https://glasstablegames.com"; }');
   writeFileSync(join(root, "package.json"), '{"type":"module","version":"0.3.0"}');
+  writeFileSync(join(root, "package-lock.json"), '{"lockfileVersion":3,"packages":{}}');
   cpSync(new URL("../public/sw.js", import.meta.url), join(root, "public/sw.js"));
   writeFileSync(join(root, "bin/opennextjs-cloudflare"), `#!/usr/bin/env node
-import { appendFileSync, copyFileSync, cpSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { appendFileSync, copyFileSync, mkdirSync, writeFileSync } from 'node:fs';
 appendFileSync('.audit/calls.log', process.argv[2] + '\\n');
-if (process.argv[2] === 'upload') {
-  cpSync('.open-next/cache', '.open-next/assets/cdn-cgi/_next_cache', { recursive: true });
-  if (process.env.TEST_MUTATE_UPLOAD) writeFileSync('.open-next/worker.js', 'substituted during upload');
-  if (process.env.TEST_MUTATE_UPLOAD === 'stamp') {
-    const { outputFingerprint } = await import('../tools/build-state.mjs');
-    const stamp = JSON.parse(readFileSync('.open-next/build-state.json', 'utf8'));
-    stamp.outputHash = outputFingerprint(process.cwd());
-    writeFileSync('.open-next/build-state.json', JSON.stringify(stamp));
-  }
-  console.log('Worker Version ID: 12345678-1234-1234-1234-123456789abc');
-}
+if (process.argv[2] !== 'build') throw new Error('OpenNext shell upload must not run');
 if (process.argv[2] === 'build') {
   mkdirSync('.next', { recursive: true });
   mkdirSync('.open-next/assets', { recursive: true });
@@ -53,7 +44,22 @@ if (process.argv[2] === 'build') {
   if (process.env.TEST_FAIL_BUILD) process.exit(1);
 }
 `, { mode: 0o755 });
-  for (const args of [["init", "--quiet"], ["add", "tools", "src", "public", "package.json", "wrangler.jsonc"], ["-c", "user.name=Fixture", "-c", "user.email=fixture@example.test", "commit", "--quiet", "-m", "fixture"]]) {
+  writeFileSync(join(root, "bin/wrangler"), `#!/usr/bin/env node
+import assert from 'node:assert/strict';
+import { appendFileSync, readFileSync, writeFileSync } from 'node:fs';
+assert.deepEqual(process.argv.slice(2), ['versions', 'upload']);
+assert.equal(process.env.CLOUDFLARE_LOAD_DEV_VARS_FROM_DOT_ENV, 'false');
+appendFileSync('.audit/calls.log', 'upload\\n');
+if (process.env.TEST_MUTATE_UPLOAD) writeFileSync('.open-next/worker.js', 'substituted during upload');
+if (process.env.TEST_MUTATE_UPLOAD === 'stamp') {
+  const { outputFingerprint } = await import('../tools/build-state.mjs');
+  const stamp = JSON.parse(readFileSync('.open-next/build-state.json', 'utf8'));
+  stamp.outputHash = outputFingerprint(process.cwd());
+  writeFileSync('.open-next/build-state.json', JSON.stringify(stamp));
+}
+console.log('Worker Version ID: 12345678-1234-1234-1234-123456789abc');
+`, { mode: 0o755 });
+  for (const args of [["init", "--quiet"], ["add", "tools", "src", "public", "package.json", "package-lock.json", "wrangler.jsonc"], ["-c", "user.name=Fixture", "-c", "user.email=fixture@example.test", "commit", "--quiet", "-m", "fixture"]]) {
     expect(spawnSync("git", args, { cwd: root, encoding: "utf8", timeout: 5000 }).status).toBe(0);
   }
   const run = (command, env = {}, args = []) => spawnSync(process.execPath, ["tools/cf.mjs", command, ...args], {
@@ -79,9 +85,12 @@ describe("the Cloudflare command wrapper", () => {
     expect(p.run("build").status).toBe(0);
     expect(readFileSync(join(p.root, ".open-next/assets/sw.js"), "utf8")).toContain("fixture-build");
     expect(readFileSync(join(p.root, "public/sw.js"), "utf8")).toBe(source);
-    expect(p.run("upload").status).toBe(0);
+    const upload = p.run("upload");
+    expect(upload.status, upload.stderr).toBe(0);
+    expect(upload.stderr).not.toMatch(/Warning|DEP0190/);
     expect(p.calls()).toEqual(["build", "upload"]);
     const candidate = JSON.parse(readFileSync(join(p.root, ".audit/quality/candidates/studio.json"), "utf8"));
+    expect(candidate.upload.command).toEqual(["wrangler", "versions", "upload"]);
     expect(candidate.candidateVersion).toBe("12345678-1234-1234-1234-123456789abc");
     expect(candidate.buildOutput).toMatch(/^[a-f0-9]{64}$/);
     expect(candidate.buildOutput).toBe(outputFingerprint(p.root));

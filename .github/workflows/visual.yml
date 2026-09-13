@@ -90,11 +90,6 @@ jobs:
         env:
           BROWSER_ENGINE: ${{ inputs.browser || 'chromium' }}
         run: node tools/probe-network.mjs
-      - name: Inspect Prize Wheel rendering
-        if: ${{ inputs.release_candidates_json && !cancelled() }}
-        env:
-          BROWSER_ENGINE: ${{ inputs.browser || 'chromium' }}
-        run: node tools/probe-wheel.mjs
       - uses: actions/upload-artifact@v7.0.1
         if: always()
         with:

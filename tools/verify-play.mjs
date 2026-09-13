@@ -66,7 +66,7 @@ async function draw(page, candidate, capture) {
   const sent = [];
   let tickets = 0;
   let guests = 0;
-  const stroke = { tool: "pen", color: "#2563eb", width: 0.02, points: [{ x: 0.2, y: 0.2 }, { x: 0.7, y: 0.7 }] };
+  const stroke = { tool: "pen", color: "#2563eb", width: 20, points: [{ x: 0.2, y: 0.2 }, { x: 0.7, y: 0.7 }] };
   await page.route("**/api/realtime/ticket", route => { tickets++; return route.fulfill({ json: { ticket: "browser-fixture" } }); });
   await page.route("**/api/identity/guest", route => { guests++; return route.abort(); });
   await page.routeWebSocket("**/draw/**", socket => {
@@ -89,6 +89,13 @@ async function draw(page, candidate, capture) {
   await room.waitFor();
   await dismissFirstGuide(page);
   const canvas = room.locator("canvas").first();
+  // Wire widths are thousandths of canvas width, not normalized fractions.
+  // A blank canvas must fail the same pixel predicate used after each resize.
+  assert.equal(await page.evaluate(() => {
+    const blank = document.createElement("canvas");
+    const pixel = blank.getContext("2d").getImageData(0, 0, 1, 1).data;
+    return pixel[2] > 150 && pixel[0] < 80 && pixel[3] > 200;
+  }), false, "Ink detector accepted a blank canvas");
   const ink = () => canvas.evaluate(element => {
     const pixel = element.getContext("2d").getImageData(Math.floor(element.width * 0.3), Math.floor(element.height * 0.3), 1, 1).data;
     return pixel[2] > 150 && pixel[0] < 80 && pixel[3] > 200;

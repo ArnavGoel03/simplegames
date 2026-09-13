@@ -25,7 +25,7 @@ const CANCELLED = ${literal(ASSET_RECOVERY_CANCELLED)};
 const QUERY = ${literal(ASSET_RECOVERY_QUERY)};
 const LIMITS = ${literal(ASSET_RECOVERY_LIMITS)};
 let hydrated = window[READY] === true, healthyStartup = false, running = false, reloading = false, workerRecovery = false, probedScripts = false;
-let workerTimer, queued = false;
+let workerTimer, queued = false, startupElapsed = false;
 const failed = new Set();
 function asset(value) {
   try { const url = new URL(value, location.href); return url.origin === location.origin && url.pathname.startsWith("/_next/static/") ? url.href : null; } catch { return null; }
@@ -92,7 +92,8 @@ async function check() {
     for (const el of styles()) if (!styled(el) && !candidates.has(asset(el.href))) candidates.set(asset(el.href), document.readyState === "complete" && !el.sheet);
     // Next hoists its resources ahead of custom head children. A failed script
     // may therefore predate this listener and prevent React from ever mounting.
-    if (!hydrated && !probedScripts && candidates.size === 0) {
+    // DOM readiness can precede hydration, so silent probes wait for its grace.
+    if (startupElapsed && !hydrated && !probedScripts && candidates.size === 0) {
       probedScripts = true;
       for (const el of Array.from(document.querySelectorAll("script[src]")).slice(0, LIMITS.maxScripts)) {
         const url = asset(el.src); if (url && !candidates.has(url)) candidates.set(url, false);
@@ -165,7 +166,7 @@ document.addEventListener("visibilitychange", () => { if (document.visibilitySta
 document.addEventListener("DOMContentLoaded", () => { healthy(); void check(); }, { once: true });
 window.addEventListener("load", () => { healthy(); void check(); }, { once: true });
 // Async scripts, images and styles may hold window.load indefinitely.
-setTimeout(() => { void check(); }, LIMITS.startupMs);
+setTimeout(() => { startupElapsed = true; void check(); }, LIMITS.startupMs);
 healthy();
 })();`;
 }
