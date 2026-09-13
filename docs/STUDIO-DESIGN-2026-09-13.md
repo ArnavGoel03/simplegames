@@ -51,3 +51,17 @@ Evidence: `.firecrawl/studio-design/report.json` and screenshots. Charade source
 capture and fixture are in the primary worktree `.firecrawl/charade-art/` and
 `.audit/charade-art.mts`; Casino source is `.firecrawl/casino-material-direction/`.
 No physical Safari or foldable-hardware verification is implied by Chromium.
+
+## Final verification limit
+
+The production build passed without warnings. A fresh browser retake of the
+last arrow/caption/crop refinements could not run: the hosted free allowance
+was exhausted, the Browser connection list was empty, and local Chromium was
+refused by the macOS sandbox at MachPort bootstrap. No paid upgrade or sandbox
+bypass was attempted. The earlier seven-width layout matrix, independent source
+review and final cropped-image inspection remain the visual evidence; they are
+not represented as a fresh production browser pass.
+
+The installed studio now also consumes each game's published icon metadata for
+its shortcuts. Those five destinations are unique, and the catalogue importer
+validates that icon URLs belong to their corresponding game origin.

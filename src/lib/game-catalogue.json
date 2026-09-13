@@ -4,12 +4,24 @@
     {
       "id": "chaupal",
       "name": "Circuit",
-      "url": "https://circuit.glasstablegames.com"
+      "url": "https://circuit.glasstablegames.com",
+      "icon": {
+        "src": "https://circuit.glasstablegames.com/icons/family-1-192",
+        "sizes": "192x192",
+        "type": "image/png",
+        "purpose": "any"
+      }
     },
     {
       "id": "taash",
       "name": "Deal",
       "url": "https://deal.glasstablegames.com",
+      "icon": {
+        "src": "https://deal.glasstablegames.com/icons/family-1-192",
+        "sizes": "192x192",
+        "type": "image/png",
+        "purpose": "any"
+      },
       "games": [
         {
           "id": "judgement",
@@ -52,17 +64,35 @@
     {
       "id": "draw",
       "name": "Charade",
-      "url": "https://charade.glasstablegames.com"
+      "url": "https://charade.glasstablegames.com",
+      "icon": {
+        "src": "https://charade.glasstablegames.com/icons/family-1-192",
+        "sizes": "192x192",
+        "type": "image/png",
+        "purpose": "any"
+      }
     },
     {
       "id": "lattice",
       "name": "Lattice",
-      "url": "https://lattice.glasstablegames.com"
+      "url": "https://lattice.glasstablegames.com",
+      "icon": {
+        "src": "https://lattice.glasstablegames.com/icons/family-1-192",
+        "sizes": "192x192",
+        "type": "image/png",
+        "purpose": "any"
+      }
     },
     {
       "id": "teenpatti",
       "name": "Casino",
       "url": "https://teenpatti.glasstablegames.com",
+      "icon": {
+        "src": "https://teenpatti.glasstablegames.com/icons/family-1-192",
+        "sizes": "192x192",
+        "type": "image/png",
+        "purpose": "any"
+      },
       "games": [
         {
           "id": "teenpatti",

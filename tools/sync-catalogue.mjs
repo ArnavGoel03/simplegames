@@ -32,6 +32,10 @@ for (const site of current.sites) {
   const url = new URL(site.url);
   assert.equal(url.protocol, "https:");
   assert.equal(url.username + url.password, "");
+  assert(site.icon && site.icon.sizes === "192x192" && site.icon.type === "image/png", "Game shortcut icon missing");
+  const iconUrl = new URL(site.icon.src);
+  assert.equal(iconUrl.origin, url.origin, "Game icon must come from its game origin");
+  assert.equal(iconUrl.username + iconUrl.password + iconUrl.hash, "");
   if (site.games !== undefined) {
     assert(Array.isArray(site.games) && site.games.length > 0);
     for (const game of site.games) assert(typeof game.id === "string" && typeof game.name === "string" && game.name.trim());

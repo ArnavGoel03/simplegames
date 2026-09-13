@@ -1,6 +1,6 @@
-import { studioIconPath } from "@/lib/studio-mark";
+import { studioIconPath } from "../lib/studio-mark";
 import type { MetadataRoute } from "next";
-import { PLAYABLE, playPath, studio, STUDIO_NAME, STUDIO_TAGLINE } from "@/lib/brand";
+import { PLAYABLE, playPath, studio, STUDIO_NAME, STUDIO_TAGLINE } from "../lib/brand";
 
 // What the studio is, to an operating system.
 //
@@ -44,7 +44,7 @@ export default function manifest(): MetadataRoute.Manifest {
       short_name: game.name,
       description: game.holds,
       url: playPath(game),
-      icons: [{ src: studioIconPath("icon-192.png"), sizes: "192x192", type: "image/png" }],
+      icons: [{ src: game.icon.src, sizes: game.icon.sizes, type: game.icon.type }],
     })),
     icons: [
       // Order matters less than purpose. `any` is the icon as drawn; `maskable`

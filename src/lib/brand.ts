@@ -122,6 +122,7 @@ export interface GameArt {
 export interface Game {
   readonly id: string;
   readonly name: string;
+  readonly icon: (typeof catalogue.sites)[number]["icon"];
   /** What it is, in one line, for someone who has never heard of it. */
   readonly blurb: string;
   /**
@@ -161,7 +162,7 @@ export interface Game {
   readonly fallback: "cards" | "type";
 }
 
-const GAME_PRESENTATION: readonly Omit<Game, "name" | "url">[] = [
+const GAME_PRESENTATION: readonly Omit<Game, "name" | "url" | "icon">[] = [
   {
     id: "chaupal",
     blurb:
@@ -251,7 +252,7 @@ const GAME_PRESENTATION: readonly Omit<Game, "name" | "url">[] = [
 export const GAMES: readonly Game[] = GAME_PRESENTATION.map((presentation) => {
   const published = catalogue.sites.find((site) => site.id === presentation.id);
   if (!published) throw new Error(`Missing game catalogue entry: ${presentation.id}`);
-  return { ...presentation, name: published.name,
+  return { ...presentation, name: published.name, icon: published.icon,
     url: presentation.status === "live" ? published.url : null,
     holds: published.games?.map((game) => game.name).join(", ") ?? presentation.holds };
 });
