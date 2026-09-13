@@ -44,6 +44,12 @@ Release evidence and rollback identity are recorded in
 `docs/RELEASE-2026-09-14.md`. Physical-device checks and owner actions remain
 separate from this automated release verification.
 
+Supplementary local PR browser run `34779977061` exposed a test-environment
+registration fault in Playwright's blocked-worker mode, after all twelve
+responsive captures passed. Its performance contexts now model the intended
+absent capability; 25 focused tests pass, and the browser rerun is pending.
+No application or deployed release bytes changed. See the release record.
+
 
 ## Pastel glass release, 13 September 2026
 
