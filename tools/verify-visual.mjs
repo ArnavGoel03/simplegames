@@ -96,6 +96,7 @@ try {
         await Promise.all([...document.images].map(image => image.decode().catch(() => {})));
       });
       const observedSourceHead = await observeSource(page, site.id);
+      const layouts = [];
       // Calibrate the overflow detector against a known oversized element.
       const detectsOverflow = await page.evaluate(() => {
         const probe = document.createElement("div");
@@ -115,12 +116,19 @@ try {
           title: document.title,
           background: getComputedStyle(document.body).backgroundColor,
           heading: document.querySelector("h1")?.textContent,
+          footerStampClipped: [...document.querySelectorAll('footer .build-stamp[title], footer .play-num[title]')].some(element => {
+            const box = element.getBoundingClientRect();
+            return box.width > 0 && (box.left < -1 || box.right > innerWidth + 1);
+          }),
         }));
         const name = `${site.id}-${colorScheme}-${width}x${height}`;
         await page.screenshot({ path: new URL(`${name}.jpg`, output).pathname, fullPage: true, type: "jpeg", quality: 80 });
         results.push({ name, url: url.href, ...state, errors: [...errors] });
+        layouts.push(results.at(-1));
         console.log(JSON.stringify(results.at(-1)));
       }
+      await recordEvidence(site.id, observedSourceHead, [{ id: "responsive", status:
+        layouts.length === sizes.length && layouts.every(item => !item.overflow && !item.footerStampClipped && item.images.length === 0 && item.errors.length === 0) ? "passed" : "failed" }], [], url.origin);
       if (site.id === "studio" && !baseline) {
         const destinations = await page.locator("header nav a").evaluateAll(links => links.map(link => link.getAttribute("href")));
         assert(destinations.length > 0, "Studio has no primary navigation");
@@ -143,6 +151,7 @@ try {
         await recordEvidence(site.id, observedSourceHead, [{ id: "entry", status: "passed" }]);
       }
       await recordEvidence(site.id, observedSourceHead, [{ id: "network", status: errors.length || probe.failed.length ? "failed" : "passed" }], [], url.origin);
+      probe.mark("context-close-start");
       await context.close();
     }
     const samples = [];
@@ -171,7 +180,7 @@ try {
         assert(control, "No safe existing interaction target found");
         interactions.push(await timedClick(page, control));
         assert.deepEqual(probe.errors, [], "Startup or interaction raised browser errors");
-      } finally { await context.close(); }
+      } finally { probe.mark("context-close-start"); await context.close(); }
     }
     performanceResults.push({ site: site.id, engine, observedSourceHead, samples, interactionMs: interactions,
       definition: "startup: navigation to loaded styles/fonts and two animation frames; interaction: trusted existing-control click to two animation frames; fresh browser context per sample" });
@@ -181,7 +190,15 @@ try {
       { id: "initial-assets", unit: "bytes", samples: samples.map(item => item.decodedJsBytes + item.decodedCssBytes) },
     ], url.origin);
   }
-  if (results.some(result => result.overflow || result.images.length || result.errors.length)) {
+  for (const measured of performanceResults) {
+    const siteTraces = traces.filter(trace => trace.site === measured.site);
+    const faulted = siteTraces.some(trace => trace.errors.length || trace.counts.failed);
+    await recordEvidence(measured.site, measured.observedSourceHead, [{ id: "network", status: faulted ? "failed" : "passed" }], [], new URL(sites.find(site => site.id === measured.site).url).origin);
+  }
+  if (!baseline && traces.some(trace => trace.errors.length || trace.counts.failed)) {
+    throw new Error("Candidate network checks found failed requests or runtime errors; inspect network-trace.json");
+  }
+  if (results.some(result => result.overflow || result.footerStampClipped || result.images.length || result.errors.length)) {
     throw new Error("Visual checks found overflow, failed images or runtime errors");
   }
 } catch (error) {

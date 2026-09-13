@@ -9,31 +9,43 @@ const WORKER = ".open-next/assets/sw.js";
 const VERSION = /const VERSION = "([^"]+)";/;
 const ENTRIES = [".open-next/worker.js", ".open-next/worker-no-transform.js"];
 
-function entryHash(root) {
+export function outputFingerprint(root) {
   const hash = createHash("sha256");
-  for (const path of ENTRIES) hash.update(path).update(readFileSync(join(root, path)));
+  for (const path of ENTRIES) if (!existsSync(join(root, path))) throw new Error(`cf: incomplete generated entry ${path}`);
+  function read(path) {
+    for (const entry of readdirSync(join(root, path), { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name))) {
+      const child = `${path}/${entry.name}`;
+      if (child === STAMP) continue;
+      if (entry.isDirectory()) read(child);
+      else hash.update(child).update("\0").update(readFileSync(join(root, child))).update("\0");
+    }
+  }
+  read(".open-next");
+  hash.update(".next/BUILD_ID").update(readFileSync(join(root, ".next/BUILD_ID")));
   return hash.digest("hex");
 }
-const INPUTS = [
-  "src", "public", "tools", "next.config.ts", "open-next.config.ts", "wrangler.jsonc",
-  "tsconfig.json", "package.json", "package-lock.json", "pnpm-lock.yaml", ".npmrc",
-  ".env", ".env.local", ".env.production", ".env.production.local",
-];
+const SOURCE_DIRECTORIES = ["src", "public", "tools", "docs/quality", ".github"];
+const GENERATED = new Set(["node_modules", ".audit", ".git", ".next", ".open-next", ".wrangler", ".vercel", "coverage", "dist", "test-results", "playwright-report", ".DS_Store"]);
+const generated = (name) => GENERATED.has(name) || name.endsWith(".tsbuildinfo") || name === "next-env.d.ts";
 
 export function sourceFingerprint(root, origin) {
-  const hash = createHash("sha256").update(JSON.stringify({ origin }));
+  const publicEnv = Object.fromEntries(Object.entries(process.env).filter(([key]) => key.startsWith("NEXT_PUBLIC_")).sort(([a], [b]) => a.localeCompare(b)));
+  const hash = createHash("sha256").update(JSON.stringify({ origin, publicEnv }));
   function read(path) {
     const fullPath = join(root, path);
     const entries = readdirSync(fullPath, { withFileTypes: true });
     for (const entry of entries.sort((a, b) => a.name.localeCompare(b.name))) {
+      if (generated(entry.name)) continue;
       const child = `${path}/${entry.name}`;
       if (entry.isDirectory()) read(child);
       else hash.update(child).update("\0").update(readFileSync(join(root, child))).update("\0");
     }
   }
-  for (const path of INPUTS) {
+  // Discover root files so a new compiler, environment or gate config is covered.
+  const files = readdirSync(root, { withFileTypes: true }).filter((entry) => (entry.isFile() || entry.isSymbolicLink()) && !generated(entry.name)).map((entry) => entry.name);
+  for (const path of [...SOURCE_DIRECTORIES, ...files].sort()) {
     if (!existsSync(join(root, path))) continue;
-    if (["src", "public", "tools"].includes(path)) read(path);
+    if (SOURCE_DIRECTORIES.includes(path)) read(path);
     else hash.update(path).update("\0").update(readFileSync(join(root, path))).update("\0");
   }
   return hash.digest("hex");
@@ -52,7 +64,7 @@ export function stampBuild(root, fingerprint) {
   if (!version) throw new Error("cf: generated service worker has no cache version");
   const stamped = worker.replace(VERSION, `const VERSION = ${JSON.stringify(`${version}-${buildId}`)};`);
   writeFileSync(path, stamped);
-  writeFileSync(join(root, STAMP), JSON.stringify({ fingerprint, buildId, entryHash: entryHash(root), workerHash: createHash("sha256").update(stamped).digest("hex") }));
+  writeFileSync(join(root, STAMP), JSON.stringify({ fingerprint, buildId, outputHash: outputFingerprint(root) }));
 }
 
 export function verifyBuild(root, fingerprint) {
@@ -61,8 +73,8 @@ export function verifyBuild(root, fingerprint) {
   const stamp = JSON.parse(readFileSync(join(root, STAMP), "utf8"));
   if (stamp.fingerprint !== fingerprint) throw new Error(`cf: source or canonical origin changed since the build. ${rebuild}`);
   const buildId = readFileSync(join(root, ".next/BUILD_ID"), "utf8").trim();
-  const workerHash = createHash("sha256").update(readFileSync(join(root, WORKER))).digest("hex");
-  if (stamp.buildId !== buildId || stamp.workerHash !== workerHash || stamp.entryHash !== entryHash(root)) {
+  if (stamp.buildId !== buildId || stamp.outputHash !== outputFingerprint(root)) {
     throw new Error(`cf: generated build was replaced or is incomplete. ${rebuild}`);
   }
+  return stamp;
 }

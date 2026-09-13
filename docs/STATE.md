@@ -1,3 +1,17 @@
+## Quality release candidate, 13 September 2026
+
+Studio 0.5.1 is not live. Native TypeScript 7 and the shared Safari recovery and
+diagnostic changes are integrated. The first adapter gate passed 116 tests plus
+32 shared release checks, typecheck and zero-warning lint. Generated CSS/JS and
+server chunks are now included in the output certificate. Further release review
+is closing skip-build and upload-time cache-mutation gaps before promotion.
+
+Chromium and WebKit live-baseline runs completed for all six sites. They exposed
+a missing Circuit homepage release stamp, now repaired in the game candidate.
+Measured release policy is recorded in `docs/quality/browser-baseline.md`. Exact
+candidate browser evidence, the final certified build and production promotion
+are outstanding. The live release is still 0.5.0 below.
+
 # Glass Table Games: state of play
 
 ## Pastel glass release, 13 September 2026

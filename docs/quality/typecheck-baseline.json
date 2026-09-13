@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "sourceHead": "5816711827f5f77de785a7c7b61453d619f2f009",
+  "command": "npm run typecheck",
+  "milliseconds": 539,
+  "exitCode": 0,
+  "environment": {
+    "node": "26.8.2",
+    "machine": "arm64",
+    "system": "darwin"
+  },
+  "limitMilliseconds": 900,
+  "limitReason": "Rounded 1.5x measured local native compiler duration for scheduler headroom."
+}

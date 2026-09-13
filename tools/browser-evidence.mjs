@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 
 export const output = new URL("../.audit/visual/", import.meta.url);
@@ -96,22 +97,58 @@ export async function recordEvidence(site, observedSourceHead, checks = [], meas
   await writeFile(file, JSON.stringify(evidence, null, 2));
 }
 
+// Observation only: no replacement signal, response reader or promise handler.
+// In Next 16.3 viewport cancellation removes queued work, not an active fetch;
+// an ERR_ABORTED alone therefore never proves an intentional cancellation.
+export function observeFetchSignals() {
+  const original = window.fetch;
+  const documentId = crypto.randomUUID();
+  let sequence = 0;
+  const emit = event => { void window.recordFetchObservation({ documentId, at: Date.now(), ...event }).catch(() => {}); };
+  window.fetch = function (...args) {
+    try {
+      const [input, init] = args;
+      const request = input instanceof Request ? input : null;
+      const url = new URL(request ? request.url : input, location.href);
+      const headers = new Headers(init?.headers ?? request?.headers);
+      const method = (init?.method ?? request?.method ?? "GET").toUpperCase();
+      if (sequence < 1000 && url.origin === location.origin && method === "GET"
+        && headers.get("rsc") === "1" && headers.get("next-router-prefetch") === "1") {
+        const id = ++sequence;
+        const signal = init?.signal ?? request?.signal;
+        emit({ kind: "prefetch-start", id, url: url.href, hasSignal: Boolean(signal), aborted: signal?.aborted === true });
+        signal?.addEventListener("abort", () => emit({ kind: "prefetch-signal-abort", id, url: url.href }), { once: true });
+      }
+    } catch { /* Instrumentation must not change fetch behavior. */ }
+    return Reflect.apply(original, this, args);
+  };
+}
+
 export async function instrument(page) {
   const trace = [];
   const errors = [];
   const failed = [];
   const counts = { events: 0, failed: 0 };
   const path = value => { try { const url = new URL(value); return url.origin + url.pathname; } catch { return value; } };
+  const requestKey = value => createHash("sha256").update(value).digest("hex");
+  const started = new WeakMap();
   const add = event => { counts.events++; if (trace.length < 3000) trace.push({ at: Date.now(), ...event }); };
   page.on("pageerror", error => { errors.push(error.message); add({ kind: "pageerror", message: error.message }); });
   page.on("requestfailed", request => { const event = { kind: "requestfailed", url: path(request.url()), resource: request.resourceType(), error: request.failure()?.errorText,
     rsc: request.headers().rsc === "1", prefetch: request.headers()["next-router-prefetch"] === "1",
+    requestKey: requestKey(request.url()), startedAt: started.get(request),
     queryKeys: [...new URL(request.url()).searchParams.keys()].slice(0, 6) };
     counts.failed++; if (failed.length < 3000) failed.push(event); add(event); });
-  page.on("request", request => { if (request.isNavigationRequest()) add({ kind: "navigation-request", url: path(request.url()) }); });
+  page.on("request", request => { started.set(request, Date.now()); if (request.isNavigationRequest()) add({ kind: "navigation-request", url: path(request.url()) }); });
   page.on("framenavigated", frame => { if (frame === page.mainFrame()) add({ kind: "navigation-commit", url: path(frame.url()) }); });
   page.on("response", response => { if (response.status() >= 400) add({ kind: "http-error", status: response.status(), url: path(response.url()) }); });
   await page.exposeFunction("recordLifecycle", event => add({ kind: "lifecycle", event }));
+  await page.exposeBinding("recordFetchObservation", ({ frame }, event) => {
+    if (frame !== page.mainFrame()) return;
+    // Full query values exist only inside this callback, never in artifacts.
+    add({ ...event, url: path(event.url), requestKey: requestKey(event.url) });
+  });
+  await page.addInitScript(observeFetchSignals);
   await page.addInitScript(() => {
     window.gtgPerformance = { lcpMs: null, interactions: [], readyMs: null };
     for (const event of ["pagehide", "beforeunload"]) window.addEventListener(event, () => { void window.recordLifecycle(event); });
@@ -124,7 +161,7 @@ export async function instrument(page) {
       requestAnimationFrame(() => requestAnimationFrame(() => window.gtgPerformance.interactions.push(performance.now() - start)));
     }, true);
   });
-  return { trace, errors, failed, counts };
+  return { trace, errors, failed, counts, mark: event => add({ kind: "harness", event }) };
 }
 
 export async function startupMeasurement(page) {

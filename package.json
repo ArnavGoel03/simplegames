@@ -21,7 +21,11 @@
     "assets": "node tools/generate-icons.mjs",
     "verify:visual": "node tools/verify-visual.mjs",
     "verify:toolchain": "node tools/verify-toolchain.mjs",
-    "gate": "npm run verify:toolchain && npm run typecheck && npm run lint && npm test"
+    "gate": "npm run verify:toolchain && npm run typecheck && npm run lint && npm test && npm run test:release",
+    "test:release": "node --test tools/quality/*.node-spec.mjs",
+    "quality": "node tools/quality-gate.mjs",
+    "cf:upload": "node tools/cf.mjs upload",
+    "release:receipt": "node tools/release-receipt.mjs"
   },
   "dependencies": {
     "next": "16.3.0",

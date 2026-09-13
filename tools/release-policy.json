@@ -1,0 +1,76 @@
+{
+  "schema": 1,
+  "ci": {
+    "repository": "ArnavGoel03/simplegames",
+    "workflow": ".github/workflows/visual.yml"
+  },
+  "gateMetrics": [
+    {
+      "id": "typecheck",
+      "unit": "ms",
+      "limit": 900,
+      "baseline": {
+        "sourceHead": "5816711827f5f77de785a7c7b61453d619f2f009",
+        "value": 539,
+        "evidence": "docs/quality/typecheck-baseline.json"
+      }
+    }
+  ],
+  "sites": {
+    "studio": {
+      "checks": [
+        "responsive",
+        "startup",
+        "failed-css",
+        "offline",
+        "update",
+        "network",
+        "entry"
+      ],
+      "metrics": [
+        {
+          "id": "startup",
+          "unit": "ms",
+          "statistic": "median",
+          "minSamples": 3,
+          "baseline": {
+            "sourceHead": "e3812bed22a15b57349bdb87df22f5db6e3a768f",
+            "runId": 34764064297,
+            "artifactId": 10319967902,
+            "value": 474
+          },
+          "limit": 750,
+          "limitReason": "Rounded 50% timing headroom over the larger measured browser baseline for shared-runner scheduling."
+        },
+        {
+          "id": "interaction",
+          "unit": "ms",
+          "statistic": "median",
+          "minSamples": 3,
+          "baseline": {
+            "sourceHead": "e3812bed22a15b57349bdb87df22f5db6e3a768f",
+            "runId": 34764063259,
+            "artifactId": 10318919838,
+            "value": 27.09999999999127
+          },
+          "limit": 50,
+          "limitReason": "Rounded 50% timing headroom over the larger measured browser baseline for shared-runner scheduling."
+        },
+        {
+          "id": "initial-assets",
+          "unit": "bytes",
+          "statistic": "max",
+          "minSamples": 3,
+          "baseline": {
+            "sourceHead": "e3812bed22a15b57349bdb87df22f5db6e3a768f",
+            "runId": 34764063259,
+            "artifactId": 10318919838,
+            "value": 511522
+          },
+          "limit": 655360,
+          "limitReason": "Rounded 25% decoded-asset growth allowance over the larger measured browser baseline."
+        }
+      ]
+    }
+  }
+}
