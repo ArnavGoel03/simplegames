@@ -331,6 +331,19 @@ export async function instrument(page) {
   return { trace, errors, failed, counts, mark: event => add({ kind: "harness", event }) };
 }
 
+// Cold performance samples intentionally exclude service workers. Playwright's
+// block mode leaves register() present but resolves it with undefined, which
+// creates a synthetic application error. Model an absent capability instead.
+export function omitServiceWorkerCapability() {
+  for (let owner = navigator; owner; owner = Object.getPrototypeOf(owner)) {
+    if (Object.hasOwn(owner, "serviceWorker")) {
+      Reflect.deleteProperty(owner, "serviceWorker");
+      break;
+    }
+  }
+  if ("serviceWorker" in navigator) throw new Error("Cannot isolate service worker capability");
+}
+
 export async function startupMeasurement(page) {
   await page.waitForFunction(() => window.gtgPerformance.readyMs !== null, undefined, { timeout: 15_000 });
   await page.evaluate(() => document.fonts.ready);

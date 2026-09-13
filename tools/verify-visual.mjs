@@ -3,7 +3,7 @@ import { spawn } from "node:child_process";
 import { chromium, webkit } from "playwright";
 import catalogue from "../src/lib/game-catalogue.json" with { type: "json" };
 import assert from "node:assert/strict";
-import { candidates, instrument, networkVerdict, observeSource, recordEvidence, startupMeasurement, timedClick, timedFragmentClick } from "./browser-evidence.mjs";
+import { candidates, instrument, networkVerdict, observeSource, omitServiceWorkerCapability, recordEvidence, startupMeasurement, timedClick, timedFragmentClick } from "./browser-evidence.mjs";
 
 const output = new URL("../.audit/visual/", import.meta.url);
 await mkdir(output, { recursive: true });
@@ -179,6 +179,7 @@ try {
     let observedSourceHead;
     for (let sample = 0; sample < 3; sample++) {
       const context = await browser.newContext({ viewport: { width: 390, height: 844 }, reducedMotion: "reduce", serviceWorkers: "block" });
+      await context.addInitScript(omitServiceWorkerCapability);
       const page = await context.newPage();
       const probe = await instrument(page);
       traces.push({ site: site.id, sample, ...probe });

@@ -1,6 +1,51 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { runInNewContext } from "node:vm";
-import { networkVerdict, observeFetchSignals, observeFragmentNavigation, observeResponseStreams, parseCandidates, predecessorWorkerVersion, siteKey } from "./browser-evidence.mjs";
+import { networkVerdict, observeFetchSignals, observeFragmentNavigation, observeResponseStreams, omitServiceWorkerCapability, parseCandidates, predecessorWorkerVersion, siteKey } from "./browser-evidence.mjs";
+import { startWorkerClient } from "../src/lib/pwa/worker-client.ts";
+
+describe("cold performance capability isolation", () => {
+  async function client(omit, register = async () => undefined) {
+    const faults = [];
+    const navigator = Object.create({ serviceWorker: { register } });
+    navigator.onLine = true;
+    const document = Object.assign(new EventTarget(), { visibilityState: "visible" });
+    const window = new EventTarget();
+    vi.stubGlobal("navigator", navigator);
+    vi.stubGlobal("document", document);
+    vi.stubGlobal("window", window);
+    let cleanup;
+    try {
+      if (omit) omitServiceWorkerCapability();
+      cleanup = startWorkerClient(() => {}, fault => faults.push(fault));
+      await new Promise(setImmediate);
+      return { faults, navigator };
+    } finally { cleanup?.(); vi.unstubAllGlobals(); }
+  }
+
+  it("reproduces the actual client's fault with Playwright's undefined registration", async () => {
+    expect((await client(false)).faults).toMatchObject([{ code: "pwa-register", operation: "pwa" }]);
+    const isolated = await client(true);
+    expect("serviceWorker" in isolated.navigator).toBe(false);
+    expect(isolated.faults).toEqual([]);
+  });
+
+  it("keeps genuine registration and diagnostic transport failures visible", async () => {
+    expect((await client(false, async () => { throw new TypeError("registration failed"); })).faults)
+      .toMatchObject([{ code: "pwa-register", operation: "pwa" }]);
+    const failed = { kind: "requestfailed", requestId: 19, method: "POST", resource: "fetch",
+      url: "http://127.0.0.1:3187/api/diagnostics", error: "net::ERR_ABORTED", rsc: false, prefetch: false };
+    const verdict = networkVerdict({ errors: [], failed: [failed], counts: { failed: 1 },
+      trace: [{ kind: "response", requestId: 19, status: 403 }, failed] });
+    expect(verdict.passed).toBe(false);
+    expect(verdict.failures).toEqual([failed]);
+  });
+
+  it("refuses an environment where the capability cannot be removed", () => {
+    const navigator = {};
+    Object.defineProperty(navigator, "serviceWorker", { value: {}, configurable: false });
+    expect(() => runInNewContext(`(${omitServiceWorkerCapability.toString()})()`, { navigator })).toThrow();
+  });
+});
 
 const candidate = {
   site: "board", candidateVersion: "10000000-0000-4000-8000-000000000000",
