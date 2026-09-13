@@ -196,7 +196,7 @@ export function networkVerdict(probe) {
   const classified = [];
   const failures = probe.failed.filter(failure => {
     const response = probe.trace.find(event => event.kind === "response" && event.requestId === failure.requestId);
-    if (failure.error !== "net::ERR_ABORTED" || failure.method !== "GET" || !failure.rsc || !failure.prefetch
+    if (!["net::ERR_ABORTED", "Load request cancelled"].includes(failure.error) || failure.method !== "GET" || !failure.rsc || !failure.prefetch
       || response?.status !== 200 || !response.contentType?.startsWith("text/x-component")
       || !/^[a-f0-9]{16}(?:-[a-z]{3})?$/i.test(response.ray ?? "")) return true;
     // A unique edge request reference binds the native reader observation to
@@ -287,4 +287,67 @@ export async function timedClick(page, locator) {
   await locator.click();
   await page.waitForFunction(count => window.gtgPerformance.interactions.length > count, before);
   return page.evaluate(count => window.gtgPerformance.interactions[count], before);
+}
+
+// A two-frame click timer can finish before Next commits a hash navigation.
+// Measure the completed fragment scroll and two subsequent stable frames.
+export function observeFragmentNavigation(expected) {
+  const state = window.gtgFragmentNavigation = { status: "armed" };
+  let frame;
+  let previous;
+  let stable = 0;
+  const cleanup = () => {
+    clearTimeout(timeout);
+    cancelAnimationFrame(frame);
+    window.removeEventListener("click", clicked, true);
+  };
+  const timeout = setTimeout(() => {
+    state.status = "failed";
+    state.error = "Fragment navigation did not finish within ten seconds";
+    cleanup();
+  }, 10_000);
+  const sample = () => {
+    const target = document.getElementById(expected.fragment);
+    const top = target?.getBoundingClientRect().top;
+    const offset = target ? (parseFloat(getComputedStyle(target).scrollMarginTop) || 0)
+      + (parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop) || 0) : 0;
+    const desired = Math.max(0, Math.min((top ?? 0) + scrollY - offset, document.documentElement.scrollHeight - innerHeight));
+    const reached = target && location.pathname === expected.pathname && location.search === expected.search
+      && location.hash === expected.hash && Math.abs(scrollY - desired) <= 1;
+    if (reached) {
+      state.reachedMs ??= performance.now() - state.startedAt;
+      stable = previous && Math.abs(previous.top - top) <= 1 && Math.abs(previous.y - scrollY) <= 1 ? stable + 1 : 0;
+      previous = { top, y: scrollY };
+      if (stable >= 2) {
+        state.status = "complete";
+        state.milliseconds = performance.now() - state.startedAt;
+        state.targetTop = top;
+        cleanup();
+        return;
+      }
+    } else { previous = undefined; stable = 0; }
+    frame = requestAnimationFrame(sample);
+  };
+  function clicked(event) {
+    if (!event.isTrusted) return;
+    window.removeEventListener("click", clicked, true);
+    state.status = "running";
+    state.startedAt = performance.now();
+    frame = requestAnimationFrame(sample);
+  }
+  window.addEventListener("click", clicked, true);
+}
+
+export async function timedFragmentClick(page, locator) {
+  const url = new URL(await locator.getAttribute("href"), page.url());
+  assert.equal(url.origin, new URL(page.url()).origin, "Fragment timing requires a same-origin link");
+  assert(url.hash, "Fragment timing requires a target");
+  await page.evaluate(observeFragmentNavigation, {
+    fragment: decodeURIComponent(url.hash.slice(1)), hash: url.hash, pathname: url.pathname, search: url.search,
+  });
+  await locator.click();
+  await page.waitForFunction(() => ["complete", "failed"].includes(window.gtgFragmentNavigation.status), undefined, { timeout: 11_000 });
+  const result = await page.evaluate(() => window.gtgFragmentNavigation);
+  assert.equal(result.status, "complete", result.error);
+  return result.milliseconds;
 }

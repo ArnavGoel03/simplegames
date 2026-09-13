@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { mkdir, writeFile } from "node:fs/promises";
 import { chromium, webkit } from "playwright";
-import { candidates, engine, instrument, output, startupMeasurement, timedClick } from "./browser-evidence.mjs";
+import { candidates, engine, instrument, output, startupMeasurement, timedFragmentClick } from "./browser-evidence.mjs";
 
 // Diagnostic comparison only. No release evidence or performance policy changes.
 const candidate = candidates.find(item => item.site === "studio");
@@ -10,7 +10,7 @@ const targets = candidate ? [
   { id: "candidate", origin: candidate.origin, sourceHead: candidate.sourceHead },
 ] : [];
 const report = { schema: 1, purpose: "same-run studio performance comparison", engine, candidate,
-  definition: "Three alternating samples per target and instrumentation mode; unchanged startupMeasurement and timedClick; 390x844, reduced motion, service workers blocked, fresh context",
+  definition: "Three alternating samples per target and instrumentation mode; canonical startupMeasurement and completed Games fragment scroll plus two stable frames; 390x844, reduced motion, service workers blocked, fresh context",
   modes: { full: "Current release network/stream and timing instrumentation", timing: "Same ready/click/two-frame timing, without fetch/stream wrappers or browser bindings" },
   samples: [] };
 let browser;
@@ -117,7 +117,8 @@ async function trial(target, mode, sample) {
       if (await found.isVisible()) { control = found; result.selector = selector; break; }
     }
     assert(control, "No existing interaction control found");
-    result.interactionMs = await timedClick(page, control);
+    result.gamesNavigationMs = await timedFragmentClick(page, control);
+    result.earlyInteractionMs = await page.evaluate(() => window.gtgPerformance.interactions[0]);
     await page.waitForFunction(() => window.gtgPerformanceProbe.clicks.at(-1)?.frames.length === 8);
     result.afterClickFrames = await frames(page);
     result.page = await page.evaluate(() => {
@@ -128,7 +129,7 @@ async function trial(target, mode, sample) {
         "transferSize", "encodedBodySize", "decodedBodySize", "nextHopProtocol", "responseStatus",
       ].filter(key => key in entry).map(key => [key, entry[key]]));
       const anchor = document.querySelector("#games");
-      return { ...window.gtgPerformanceProbe, visibility: document.visibilityState, hash: location.hash,
+      return { ...window.gtgPerformanceProbe, fragmentNavigation: window.gtgFragmentNavigation, visibility: document.visibilityState, hash: location.hash,
         galleryTop: anchor?.getBoundingClientRect().top, scrollY,
         navigation: pickTiming(performance.getEntriesByType("navigation")[0]),
         resources: performance.getEntriesByType("resource").slice(0, 250).map(entry => {
@@ -156,7 +157,8 @@ async function trial(target, mode, sample) {
     await context.close();
     await writeFile(new URL(`performance-probe-${engine}.json`, output), JSON.stringify(report, null, 2));
     console.log(JSON.stringify({ target: result.target, mode, sample, source: result.sourceHead,
-      startupMs: result.startup?.startupMs, interactionMs: result.interactionMs, selector: result.selector, failure: result.failure }));
+      startupMs: result.startup?.startupMs, gamesNavigationMs: result.gamesNavigationMs, earlyInteractionMs: result.earlyInteractionMs,
+      selector: result.selector, failure: result.failure }));
   }
 }
 

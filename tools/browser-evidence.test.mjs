@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { runInNewContext } from "node:vm";
-import { networkVerdict, observeFetchSignals, observeResponseStreams, parseCandidates, predecessorWorkerVersion, siteKey } from "./browser-evidence.mjs";
+import { networkVerdict, observeFetchSignals, observeFragmentNavigation, observeResponseStreams, parseCandidates, predecessorWorkerVersion, siteKey } from "./browser-evidence.mjs";
 
 const candidate = {
   site: "board", candidateVersion: "10000000-0000-4000-8000-000000000000",
@@ -196,5 +196,59 @@ describe("exact response network verdict", () => {
     for (const kind of ["response-reader-error", "response-cancel-error"]) {
       expect(networkVerdict(probe([response, { ...intent, kind, at: 19 }, { ...intent, kind: "response-reader-cancel" }])).passed).toBe(false);
     }
+  });
+  it("correlates WebKit's observed cancel while retaining its distinct broken-transport failure", () => {
+    const observed = probe([response, { ...intent, kind: "response-reader-cancel", at: 10 }]);
+    observed.failed = [{ ...failure, error: "Load request cancelled" }];
+    expect(networkVerdict(observed).passed).toBe(true);
+    observed.failed = [{ ...failure, error: "Connection terminated unexpectedly" }];
+    expect(networkVerdict(observed).passed).toBe(false);
+  });
+});
+
+describe("completed fragment navigation timing", () => {
+  function fixture() {
+    let now = 0;
+    let listener;
+    let pending;
+    let timeout;
+    let exists = true;
+    const location = { pathname: "/", search: "", hash: "" };
+    const window = { addEventListener: (_, callback) => { listener = callback; }, removeEventListener: () => { listener = undefined; } };
+    const globals = { window, location, performance: { now: () => now }, scrollY: 0, innerHeight: 800,
+      document: { documentElement: { scrollHeight: 3000 }, getElementById: () => exists ? { getBoundingClientRect: () => ({ top: 1200 - globals.scrollY }) } : null },
+      getComputedStyle: () => ({ scrollMarginTop: "0px", scrollPaddingTop: "0px" }),
+      requestAnimationFrame: callback => { pending = callback; return 1; }, cancelAnimationFrame: () => { pending = undefined; },
+      setTimeout: callback => { timeout = callback; return 1; }, clearTimeout: () => { timeout = undefined; },
+    };
+    runInNewContext(`(${observeFragmentNavigation.toString()})({fragment:"games",hash:"#games",pathname:"/",search:""})`, globals);
+    const frame = at => { now = at; const callback = pending; pending = undefined; callback?.(); };
+    return { window, location, globals, frame, click: () => listener({ isTrusted: true }), expire: () => timeout(), removeTarget: () => { exists = false; } };
+  }
+
+  it("cannot pass the old two-frame window before the fragment scroll finishes", () => {
+    const f = fixture();
+    f.click();
+    f.frame(16); f.frame(32);
+    expect(f.window.gtgFragmentNavigation.status).toBe("running");
+    f.location.hash = "#games";
+    f.frame(48);
+    expect(f.window.gtgFragmentNavigation.status).toBe("running");
+    f.globals.scrollY = 1200;
+    f.frame(100); f.frame(200);
+    expect(f.window.gtgFragmentNavigation.status).toBe("running");
+    f.frame(216);
+    expect(f.window.gtgFragmentNavigation).toMatchObject({ status: "complete", reachedMs: 100, milliseconds: 216, targetTop: 0 });
+  });
+
+  it("requires two further stable frames and fails a missing target within its bound", () => {
+    const f = fixture();
+    f.click(); f.location.hash = "#games"; f.globals.scrollY = 1200;
+    f.frame(10); f.frame(26);
+    f.globals.scrollY = 1100; f.frame(42);
+    f.globals.scrollY = 1200; f.frame(58); f.frame(74);
+    expect(f.window.gtgFragmentNavigation.status).toBe("running");
+    f.removeTarget(); f.frame(90); f.expire();
+    expect(f.window.gtgFragmentNavigation.status).toBe("failed");
   });
 });

@@ -3,7 +3,7 @@ import { spawn } from "node:child_process";
 import { chromium, webkit } from "playwright";
 import catalogue from "../src/lib/game-catalogue.json" with { type: "json" };
 import assert from "node:assert/strict";
-import { candidates, instrument, networkVerdict, observeSource, recordEvidence, startupMeasurement, timedClick } from "./browser-evidence.mjs";
+import { candidates, instrument, networkVerdict, observeSource, recordEvidence, startupMeasurement, timedClick, timedFragmentClick } from "./browser-evidence.mjs";
 
 const output = new URL("../.audit/visual/", import.meta.url);
 await mkdir(output, { recursive: true });
@@ -12,9 +12,14 @@ const local = "http://127.0.0.1:3187";
 const preview = process.env.CASINO_PREVIEW;
 const engine = process.env.BROWSER_ENGINE || "chromium";
 if (!["chromium", "webkit"].includes(engine)) throw new Error("Unknown browser engine");
-const sites = candidates.length ? candidates.map(item => ({ id: item.site, url: item.origin })) : preview ? [{ id: "teenpatti", url: preview }] : live
+const availableSites = candidates.length ? candidates.map(item => ({ id: item.site, url: item.origin })) : preview ? [{ id: "teenpatti", url: preview }] : live
   ? [{ id: "studio", url: "https://glasstablegames.com" }, ...catalogue.sites]
   : [{ id: "studio", url: local }];
+const siteFilter = process.env.SITE_FILTER?.trim();
+if (siteFilter && (siteFilter !== "studio" || process.env.BASELINE_ONLY !== "true" || !live || candidates.length)) {
+  throw new Error("SITE_FILTER is only supported for the studio live baseline");
+}
+const sites = siteFilter ? availableSites.filter(site => site.id === siteFilter) : availableSites;
 const sizes = [[320, 720], [390, 844], [844, 390], [1024, 768], [1440, 1000], [2560, 1440]];
 const results = [];
 const performanceResults = [];
@@ -193,15 +198,16 @@ try {
           if (await found.isVisible()) { control = found; break; }
         }
         assert(control, "No safe existing interaction target found");
-        interactions.push(await timedClick(page, control));
+        interactions.push(await (site.id === "studio" ? timedFragmentClick(page, control) : timedClick(page, control)));
         assert.deepEqual(probe.errors, [], "Startup or interaction raised browser errors");
       } finally { probe.mark("context-close-start"); await context.close(); }
     }
-    performanceResults.push({ site: site.id, engine, observedSourceHead, samples, interactionMs: interactions,
-      definition: "startup: navigation to loaded styles/fonts and two animation frames; interaction: trusted existing-control click to two animation frames; fresh browser context per sample" });
+    const interactionMetric = site.id === "studio" ? "games-navigation" : "interaction";
+    performanceResults.push({ site: site.id, engine, observedSourceHead, samples, interactionMs: interactions, interactionMetric,
+      definition: `startup: navigation to loaded styles/fonts and two animation frames; ${interactionMetric}: trusted existing-control click to ${site.id === "studio" ? "completed fragment scroll and two further stable frames" : "two animation frames"}; fresh browser context per sample` });
     await recordEvidence(site.id, observedSourceHead, [{ id: "startup", status: "passed" }], [
       { id: "startup", unit: "ms", samples: samples.map(item => item.startupMs) },
-      { id: "interaction", unit: "ms", samples: interactions },
+      { id: interactionMetric, unit: "ms", samples: interactions },
       { id: "initial-assets", unit: "bytes", samples: samples.map(item => item.decodedJsBytes + item.decodedCssBytes) },
     ], url.origin);
   }

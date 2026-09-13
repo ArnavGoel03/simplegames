@@ -10,6 +10,35 @@ import { candidates, engine, instrument, networkVerdict, output } from "./browse
 assert(candidates.length, "Network probe requires a candidate");
 await mkdir(output, { recursive: true });
 const result = { engine, site: candidates[0].site };
+async function traceNativeRequests(context, page, origin) {
+  const cdp = await context.newCDPSession(page);
+  const events = [];
+  const requests = new Set();
+  const digest = value => createHash("sha256").update(value).digest("hex");
+  const add = event => { if (events.length < 1500) events.push({ at: Date.now(), ...event }); };
+  cdp.on("Network.requestWillBeSent", event => {
+    const url = new URL(event.request.url);
+    if (url.origin !== origin || !url.searchParams.has("_rsc")) return;
+    requests.add(event.requestId);
+    const headers = Object.fromEntries(Object.entries(event.request.headers).map(([key, value]) => [key.toLowerCase(), value]));
+    add({ kind: "request", id: event.requestId, type: event.type, wallTime: event.wallTime, loaderId: event.loaderId,
+      path: url.pathname, requestKey: digest(url.href), initiator: { type: event.initiator.type, requestId: event.initiator.requestId },
+      headers: Object.fromEntries(["rsc", "next-router-prefetch", "next-router-segment-prefetch", "if-none-match", "if-modified-since", "cache-control"].filter(key => key in headers).map(key => [key, headers[key]])) });
+  });
+  cdp.on("Network.responseReceived", event => {
+    if (!requests.has(event.requestId)) return;
+    const headers = Object.fromEntries(Object.entries(event.response.headers).map(([key, value]) => [key.toLowerCase(), value]));
+    add({ kind: "response", id: event.requestId, status: event.response.status, type: event.type,
+      fromDiskCache: event.response.fromDiskCache, fromServiceWorker: event.response.fromServiceWorker,
+      headers: Object.fromEntries(["cf-ray", "cache-control", "age", "etag", "content-type"].filter(key => key in headers).map(key => [key, headers[key]])) });
+  });
+  for (const [name, kind] of [["requestServedFromCache", "cached"], ["loadingFinished", "finished"], ["loadingFailed", "failed"]]) {
+    cdp.on(`Network.${name}`, event => { if (requests.has(event.requestId)) add({ kind, id: event.requestId, error: event.errorText, canceled: event.canceled, encodedDataLength: event.encodedDataLength }); });
+  }
+  await cdp.send("Network.enable");
+  return { cdp, events };
+}
+
 const browser = await ({ chromium, webkit })[engine].launch();
 let server;
 try {
@@ -21,32 +50,10 @@ try {
       const page = await context.newPage();
       page.setDefaultTimeout(10_000);
       const probe = await instrument(page);
-      const cdp = await context.newCDPSession(page);
-      const events = [];
-      const requests = new Set();
-      const digest = value => createHash("sha256").update(value).digest("hex");
-      const add = event => { if (events.length < 1500) events.push({ at: Date.now(), ...event }); };
-      cdp.on("Network.requestWillBeSent", event => {
-        const url = new URL(event.request.url);
-        if (url.origin !== casino.origin || !url.searchParams.has("_rsc")) return;
-        requests.add(event.requestId);
-        const headers = Object.fromEntries(Object.entries(event.request.headers).map(([key, value]) => [key.toLowerCase(), value]));
-        add({ kind: "request", id: event.requestId, type: event.type, wallTime: event.wallTime, loaderId: event.loaderId,
-          path: url.pathname, requestKey: digest(url.href), initiator: { type: event.initiator.type, requestId: event.initiator.requestId },
-          headers: Object.fromEntries(["rsc", "next-router-prefetch", "next-router-segment-prefetch", "if-none-match", "if-modified-since", "cache-control"].filter(key => key in headers).map(key => [key, headers[key]])) });
-      });
-      cdp.on("Network.responseReceived", event => {
-        if (!requests.has(event.requestId)) return;
-        const headers = Object.fromEntries(Object.entries(event.response.headers).map(([key, value]) => [key.toLowerCase(), value]));
-        add({ kind: "response", id: event.requestId, status: event.response.status, type: event.type,
-          fromDiskCache: event.response.fromDiskCache, fromServiceWorker: event.response.fromServiceWorker,
-          headers: Object.fromEntries(["cf-ray", "cache-control", "age", "etag", "content-type"].filter(key => key in headers).map(key => [key, headers[key]])) });
-      });
-      for (const [name, kind] of [["requestServedFromCache", "cached"], ["loadingFinished", "finished"], ["loadingFailed", "failed"]]) {
-        cdp.on(`Network.${name}`, event => { if (requests.has(event.requestId)) add({ kind, id: event.requestId, error: event.errorText, canceled: event.canceled, encodedDataLength: event.encodedDataLength }); });
-      }
-      await cdp.send("Network.enable");
+      const { cdp, events } = await traceNativeRequests(context, page, casino.origin);
       if (mode === "no-worker-no-cache") await cdp.send("Network.setCacheDisabled", { cacheDisabled: true });
+      let flowError;
+      let networkIdle;
       try {
         await page.goto(casino.origin, { waitUntil: "networkidle", timeout: 15_000 });
         await page.locator(".casino-feature-picker").getByRole("button", { name: "Roulette", exact: true }).click();
@@ -62,11 +69,13 @@ try {
         await page.locator(".casino-progress-details summary").click();
         await page.locator(".casino-progress-game").getByRole("link", { name: "Roulette", exact: true }).click();
         await page.waitForURL(casino.origin + "/casino/roulette");
-        await page.waitForLoadState("networkidle", { timeout: 10_000 });
+        networkIdle = await page.waitForLoadState("networkidle", { timeout: 1500 }).then(() => true, () => false);
+      } catch (error) {
+        flowError = String(error);
       } finally {
         probe.mark("context-close-start");
         await context.close();
-        result.casinoRequests.push({ mode, events, trace: probe.trace, failed: probe.failed });
+        result.casinoRequests.push({ mode, networkIdle, flowError, events, trace: probe.trace, failed: probe.failed });
       }
     }
   }
@@ -103,8 +112,18 @@ self.addEventListener('install',event=>event.waitUntil(self.skipWaiting()));
 self.addEventListener('activate',event=>event.waitUntil(self.clients.claim()));
 self.addEventListener('message',event=>event.ports[0].postMessage({online:self.navigator.onLine,intercepted}));
 self.addEventListener('fetch',event=>{if(new URL(event.request.url).pathname==='/oracle'){intercepted++;event.respondWith(new Response('worker-answer'));}});`;
+  const cacheRequests = { "/swr": 0, "/revalidate": 0 };
   server = createServer((request, response) => {
     response.setHeader("Cache-Control", "no-store");
+    const pathname = new URL(request.url, "http://fixture.test").pathname;
+    if (pathname in cacheRequests) {
+      const count = ++cacheRequests[pathname];
+      response.setHeader("Content-Type", "text/x-component");
+      response.setHeader("Cache-Control", pathname === "/swr" ? "s-maxage=31536000, stale-while-revalidate=2592000" : "max-age=0, must-revalidate");
+      response.setHeader("CF-Ray", `${count.toString(16).padStart(16, "0")}-BOM`);
+      response.end(`0:fixture-${count}\n`);
+      return;
+    }
     if (request.url.startsWith("/stream-")) {
       response.setHeader("Content-Type", "text/x-component");
       response.setHeader("CF-Ray", ({ "/stream-cancelled": "0000000000000001-BOM", "/stream-complete": "0000000000000002-BOM", "/stream-broken": "0000000000000003-BOM" })[request.url]);
@@ -120,6 +139,31 @@ self.addEventListener('fetch',event=>{if(new URL(event.request.url).pathname==='
     response.end(request.url === "/sw.js" ? worker : "<!doctype html><title>Offline control</title><p>Offline control</p>");
   });
   await new Promise(resolve => server.listen(0, "127.0.0.1", resolve));
+  if (engine === "chromium" && process.argv.includes("--trace-casino")) {
+    const context = await browser.newContext({ serviceWorkers: "block" });
+    const page = await context.newPage();
+    const origin = `http://127.0.0.1:${server.address().port}`;
+    const probe = await instrument(page);
+    const { events } = await traceNativeRequests(context, page, origin);
+    try {
+      await page.goto(origin, { waitUntil: "load" });
+      const values = {};
+      for (const path of Object.keys(cacheRequests)) {
+        values[path] = [];
+        for (let index = 0; index < 3; index++) {
+          values[path].push(await page.evaluate(async path => {
+            const response = await fetch(path + "?_rsc=control", { headers: { rsc: "1", "next-router-prefetch": "1" } });
+            const reader = response.body.getReader();
+            let body = "";
+            while (true) { const { done, value } = await reader.read(); if (done) break; body += new TextDecoder().decode(value); }
+            return body;
+          }, path));
+          await page.waitForTimeout(index === 0 ? 1100 : 200);
+        }
+      }
+      result.cacheControl = { values, serverRequests: cacheRequests, events, trace: probe.trace, failed: probe.failed };
+    } finally { await context.close(); }
+  }
   const streamContext = await browser.newContext({ serviceWorkers: "block" });
   try {
     const page = await streamContext.newPage();
@@ -181,7 +225,7 @@ self.addEventListener('fetch',event=>{if(new URL(event.request.url).pathname==='
   } finally { await workerContext.close(); }
 } finally {
   await writeFile(new URL(`network-control-${engine}.json`, output), JSON.stringify(result, null, 2));
-  console.log(JSON.stringify(result));
+  console.log(JSON.stringify({ engine, site: result.site, modes: result.casinoRequests?.map(({ mode, networkIdle, flowError, failed }) => ({ mode, networkIdle, flowError, failed: failed.length })), streamControls: result.streamControls?.verdict }));
   await browser.close();
   if (server) { server.closeAllConnections(); await new Promise(resolve => server.close(resolve)); }
 }
