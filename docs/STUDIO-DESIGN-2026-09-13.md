@@ -1,19 +1,18 @@
 # Studio design, 13 September 2026
 
-## Active request queue
+## Request status
 
-- In progress: replace Charade and Casino title-only cards with actual rendered
-  game imagery, with reproducible source captures.
-- In progress: redesign the studio homepage and navigation with clearer game
-  hierarchy, responsive composition, readable typography and polished controls.
-- In progress: replace the dice-like studio mark with a distinct geometric
-  Glass Table monogram, derived into header, favicon and installed-app assets.
-- In progress in the primary repository: give every game PWA its own recognizable
-  icon silhouette within a consistent family. Deal and Charade must be distinct.
-- In progress in parallel: Casino material design, shared launch recovery,
+- Live: Charade and Casino previews captured from actual rendered game UI.
+- Live: responsive studio cover, game gallery and navigation.
+- Live: custom Glass Table monogram, derived into header, share card, favicon,
+  Apple and manifest assets from one drawing and palette.
+- Live: distinct icons across every game PWA and the studio's game shortcuts.
+- Live in the game release: Casino material design, shared launch recovery,
   precise automatic diagnostics and Charade viewport fitting.
-- Verification pending: rendered desktop, phone, landscape and same-page resize,
-  light/dark and reduced motion; machine gates, production build and live release.
+- Verified: machine gates, builds, deployment, live metadata/assets/diagnostics,
+  earlier browser layouts and final image/share/icon rendering.
+- Outstanding: fresh final-page browser retake, physical Safari/foldable checks,
+  and the separately documented Draw/Lattice room-suite reruns.
 
 The requested AAA quality bar is assessed through concrete rendered quality,
 accessibility and tested behavior. No public superiority claim is being added.
@@ -22,7 +21,23 @@ integration candidate so visual work retains its recovery and diagnostic fixes.
 
 ## Release
 
-Not deployed. The live studio remains 0.3.0 until the separate PWA release.
+Studio 0.4.0, source `23ab6cefc865def6e483c6527638bebe47025b64`, is live as
+Cloudflare Worker `4fdfe234-a7c0-47ee-96cd-3dcfebacc19b`. Normal non-force SSH
+push updated main after GitHub's PR creation API repeatedly failed. The release
+uses the certified build at that exact source; no local source-only state is
+being called deployed.
+
+110 tests, typecheck and lint pass. The production build has no warnings. The
+upstream OpenNext deployment CLI emits Node 26 DEP0190; it was not suppressed.
+Live verification passes 144 HTTP/metadata checks plus 63 focused design checks
+(eight exact artwork/icon files, five distinct game shortcut PNGs, ten CSS/JS
+startup resources and the actual 1200 by 630 share card). Catalogue, runtime
+policy and all seven shared PWA sources match live Circuit.
+
+Diagnostic receipt `2bf1311d-08b5-438d-8230-881d260a5c10` returned HTTP 204. One
+filtered database row matched the exact 0.4.0/source/studio fields, then that row
+was deleted and absence confirmed. Evidence is the original studio worktree's
+`.audit/pwa/live-results-0.4.json`. No account or chip balance was changed.
 
 ## Implementation and verified evidence
 
@@ -40,12 +55,12 @@ Not deployed. The live studio remains 0.3.0 until the separate PWA release.
   participant data or room write. Raw capture was 832 by 894, cropped to the
   832 by 734 canvas/palette region and resized to 1200 by 1059.
 - Casino artwork crops the actual rendered material candidate's Roulette wheel,
-  from the 1680 by 780 capture to its left 900 by 780 region. The studio release
-  must follow that Casino design release so the picture matches the game.
+  from the 1680 by 780 capture to its left 900 by 780 region. Casino 1.2.5
+  was deployed before this studio release, so the image matches the game.
 - Both image alternative labels reuse the game names. The former arbitrary
   20-character minimum was removed; the test still requires nonempty labels.
-- 107 tests, typecheck and lint pass after generating the service worker through
-  the normal pretest hook. Final production rendering/build remains pending.
+- 110 tests, typecheck and lint pass after generating the service worker through
+  the normal pretest hook. The production build and live release checks pass.
 
 Evidence: `.firecrawl/studio-design/report.json` and screenshots. Charade source
 capture and fixture are in the primary worktree `.firecrawl/charade-art/` and
@@ -65,3 +80,7 @@ not represented as a fresh production browser pass.
 The installed studio now also consumes each game's published icon metadata for
 its shortcuts. Those five destinations are unique, and the catalogue importer
 validates that icon URLs belong to their corresponding game origin.
+
+Final live evidence: `.audit/live-design/report.json`, `icon-family.png` and
+`share.png`; `.audit/live-verification.log`, `build-final.log` and `deploy.log`.
+The live icon contact sheet and share image were inspected after deployment.

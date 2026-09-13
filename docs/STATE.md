@@ -1,17 +1,32 @@
 # Glass Table Games: state of play
 
-## Studio design, 13 September 2026 (in progress)
+## Studio design, 13 September 2026
 
-The 0.4.0 candidate replaces Charade/Casino title plates with rendered game
-previews, adds a responsive gallery and custom Glass Table monogram, and derives
-header/share/installed icons from one drawing and palette. Existing wording is
-reused. Seven hosted same-page viewport checks pass at 320 through 2560 pixels;
-light and dark surfaces were inspected. Final refined production rendering and
-deployment remain pending. See `docs/STUDIO-DESIGN-2026-09-13.md`.
+Studio 0.4.0 is live from source `23ab6ce` (full revision
+`23ab6cefc865def6e483c6527638bebe47025b64`), Worker
+`4fdfe234-a7c0-47ee-96cd-3dcfebacc19b`. Charade and Casino have actual rendered
+game previews; the responsive gallery, custom monogram, shared palette, share
+card, app icons and per-game studio shortcuts are released. Game shortcuts
+consume canonical icon metadata rather than a second icon mapping.
+
+110 tests, typecheck, lint and a warning-free production build pass. Live checks
+pass 144 HTTP/metadata assertions plus 63 image/icon/startup checks; all seven
+shared sources, runtime policy and catalogue match Circuit. A real automatic
+report returned its matching 204 receipt, was verified in the database with the
+exact studio/version/source attribution, and was deleted with absence verified.
+The served share card and all six icon silhouettes were visually inspected.
+
+The earlier seven-width browser matrix passed from 320 through 2560 pixels.
+The last arrow/caption/crop refinements have source and artifact review, but no
+fresh production browser retake: hosted credits were exhausted, no Browser
+connection was available, and local Chromium was denied by the macOS sandbox.
+Physical Safari/foldable checks and the Draw/Lattice room-suite reruns remain
+outstanding. See `docs/STUDIO-DESIGN-2026-09-13.md` for exact evidence and limits.
+Public policy wording and mailbox/operator confirmation remain owner actions.
 
 ## Installed app recovery, 13 September 2026
 
-Studio 0.3.2 is live from source `f93e9ca` (PR 8), Worker
+The preceding Studio 0.3.2 release was deployed from source `f93e9ca` (PR 8), Worker
 `512f95fc-ab6d-4032-81db-decbefbcf2b5`. All 144 live HTTP checks pass, the
 deployed worker matches its build exactly, and all seven shared sources and the
 HTML policy match live Circuit. A real automatic report returned 204 with the

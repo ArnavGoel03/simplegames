@@ -1,6 +1,6 @@
 # Glass Table Games
 
-The studio site. Eleven content pages, no database, no analytics, no third-party request of any kind. Live at [glasstablegames.com](https://glasstablegames.com), and installable: it ships a manifest, the icons every platform asks for, and a service worker.
+The studio site. Eleven content pages, no independent database and no analytics. Essential failure reports pass through a capped same-origin endpoint to the shared Circuit diagnostic store. Live at [glasstablegames.com](https://glasstablegames.com), and installable: it ships a manifest, the icons every platform asks for, and a service worker.
 
 - `/` says what the studio does and demonstrates it: a real commit, roll and reveal ceremony run in the reader's own browser.
 - `/fair-play` explains the derivation, and is honest about what it does not cover.
@@ -25,6 +25,21 @@ npm run verify:live
 ```
 
 The build stamps the generated service worker and records its input fingerprint. Deploy refuses a missing or stale build. Run `npm run lint`, `npm run typecheck`, and `npm test` before shipping.
+
+## Visual assets
+
+`src/lib/studio-mark.json` defines the monogram and `src/lib/palette.json` defines
+its colors. Run `npm run assets` to regenerate the shared CSS, SVG, PNG and ICO
+outputs. `cf:build` does this before taking its source fingerprint. Header,
+share-card and installed-app marks consume the same geometry. Icon metadata is
+revisioned so a new icon does not reuse an old request URL; existing installed
+Safari icon refresh remains OS-controlled.
+
+The game catalogue publishes each game's icon URL. Studio shortcuts consume it
+directly. `npm run sync:catalogue` updates the catalogue and checked PWA/runtime
+mirrors from Circuit; `npm run verify:live` checks for drift after release.
+Artwork provenance, screenshot evidence and remaining browser-validation limits
+are recorded in `docs/STUDIO-DESIGN-2026-09-13.md`.
 
 ## Where things live
 
