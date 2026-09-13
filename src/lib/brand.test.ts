@@ -119,9 +119,15 @@ describe("the games registry", () => {
     expect(studio.url).not.toMatch(/vercel\.app/);
   });
 
-  it("keeps Teen Patti fifth and Rummy ninth inside Deal", () => {
+  it("keeps Casino's eleven games fifth and Rummy ninth inside Deal", () => {
     expect(GAMES).toHaveLength(5);
     expect(GAMES[4].id).toBe("teenpatti");
+    expect(GAMES[4].name).toBe("Casino");
+    expect(GAMES[4].players).toBe("1 to 6 players");
+    expect(GAMES[4].holds.split(", ")).toEqual([
+      "Teen Patti", "Roulette", "Blackjack", "Slots", "Baccarat", "Craps",
+      "Casino Hold'em", "Video Poker", "Sic Bo", "Keno", "Prize Wheel",
+    ]);
     expect(GAMES.some((game) => game.id === "rummy")).toBe(false);
     const deal = GAMES.find((game) => game.id === "taash")!;
     expect(deal.holds.split(", ")).toHaveLength(9);

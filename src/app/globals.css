@@ -293,6 +293,13 @@ a {
   flex-wrap: wrap;
 }
 
+.colophon__release {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  font-family: var(--font-mono);
+}
+
 /* ---------- hero ---------- */
 
 .hero h1 {

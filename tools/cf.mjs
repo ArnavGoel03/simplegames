@@ -24,6 +24,7 @@ import { fileURLToPath } from "node:url";
 import { SITE_URL } from "./site-url.mjs";
 import { invalidateBuild, sourceFingerprint, stampBuild, verifyBuild } from "./build-state.mjs";
 import { writeHtmlPolicyWorker } from "./html-policy.mjs";
+import { buildInfo } from "./build-info.mjs";
 
 const COMMANDS = new Set(["build", "preview", "deploy", "upload"]);
 const [command, ...rest] = process.argv.slice(2);
@@ -44,6 +45,7 @@ try {
     stdio: "inherit",
     env: {
       ...process.env,
+      ...(command === "build" ? buildInfo(root) : {}),
       CLOUDFLARE_BUILD: command === "preview" ? "preview" : "production",
       NEXT_PUBLIC_SITE_URL: SITE_URL,
     },

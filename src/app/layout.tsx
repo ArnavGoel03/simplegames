@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from "next";
 import { Fraunces, IBM_Plex_Mono, IBM_Plex_Sans } from "next/font/google";
 import { JsonLd } from "@/components/JsonLd";
 import { SiteFooter } from "@/components/SiteFooter";
-import { ServiceWorker } from "@/components/ServiceWorker";
 import { SiteHeader } from "@/components/SiteHeader";
 import { STUDIO_NAME, STUDIO_TAGLINE, studio } from "@/lib/brand";
 import { studioNode } from "@/lib/structured-data";
@@ -118,7 +117,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <SiteHeader />
         <main>{children}</main>
         <SiteFooter />
-        <ServiceWorker />
       </body>
     </html>
   );

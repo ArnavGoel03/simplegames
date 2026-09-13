@@ -61,12 +61,52 @@
     },
     {
       "id": "teenpatti",
-      "name": "Teen Patti",
+      "name": "Casino",
       "url": "https://teenpatti.glasstablegames.com",
       "games": [
         {
           "id": "teenpatti",
           "name": "Teen Patti"
+        },
+        {
+          "id": "roulette",
+          "name": "Roulette"
+        },
+        {
+          "id": "blackjack",
+          "name": "Blackjack"
+        },
+        {
+          "id": "slots",
+          "name": "Slots"
+        },
+        {
+          "id": "baccarat",
+          "name": "Baccarat"
+        },
+        {
+          "id": "craps",
+          "name": "Craps"
+        },
+        {
+          "id": "casino-holdem",
+          "name": "Casino Hold'em"
+        },
+        {
+          "id": "video-poker",
+          "name": "Video Poker"
+        },
+        {
+          "id": "sic-bo",
+          "name": "Sic Bo"
+        },
+        {
+          "id": "keno",
+          "name": "Keno"
+        },
+        {
+          "id": "prize-wheel",
+          "name": "Prize Wheel"
         }
       ]
     }

@@ -238,7 +238,10 @@ const GAME_PRESENTATION: readonly Omit<Game, "name" | "url">[] = [
     id: "teenpatti",
     blurb: "No real money",
     holds: "",
-    players: "2 to 6 players",
+    // Casino's house games are solo; Teen Patti keeps the table's upper limit.
+    players: `${catalogue.sites.find((site) => site.id === "teenpatti")?.games?.some(
+      (game) => game.id !== "teenpatti",
+    ) ? 1 : 2} to 6 players`,
     status: "live",
     art: null,
     fallback: "type",
