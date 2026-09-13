@@ -309,11 +309,11 @@ async function recoverStylesheet(event, response) {
   });
   writes = reserve.then(() => {}, () => {});
   if (!await reserve) return;
-  const reporting = emitWorkerFault("pwa-missing-style", { status: response.status });
+  const reporting = emitWorkerFault("pwa-missing-style", { status: response.status, assetPath: new URL(request.url).pathname, controlled: true });
   target.searchParams.set(ASSET_RECOVERY_QUERY, VERSION);
   // The new inline bootstrap yields to this navigation. Older documents have
   // no working JavaScript and simply ignore the message.
-  client.postMessage({ type: ASSET_RECOVERY_STARTED, url: request.url });
+  client.postMessage({ type: ASSET_RECOVERY_STARTED, url: request.url, status: response.status });
   const navigation = (async () => {
     try { if (await client.navigate(target.href)) return; } catch {}
     // A failed navigation did not consume the route's one successful repair.

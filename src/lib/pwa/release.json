@@ -7,7 +7,7 @@
     },
     {
       "name": "worker-runtime.ts",
-      "sha256": "02f206306b83d436fbeffd11abfab7db126a167b8d3bb74afb3609df94f68c6f"
+      "sha256": "2336bd84afb41bb2b7e4ad0f8e587324e2b34c5df716cf4f682902ab76d9b985"
     },
     {
       "name": "version.ts",
@@ -15,7 +15,7 @@
     },
     {
       "name": "asset-recovery.ts",
-      "sha256": "5fe180744ace774a107483b8897ffcab27fcd92a50ca3d8bed9814206009c8a0"
+      "sha256": "63055cb27f8c4048c256af6172f87dde3c938379c102e7225e17397e711538d8"
     },
     {
       "name": "worker-client.ts",
@@ -23,11 +23,11 @@
     },
     {
       "name": "early-source.ts",
-      "sha256": "29d340bba223657f626f17eb87cd04a97e1f5c4af8d5ed02259e8dd37b5484f2"
+      "sha256": "6b012f3577854a65d6b19c97c8b95884a0fc89e1ff9c880f8f6cdc260bcec4fc"
     },
     {
       "name": "diagnostic-limits.ts",
-      "sha256": "847ddf71878aea2487af4344f0327b4a489eb24104f325b68c0411bb224738f0"
+      "sha256": "f0c2060483f5333c7c877ea8ab48507e8caaad1a373e89c72b076e393cfdb4af"
     }
   ]
 }

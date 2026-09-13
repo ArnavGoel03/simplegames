@@ -1,4 +1,4 @@
-import { ERROR_TYPES, FAULT_OPERATIONS, MAX_DELIVERY_ATTEMPTS, MAX_QUEUED_REPORTS, MAX_REPORT_BYTES, MAX_REPORTS_PER_SESSION, OPERATIONAL_FAULTS, OPERATIONAL_FAULT_EVENT, REPORT_SCHEMA_VERSION, RETRYABLE_STATUSES } from "./diagnostic-limits";
+import { ERROR_TYPES, FAULT_OPERATIONS, MAX_DELIVERY_ATTEMPTS, MAX_QUEUED_REPORTS, MAX_REPORT_BYTES, MAX_REPORTS_PER_SESSION, OPERATIONAL_FAULTS, OPERATIONAL_FAULT_EVENT, REPORT_SCHEMA_VERSION, RETRYABLE_STATUSES, STARTUP_FAULT_FIELDS } from "./diagnostic-limits";
 
 export interface EarlyDiagnosticsConfig {
   app: { version: string; commit: string | null; environment: string };
@@ -14,7 +14,8 @@ export function earlyDiagnosticsSource(config: EarlyDiagnosticsConfig): string {
   const value = JSON.stringify({ ...config, schema: REPORT_SCHEMA_VERSION,
     maximum: MAX_REPORTS_PER_SESSION, queued: MAX_QUEUED_REPORTS, attempts: MAX_DELIVERY_ATTEMPTS,
     codes: OPERATIONAL_FAULTS, operations: FAULT_OPERATIONS, errorTypes: ERROR_TYPES,
-    maxBytes: MAX_REPORT_BYTES, retryable: RETRYABLE_STATUSES, faultEvent: OPERATIONAL_FAULT_EVENT }).replace(/</g, "\\u003c");
+    maxBytes: MAX_REPORT_BYTES, retryable: RETRYABLE_STATUSES, faultEvent: OPERATIONAL_FAULT_EVENT,
+    startupFields: STARTUP_FAULT_FIELDS }).replace(/</g, "\\u003c");
   return `const DIAGNOSTICS = ${value};
 ` + String.raw`
 const faultSeen = new Set();
@@ -60,6 +61,12 @@ function reportOperationalFault(code, details = {}) {
     const operation = DIAGNOSTICS.operations.includes(details.operation) ? details.operation : "pwa";
     const errorType = DIAGNOSTICS.errorTypes.includes(details.errorType) ? details.errorType : undefined;
     const status = Number.isInteger(details.status) && details.status >= 0 && details.status <= 599 ? details.status : undefined;
+    const startup = {};
+    for (const [name, rule] of Object.entries(DIAGNOSTICS.startupFields)) {
+      const value = details[name];
+      if (rule.kind === "boolean" ? typeof value === "boolean" : typeof value === "string" &&
+        (rule.kind === "enum" ? rule.values.includes(value) : value.length <= rule.max && new RegExp(rule.pattern).test(value))) startup[name] = value;
+    }
     const key = code + ":" + operation + ":" + (status || "");
     if (faultSeen.has(key) || faultSeen.size >= DIAGNOSTICS.maximum) return Promise.resolve();
     faultSeen.add(key);
@@ -70,7 +77,7 @@ function reportOperationalFault(code, details = {}) {
       app: DIAGNOSTICS.app, device: faultDevice(), replay: null,
       breadcrumbs: [{ at: 0, kind: "state", message: "operational failure", data: { code, operation,
         ...(DIAGNOSTICS.site ? { site: DIAGNOSTICS.site } : {}),
-        ...(status === undefined ? {} : { status }), ...(errorType ? { errorType } : {}) } }] };
+        ...(status === undefined ? {} : { status }), ...(errorType ? { errorType } : {}), ...startup } }] };
     if (!DIAGNOSTICS.worker) saveFaultQueue([...faultQueue(), { report, attempts: 0 }]);
     return deliverFault(report);
   } catch { return Promise.resolve(); }

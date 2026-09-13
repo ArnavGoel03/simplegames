@@ -58,3 +58,19 @@ Existing public policy and support ownership decisions remain open.
   Its immediate Chips assertion raced hydration. The interactive Practice
   Suspense fallback is under separate review; complete preview approval remains
   open. Production promotion is still held.
+
+### Owner-authorized quality enforcement
+
+All seven proposed standards are now requested for implementation. The canonical
+active checklist is in the game repository's
+`docs/QUALITY-ENFORCEMENT-2026-09-13.md`: release evidence, browser checks, game
+invariants, adverse network behavior, runtime boundaries, measured performance
+budgets and exact-build diagnostics with rollback. Existing coverage is being
+mapped before missing checks are added.
+
+Studio TypeScript7.0.2 now passes actual compiler/API-resolution checks. ESLint's
+required classic6.0.3 is isolated in a real package; a fresh lock resolution and
+scoped override were necessary because npm's initial incremental solver kept
+an invalid hoisted parser. npm ls now passes without invalid peers, and lint is
+clean. Measured cold checks:1.629s->0.284s; warm:0.978s->0.199s. These are local
+compiler measurements, not gameplay-performance claims.

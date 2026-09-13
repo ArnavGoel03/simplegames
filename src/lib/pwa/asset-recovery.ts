@@ -32,6 +32,10 @@ function asset(value) {
 }
 function styles() { return Array.from(document.querySelectorAll('link[rel="stylesheet"][href]')).filter(el => asset(el.href)); }
 function styled(el) { try { return Boolean(el.sheet && el.sheet.cssRules.length); } catch { return false; } }
+function faultDetails(url, status) {
+  return { operation: "pwa", assetPath: new URL(url).pathname, status,
+    readyState: document.readyState, hydrated, controlled: Boolean(navigator.serviceWorker?.controller) };
+}
 function healthy() {
   if (!hydrated || document.readyState === "loading" || failed.size || styles().some(el => !styled(el))) return;
   healthyStartup = true;
@@ -75,7 +79,8 @@ async function probe(url, remaining) {
   try {
     const response = await fetch(url, { method: "HEAD", cache: "no-store", signal: controller.signal });
     // A server outage is not evidence that a different document will work.
-    return response.ok ? (wrongType(url, response) ? "missing" : "available") : response.status === 404 || response.status === 410 ? "missing" : null;
+    const state = response.ok ? (wrongType(url, response) ? "missing" : "available") : response.status === 404 || response.status === 410 ? "missing" : null;
+    return { state, status: response.status };
   } catch { return null; } finally { clearTimeout(timer); }
 }
 async function check() {
@@ -100,28 +105,30 @@ async function check() {
     for (let index = 0; index < entries.length; index += 3) {
       if (Date.now() >= deadline) break;
       await Promise.all(entries.slice(index, index + 3).map(async ([url, observed]) => {
-        const state = await probe(url, Math.max(1, deadline - Date.now()));
-        if (state === "missing" || (state === "available" && observed)) confirmed.push(url);
+        const result = await probe(url, Math.max(1, deadline - Date.now()));
+        if (result?.state === "missing" || (result?.state === "available" && observed)) confirmed.push({ url, status: result.status });
       }));
     }
     if (reloading) return;
     // A delayed stylesheet can finish, or leave the document, during a probe.
     // Do not interrupt the now-working page for that obsolete observation.
-    confirmed = confirmed.filter(url => {
+    confirmed = confirmed.filter(({ url }) => {
       if (!new URL(url).pathname.endsWith(".css")) return true;
       if (styles().some(el => asset(el.href) === url && !styled(el))) return true;
       failed.delete(url); return false;
     });
     if (!confirmed.length) { healthy(); return; }
-    void emitFault(confirmed.some(url => new URL(url).pathname.endsWith(".css")) ? "pwa-missing-style" : "pwa-missing-script", { operation: "pwa" });
-    const brokenStyle = styles().some(el => !styled(el) && confirmed.includes(asset(el.href)));
+    const primary = confirmed.find(({ url }) => new URL(url).pathname.endsWith(".css")) || confirmed[0];
+    const details = faultDetails(primary.url, primary.status);
+    void emitFault(new URL(primary.url).pathname.endsWith(".css") ? "pwa-missing-style" : "pwa-missing-script", details);
+    const brokenStyle = styles().some(el => !styled(el) && confirmed.some(({ url }) => url === asset(el.href)));
     if (healthyStartup && !brokenStyle) { window.dispatchEvent(new Event(FAILED)); return; }
     if (!recoveryTarget()) return;
     reloading = true;
-    void emitFault("pwa-recovery", { operation: "pwa" });
+    void emitFault("pwa-recovery", details);
     let cleanupTimer;
     await Promise.race([
-      Promise.all(confirmed.map(evictFailure)),
+      Promise.all(confirmed.map(({ url }) => evictFailure(url))),
       new Promise(resolve => { cleanupTimer = setTimeout(resolve, Math.max(1, deadline - Date.now())); }),
     ]);
     clearTimeout(cleanupTimer);
@@ -146,7 +153,7 @@ if ("serviceWorker" in navigator) navigator.serviceWorker.addEventListener("mess
   if (event.data.type === CANCELLED && workerRecovery) { resumeRecovery(); return; }
   if (event.data.type !== STARTED || workerRecovery) return;
   failed.add(url); workerRecovery = true; reloading = true;
-  void emitFault("pwa-recovery", { operation: "pwa" });
+  void emitFault("pwa-recovery", faultDetails(url, event.data.status));
   // A worker can be terminated, or navigate() can fail. It must not silence a
   // still-open broken document forever. The URL/session guards remain in force.
   workerTimer = setTimeout(resumeRecovery, LIMITS.timeoutMs);

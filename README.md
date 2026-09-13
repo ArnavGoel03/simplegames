@@ -80,3 +80,10 @@ The sync command also mirrors Circuit's released `runtime-policy.mjs` byte for
 byte into `tools/html-policy.mjs`. Both repositories build the same HTML wrapper;
 live verification rejects a changed catalogue or helper. The wrapper preserves
 cache policy while preventing Cloudflare from injecting analytics scripts.
+
+Type checks and Next builds use the native TypeScript 7 compiler. ESLint's
+JavaScript compiler API stays inside `tools/eslint-compat`; npm's linked-package
+setting and the scoped compiler override keep that dependency separate. Run
+`npm run gate` for the calibrated toolchain check, native typecheck, zero-warning
+lint and tests. `verify:toolchain` checks the actual resolved parser, not only
+the package lock, and rejects a deliberately invalid TypeScript fixture.
