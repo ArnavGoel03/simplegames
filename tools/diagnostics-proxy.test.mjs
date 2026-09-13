@@ -7,6 +7,24 @@ const request = (body = '{}', extra = {}) => new Request(`${origin}/api/diagnost
 afterEach(() => { vi.unstubAllGlobals(); vi.useRealTimers(); });
 
 describe("studio diagnostics forwarding", () => {
+  it("uses the redirect modes implemented by the edge runtime", async () => {
+    vi.stubGlobal("fetch", vi.fn(async (_url, options) => {
+      if (options.redirect === "error") throw new TypeError('Invalid redirect value, must be one of "follow" or "manual"');
+      expect(options.redirect).toBe("manual");
+      return new Response(null, { status: 204, headers: { "x-diagnostic-id": "edge-report" } });
+    }));
+    const response = await diagnosticsProxy(request('{"id":"edge-report"}'));
+    expect(response.status).toBe(204);
+    expect(response.headers.get("x-diagnostic-id")).toBe("edge-report");
+  });
+  it("refuses upstream redirects without forwarding report data again", async () => {
+    const fetch = vi.fn(async () => new Response(null, { status: 307, headers: { location: "https://elsewhere.test/report" } }));
+    vi.stubGlobal("fetch", fetch);
+    const response = await diagnosticsProxy(request());
+    expect(response.status).toBe(503);
+    expect(response.headers.has("location")).toBe(false);
+    expect(fetch).toHaveBeenCalledOnce();
+  });
   it("preserves the receipt and omits account cookies and authorization", async () => {
     const fetch = vi.fn(async () => new Response(null, { status: 204, headers: { "x-diagnostic-id": "report-id", "set-cookie": "never=forward" } })); vi.stubGlobal("fetch", fetch);
     const result = await diagnosticsProxy(request('{"id":"report-id"}', { cookie: "secret", authorization: "secret" }));
