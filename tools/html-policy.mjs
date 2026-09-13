@@ -1,13 +1,24 @@
 import { accessSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
-/** Keep intermediaries from injecting scripts into HTML without changing its cache policy. */
+/** Revalidate browser documents while preserving shared and private cache policy. */
 export function protectHtml(response) {
   if (response.headers.get("content-type")?.split(";")[0].trim().toLowerCase() !== "text/html") return response;
-  const cache = response.headers.get("cache-control");
-  if (cache?.split(",").some((directive) => directive.trim().toLowerCase() === "no-transform")) return response;
+  const directives = (response.headers.get("cache-control") ?? "").split(",").map((value) => value.trim()).filter(Boolean);
+  // Hashed assets can disappear on a deploy. A browser must not reuse an old
+  // document during stale-while-revalidate and then request those removed files.
+  const kept = directives.filter((value) => !/^(?:stale-while-revalidate|stale-if-error)\s*=/i.test(value))
+    .map((value) => /^max-age\s*=/i.test(value) ? "max-age=0" : value);
+  const has = (name) => kept.some((value) => value.toLowerCase() === name);
+  if (!has("no-store") && !has("no-cache")) {
+    if (!kept.some((value) => /^max-age\s*=/i.test(value))) kept.push("max-age=0");
+    if (!has("must-revalidate")) kept.push("must-revalidate");
+  }
+  if (!has("no-transform")) kept.push("no-transform");
+  const cache = kept.join(", ");
+  if (response.headers.get("cache-control") === cache) return response;
   const protectedResponse = new Response(response.body, response);
-  protectedResponse.headers.set("cache-control", cache ? `${cache}, no-transform` : "no-transform");
+  protectedResponse.headers.set("cache-control", cache);
   return protectedResponse;
 }
 

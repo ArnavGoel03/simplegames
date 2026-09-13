@@ -22,5 +22,6 @@ export function buildInfo(root = fileURLToPath(new URL("../", import.meta.url)),
   if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}Z$/.test(builtAt) || !Number.isFinite(Date.parse(builtAt))) {
     throw new Error("Invalid build timestamp");
   }
-  return { NEXT_PUBLIC_APP_VERSION: version, NEXT_PUBLIC_APP_COMMIT: commit, NEXT_PUBLIC_APP_BUILT_AT: builtAt };
+  const environment = env.NEXT_PUBLIC_APP_ENVIRONMENT || (env.CLOUDFLARE_BUILD === "production" ? "production" : env.CLOUDFLARE_BUILD === "preview" ? "preview" : "development");
+  return { NEXT_PUBLIC_APP_ENVIRONMENT: environment, NEXT_PUBLIC_APP_VERSION: version, NEXT_PUBLIC_APP_COMMIT: commit, NEXT_PUBLIC_APP_BUILT_AT: builtAt };
 }

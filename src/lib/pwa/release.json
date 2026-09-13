@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "files": [
+    {
+      "name": "service-worker.ts",
+      "sha256": "d49e081e437a7f548363867d58135ca8a97da86d0e2ca527dedb8c2f161efbac"
+    },
+    {
+      "name": "worker-runtime.ts",
+      "sha256": "7d8e4f2702daafc9c6eca992460d9a83aeeb49a5451ef0bf8d437ff2b11c33f3"
+    },
+    {
+      "name": "version.ts",
+      "sha256": "bc30355fe40b5fb9f5c4ad7f8fa92c024a365519325db6ba63ee341c9003f8a9"
+    },
+    {
+      "name": "asset-recovery.ts",
+      "sha256": "9b39a812df8ad3b3813a5d26798d25f2508e62a5d623ed198f4a7d4d378ed1f8"
+    },
+    {
+      "name": "worker-client.ts",
+      "sha256": "a3f914ba02cf61574e30b4ae743cc69a55e3adee4959e6f323b3702b9b54b8e4"
+    },
+    {
+      "name": "early-source.ts",
+      "sha256": "0bc4f99312b7831155df1fcf3609ca9975d282883fd966b14bf0dad529b85618"
+    },
+    {
+      "name": "diagnostic-limits.ts",
+      "sha256": "847ddf71878aea2487af4344f0327b4a489eb24104f325b68c0411bb224738f0"
+    }
+  ]
+}
