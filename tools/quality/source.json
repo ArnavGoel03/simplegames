@@ -1,0 +1,12 @@
+{
+  "schema": 1,
+  "repository": "ArnavGoel03/glass-table-games",
+  "sourceHead": "7f605b837e33c1f0530fdf7b8cde82fec18b3ca6",
+  "files": {
+    "release-policy.mjs": "b564ece9c9f1ec586006a5e6f502d25c8a2663ed4995a1dbc8d4c2c81826b49e",
+    "quality-runtime.mjs": "3794ef073ce588087358c04a051f809da10e8e49f65ac1d0b1cb1fa14b572b4e",
+    "release-policy.node-spec.mjs": "789dcb7305a6e2081687722413d19d0e796239a7f924cae9c4a0743fad90779f",
+    "quality-runtime.node-spec.mjs": "cb1c47173003906bd8ef4baa04c75febc51ed8eff1fc9f18c2c8e18be09ee9ef",
+    "open-next-release.mjs": "109dd896aaeee043346e7a637d38623180d82af11c106e711a9ac613d2376f36"
+  }
+}

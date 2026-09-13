@@ -18,18 +18,40 @@ on:
           - chromium
           - webkit
         default: chromium
+      baseline:
+        description: Measure the existing live sites without creating release evidence
+        type: boolean
+        default: false
+      release_candidates_json:
+        description: Exact candidate upload receipts to verify
+        type: string
+      network_probe_only:
+        description: Run only the bounded network diagnostic controls
+        type: boolean
+        default: false
+      skip_performance_probe:
+        description: Skip the independent performance probe during network diagnosis
+        type: boolean
+        default: false
+      site_filter:
+        description: Optional studio-only live baseline
+        type: string
 
 permissions:
   contents: read
 
 concurrency:
-  group: visual-${{ github.ref }}-${{ inputs.browser || 'chromium' }}
+  group: visual-${{ github.ref }}-${{ inputs.browser || 'chromium' }}-${{ inputs.network_probe_only && 'probe' || 'release' }}
   cancel-in-progress: true
 
 jobs:
   browser:
     runs-on: ubuntu-24.04
     timeout-minutes: 10
+    env:
+      BASELINE_ONLY: ${{ inputs.baseline }}
+      RELEASE_CANDIDATES_JSON: ${{ inputs.release_candidates_json }}
+      SITE_FILTER: ${{ inputs.site_filter }}
     steps:
       - uses: actions/checkout@v7.0.1
       - uses: actions/setup-node@v7.0.0
@@ -37,30 +59,76 @@ jobs:
           node-version: 26
           cache: npm
       - run: npm ci --no-audit --no-fund
+      - run: npm run gate
       - name: Install browser
         env:
           BROWSER_ENGINE: ${{ inputs.browser || 'chromium' }}
         run: npx playwright install --with-deps "$BROWSER_ENGINE"
-      - if: ${{ !inputs.live && !inputs.casino_preview }}
+      - if: ${{ !inputs.live && !inputs.casino_preview && !inputs.baseline && !inputs.release_candidates_json }}
         run: npm run build
-      - name: Verify startup recovery under failed and stalled resources
-        env:
-          BROWSER_ENGINE: ${{ inputs.browser || 'chromium' }}
-        run: node tools/verify-startup.mjs
       - name: Capture responsive pages
+        if: ${{ !inputs.network_probe_only }}
         env:
           CAPTURE_LIVE: ${{ inputs.live }}
           CASINO_PREVIEW: ${{ inputs.casino_preview }}
           BROWSER_ENGINE: ${{ inputs.browser || 'chromium' }}
         run: |
-          if [ "$CAPTURE_LIVE" = "true" ] || [ -n "$CASINO_PREVIEW" ]; then
+          if [ "$CAPTURE_LIVE" = "true" ] || [ "$BASELINE_ONLY" = "true" ] || [ -n "$CASINO_PREVIEW" ] || [ -n "$RELEASE_CANDIDATES_JSON" ]; then
             node tools/verify-visual.mjs --live
           else
             node tools/verify-visual.mjs
           fi
+      - name: Verify startup recovery under failed and stalled resources
+        if: ${{ !inputs.network_probe_only && !cancelled() }}
+        env:
+          BROWSER_ENGINE: ${{ inputs.browser || 'chromium' }}
+        run: node tools/verify-startup.mjs
+      - name: Verify game entry
+        if: ${{ inputs.release_candidates_json && !inputs.network_probe_only && !cancelled() }}
+        env:
+          BROWSER_ENGINE: ${{ inputs.browser || 'chromium' }}
+        run: node tools/verify-entry.mjs
+      - name: Verify gameplay across resize
+        if: ${{ inputs.release_candidates_json && !inputs.network_probe_only && !cancelled() }}
+        env:
+          BROWSER_ENGINE: ${{ inputs.browser || 'chromium' }}
+        run: node tools/verify-play.mjs
+      - name: Verify service worker lifecycle
+        if: ${{ inputs.release_candidates_json && !inputs.network_probe_only && !cancelled() }}
+        env:
+          BROWSER_ENGINE: ${{ inputs.browser || 'chromium' }}
+        run: node tools/verify-pwa.mjs
+      - name: Calibrate browser network diagnostics
+        if: ${{ inputs.release_candidates_json && !cancelled() }}
+        env:
+          BROWSER_ENGINE: ${{ inputs.browser || 'chromium' }}
+          TRACE_CASINO: ${{ inputs.network_probe_only }}
+        run: |
+          if [ "$TRACE_CASINO" = "true" ]; then
+            node tools/probe-network.mjs --trace-casino
+          else
+            node tools/probe-network.mjs
+          fi
+      - name: Compare live and candidate performance
+        if: ${{ inputs.network_probe_only && !inputs.skip_performance_probe && !cancelled() }}
+        env:
+          BROWSER_ENGINE: ${{ inputs.browser || 'chromium' }}
+        run: node tools/probe-performance.mjs
       - uses: actions/upload-artifact@v7.0.1
         if: always()
         with:
           name: visual-review
           path: .audit/visual
           retention-days: 7
+      - uses: actions/upload-artifact@v7.0.1
+        if: inputs.baseline && !inputs.network_probe_only && success()
+        with:
+          name: performance-baseline
+          path: .audit/visual/release-evidence.json
+          retention-days: 90
+      - uses: actions/upload-artifact@v7.0.1
+        if: inputs.release_candidates_json && !inputs.network_probe_only && success()
+        with:
+          name: candidate-evidence
+          path: .audit/visual/release-evidence.json
+          retention-days: 90

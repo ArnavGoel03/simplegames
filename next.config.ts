@@ -1,12 +1,14 @@
 import type { NextConfig } from "next";
 import { PLAYABLE, playPath } from "./src/lib/brand";
 import { buildInfo } from "./tools/build-info.mjs";
+import { OPEN_NEXT_EXPERIMENTAL_CONFIG } from "./tools/quality/open-next-release.mjs";
 
 // Nothing here is dynamic: three routes, no database, no images from anywhere
 // but this repository. Everything below is a header rather than a feature.
 const config: NextConfig = {
   env: buildInfo(),
   reactStrictMode: true,
+  experimental: OPEN_NEXT_EXPERIMENTAL_CONFIG,
   poweredByHeader: false,
   /*
     The optimiser is off, and measurement is why.

@@ -1,8 +1,53 @@
 # Glass Table Games: state of play
 
+## Studio 0.5.1 release, 14 September 2026
+
+Studio 0.5.1 is live at source
+`007ca22d0e84afb119b3dcdf62cd2c356eac6764`, immutable Worker
+`4f6f1da4-aebf-4817-b5a0-281bbd15eaf2`, serving 100% of production traffic.
+The provider confirmed deployment at 2026-09-13 19:49:57 UTC. The canonical
+live check passed 144 assertions across 11 pages and manifest shortcuts; the
+studio catalogue, runtime policy and PWA source match the game release.
+All ten startup CSS/JS assets and the service worker match the certified bytes;
+the content check rejected a same-size one-byte CSS mutation. The temporary
+Worker preview is now disabled again, with both `enabled` and
+`previews_enabled` read back as `false`. Preview URLs in browser receipts are
+historical verification targets.
+
+The release repairs shared startup recovery and OpenNext prefetch compatibility,
+retains the pastel glass/check design, and uses a native Games fragment link.
+Deployment now requires matching source, build, immutable upload and browser
+receipts, with recorded rollback identity. TypeScript 7, zero-warning lint,
+154 Vitest tests and 33 canonical Node tests passed in the 24.129-second gate;
+the production build also completed without warnings.
+
+Chromium run `34778527485` (artifact `10324114128`) and WebKit run
+`34777867969` (artifact `10323833922`) passed all seven required browser checks
+against that exact source and Worker. Startup medians were 543.8/490 ms,
+completed Games navigation medians 46.5/132 ms, and initial decoded JS/CSS
+510982 bytes. All are within the recorded 750 ms, 400 ms and 655360-byte limits.
+
+The studio navigation baseline was corrected to measure the completed fragment
+scroll plus two stable frames; the old timer could finish before navigation.
+The 400 ms limit follows the existing rule applied to newly authenticated live
+baseline samples. Startup and asset budgets were unchanged. See
+`docs/quality/browser-baseline.md` for exact samples and provenance.
+
+WebKit offline evidence uses the exact candidate worker in a controlled browser
+fixture with its HTTP origin stopped and uncached transport failure calibrated.
+It verifies that worker branch, not native WebKit offline-toggle or physical
+Safari behavior. The candidate's online source/styles were checked separately.
+Physical-device checks remain outstanding. Chromium exercised the candidate
+itself with browser-emulated offline networking.
+
+Release evidence and rollback identity are recorded in
+`docs/RELEASE-2026-09-14.md`. Physical-device checks and owner actions remain
+separate from this automated release verification.
+
+
 ## Pastel glass release, 13 September 2026
 
-Studio 0.5.0 is live from source `e3812be`, Worker
+Studio 0.5.0 was released from source `e3812be`, Worker
 `8bb33c61-8312-42e1-b2b7-3dce9e5bddf2`. It replaces the green cast with pastel
 light over a checked background and translucent table, card and navigation
 surfaces, with opaque accessibility fallbacks. The canonical palette also
@@ -13,11 +58,10 @@ twelve light/dark resize captures, which were visually reviewed. It exposed a
 card-fan stacking defect after resize; the local stacking-context fix passed the
 same rendered sequence. The owner approved the light-blue glass direction.
 
-The owner's fresh 18:00 Safari browser-tab report shows Casino unstyled again.
-Game promotion is held while the shared bootstrap is investigated; old recovery
-checks do not establish this incident is solved. Casino progression/lobby,
-shared chrome, and clearer Circuit/Lattice entry screens remain in progress.
-`docs/GLASS-EXPERIENCE-2026-09-13.md` tracks the full request queue.
+The owner's 18:00 Safari browser-tab report of an unstyled Casino launch
+triggered the shared startup repair and release gates recorded above. The full
+studio request queue is in `docs/GLASS-EXPERIENCE-2026-09-13.md`; game release
+status is tracked in the canonical game repository.
 
 ## Studio design, 13 September 2026
 
