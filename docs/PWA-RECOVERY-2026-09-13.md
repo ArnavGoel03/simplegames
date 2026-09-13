@@ -1,6 +1,6 @@
 # Installed app recovery, 13 September 2026
 
-Status: 0.3.1 is live; the diagnosed edge proxy correction in 0.3.2 is pending release. This is the
+Status: 0.3.2 is live with the verified edge proxy correction. This is the
 studio index integration of the shared game worker/recovery fix. No claim about
 physical Safari verification is made.
 
@@ -30,7 +30,7 @@ healthy. These are replaced by the canonical shared implementation.
 - [x] Final mirror sync after the primary diagnostic hooks are frozen.
 - [x] Candidate production build and rendered browser check.
 - [x] Deploy 0.3.1 and verify live worker, source mirror and 144 HTTP assertions.
-- [ ] Deploy edge proxy correction and verify its automatic diagnostic receipt.
+- [x] Deploy edge proxy correction and verify its automatic diagnostic receipt.
 
 Verification: the full 106-test suite passes. An additional reset regression
 reproduced denied worker access skipping accessible caches, and all three reset
@@ -57,8 +57,8 @@ predev, pretest and the Cloudflare build wrapper. Other public assets stay track
 Unrelated AGENTS.md, CLAUDE.md and pnpm-lock.yaml were left untouched.
 
 Release branch: `fix/shared-pwa-diagnostics`, based on current `origin/main`
-(`b6c27cf`). Production deployment waits for the canonical Circuit source bundle
-and diagnostic receipt backend to be confirmed live.
+(`b6c27cf`). The canonical Circuit source bundle and diagnostic receipt backend were
+verified live before studio release.
 
 ## Edge proxy finding
 
@@ -76,6 +76,21 @@ mode reached Circuit and received its expected schema rejection. The temporary
 by that fixed invalid-body probe; the earlier synthetic report IDs were queried
 and removed with absence verified.
 
-Evidence: `.audit/pwa/live-results.json` records the initial failed receipt;
+Evidence: `.audit/pwa/live-failed-0.3.1.json` records the initial failed receipt;
 `.audit/pwa/proxy-fixture/result.json` records successful edge forwarding and
 `cleanup.json` records deletion. The canonical source mirror remains unchanged.
+
+## Live correction receipt
+
+Version 0.3.2, source `f93e9ca0725878aaafe0ca81e094d682ff6b1f67`, is live as
+Worker `512f95fc-ab6d-4032-81db-decbefbcf2b5` after PR 8. The shared automatic
+reporter sent report `24a88008-b5c5-4ba1-b86d-1ce3bcdebf66` through the studio
+proxy and received 204 with that exact `x-diagnostic-id`. A scoped DB readback
+verified source, version and studio attribution; deletion of that exact row and
+absence were verified in finally cleanup. `.audit/pwa/live-results.json` records
+the result. All 144 live HTTP/metadata assertions pass, as do exact deployed
+worker bytes and canonical catalogue, runtime policy and seven-source mirror
+checks. The deploy CLI emitted its upstream Node DEP0190 warning after success;
+application checks and production compilation were clean. No temporary Worker,
+browser or local server remains from this task. Existing physical Safari and
+public-copy limitations are unchanged.
