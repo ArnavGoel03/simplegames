@@ -199,3 +199,99 @@ Set `updated` dates for every legal document whose substance changes. Do not
 publish while its contact route is known to be unreachable. Mailbox existence
 has not been independently verified during this audit; old documents call it
 pending. The larger legal corrections above remain proposed, not applied.
+
+## Casino and account-data addendum, 13 September 2026
+
+Proposed only, not applied. This addendum describes the current local release
+work in `gtg-teen-patti`, not the older clean `main` source cited above. Confirm
+release verification before publishing it. No real-money feature, legal age,
+jurisdiction, retention deadline, staffed support service or response time is
+being proposed or asserted.
+
+Add to Privacy's account/game records section:
+
+> Casino practice runs in your browser. Account play stores your play-money
+> balance, reserved chips, ledger entries, game choices, bets, actions and
+> results. It also stores the commitments and random seeds used to verify a
+> round after it ends. Your private round state is not sent to other players.
+>
+> A report you send from a table can include the game name, your seat, the room
+> ID and an available completed-game ID. These help us locate the reported
+> game. The report form does not attach a private card hand or a live random seed.
+
+Add to Terms' description of play money:
+
+> Casino games use play money. Chips have no monetary value. There are no
+> deposits, chip purchases or cash-outs.
+
+Add to the Content page:
+
+> Casino includes simulations of Teen Patti, roulette, blackjack, slots and
+> other casino games. They involve simulated betting and gambling themes, even
+> though no real money is involved.
+
+The owner must decide whether additional age/content controls or jurisdictional
+language are needed. No age limit or legal conclusion has been invented here.
+
+Add to Fair play, distinguishing account Casino from shared room ceremonies:
+
+> For account Casino rounds, the server commits to its random seed before your
+> browser supplies a client seed. The server keeps the seed and undealt cards
+> private while the round is active. When the round ends, the proof can replay
+> its cards, random results, actions and payout under the recorded rules.
+> Practice uses the same rules engine in your browser.
+
+This describes the implemented verification mechanism, not an independent
+certification, guaranteed profitability or a claim that software cannot fail.
+Do not replace the existing shared-room explanation with this single-player
+protocol.
+
+After the account export/deletion controls are released, propose replacing the
+contact-only account-data paragraph with:
+
+> You can download your account data or request account deletion from the
+> account page. Finish active games before deleting the account. Deletion removes
+> sign-in details, profile details, friendships, ratings, play-money records and
+> account Casino rounds. Shared game archives retain a seat reference without
+> your profile details so other players' game histories still work. Deletion
+> does not erase other players' copies of shared games, infrastructure logs or
+> backups immediately. The deleted account cannot be restored.
+
+The retained seat reference is pseudonymous. Removing profile details does not
+prove that a past opponent cannot identify a seat. Backup/log retention remains
+an operational decision; the sentence above deliberately promises no deadline.
+Diagnostic reports have separate session IDs and are subject to the diagnostic
+retention process, not an asserted account-wide erasure guarantee.
+
+Proposed account-control slots (the component currently defaults to empty text):
+
+| Slot | Proposed wording |
+| --- | --- |
+| `exportLabel` | Download account data |
+| `deleteLabel` | Delete account |
+| `confirmLabel` | Delete account |
+| `cancelLabel` | Cancel |
+| `confirmation` | Finish your current games before deleting this account. This removes your sign-in details, profile, play-money balance and account-linked records. Shared game archives keep a seat reference without your profile details. This account cannot be restored. |
+
+Evidence, relative to `gtg-teen-patti`:
+
+- `packages/casino/src/view.ts`, `engine.ts` and `rules.ts` implement the shared
+  rules and terminal proof. `packages/studio/src/server/routes/casino.ts` binds
+  rounds to the session and commits before accepting client entropy.
+- `packages/db/src/casino.ts` and chip/casino migration functions own durable
+  rounds, reservations, commands and atomic settlement. No payment API exists
+  in this feature.
+- `apps/teen-patti/src/components/casino/usePracticeCasino.ts` keeps practice
+  state locally; the account hook uses the authenticated server routes.
+- `packages/studio/src/report/ReportIssue.tsx` and
+  `packages/diagnostics/src/client.ts` attach bounded IDs to a manual report.
+  The Teen layout now mounts the existing diagnostics provider.
+- `packages/studio/src/server/routes/account-data.ts` and
+  `packages/db/src/account-data.ts` provide bounded account exports. Casino
+  records use the same redacted response helper as gameplay; active seeds and
+  shoes are not exported. `packages/db/drizzle/0012_account_deletion.sql`
+  implements deletion and preserves the non-profile seat reference.
+- Account/session and realtime revocation integration, final gates, migration
+  and live behavior must be verified before enabling the proposed controls.
+- `gtg-teen-patti/docs/SUPPORT-READINESS-2026-09-13.md` records the actual intake,
+  protected triage, opportunistic retention and unverified mailbox/coverage gaps.

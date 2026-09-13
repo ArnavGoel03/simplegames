@@ -1,19 +1,20 @@
 # Glass Table Games: state of play
 
-## Casino release candidate, 13 September 2026
+## Casino release, 13 September 2026
 
-Studio 0.3.0 is prepared locally on `fix/studio-red-team-2026-09-13`.
+Studio 0.3.0 is live from source `55c9f43` (PR 5, merge `cc19365`), Worker
+`cfaf2423-4fea-4768-bea1-16e74a0c1efe`, built at `2026-09-13T01:14Z`.
 The catalogue snapshot comes from the primary game's built candidate `b8e046d`
 at `http://127.0.0.1:3120/api/studio-catalogue`. The fifth entry is Casino with
 eleven games; Deal retains nine games including Rummy, with no separate tile.
 The footer now shows version, revision and UTC build time, with the existing
 game update wording when an installed replacement is ready. All 90 tests,
-lint, typecheck, the 17-route Next build and 144 local HTTP/metadata checks pass.
+lint, typecheck, the 17-route Cloudflare build and 144 live HTTP/metadata checks pass.
 Six same-page viewport changes and the footer update state passed hosted
 Chromium inspection; evidence is in `docs/QA-STUDIO-CASINO-2026-09-13.md`.
 The final snapshot and runtime helper match live Circuit release `91ed0b2`.
-This studio candidate is not deployed. Cloudflare release certification and
-deployment remain pending in `docs/AUDIT-2026-09-13.md`.
+Browser-UA no-transform/no-beacon checks and exact deployed service-worker bytes
+also pass. `docs/AUDIT-2026-09-13.md` records the release and remaining copy work.
 Public policy drafts remain unpublished.
 
 ## 13 September 2026 audit update (supersedes older claims below)
