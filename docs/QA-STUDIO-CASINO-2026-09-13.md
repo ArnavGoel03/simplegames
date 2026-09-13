@@ -41,9 +41,9 @@ Local evidence is ignored by Git:
 - `.audit/studio-casino-qa.mjs`, the repeatable browser script.
 
 The preview stamp names its base checkout, which had these changes uncommitted.
-The final Cloudflare build must follow the release commit so its public revision
-identifies the committed source. Physical foldable hardware and Safari were not
-tested by this hosted Chromium run.
+The final Cloudflare build followed release commit `55c9f43`, and the live footer
+now identifies that committed source with build time `2026-09-13T01:14Z`.
+Physical foldable hardware and Safari were not tested by this hosted Chromium run.
 
 ## Machine checks
 
@@ -58,7 +58,12 @@ tested by this hosted Chromium run.
   server, so production drift verification remains a release step.
 
 Final production sync against live Circuit release `91ed0b2` passed. The
-catalogue and runtime helper are identical to the rendered candidate.
+catalogue and runtime helper are identical to the rendered candidate. Studio
+PR 5 merged and the certified build deployed as Worker
+`cfaf2423-4fea-4768-bea1-16e74a0c1efe`. All 144 live assertions passed, compared
+with 22 missing-footer assertions on old production. The browser-UA response
+retains no-transform without an injected analytics beacon, and deployed service
+worker bytes match the certified artifact exactly.
 
-Remaining: commit and certify the release, then deploy and verify production.
-Public policy drafts remain unapproved.
+Remaining in this release: public policy approval. The proposed casino/account
+addendum is documentation only and does not enable unpublished account controls.
