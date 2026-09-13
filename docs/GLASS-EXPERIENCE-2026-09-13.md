@@ -10,6 +10,12 @@ into the game saga without replacing each game's useful visual identity.
 
 ## Active work
 
+- [ ] Urgent: investigate the owner's fresh 18:00 Mac Casino unstyled launch.
+  Earlier recovery work is not proof this failure class is closed. Hold game
+  promotion until a reproduced cause and shared recovery fix are verified.
+- [ ] Simplify Circuit and Lattice's confusing start/mode screens on phone and
+  desktop, preserving solo, friends, matchmaking, daily and ranked paths.
+
 - [x] Studio: central pastel palette, glass layers, checked backdrop and clear
   reading surfaces in light and dark modes.
 - [x] Studio: reduced transparency/motion, contrast and responsive review.

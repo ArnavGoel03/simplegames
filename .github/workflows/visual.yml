@@ -11,6 +11,13 @@ on:
       casino_preview:
         description: Optional Casino version URL on the studio Workers account
         type: string
+      browser:
+        description: Browser engine
+        type: choice
+        options:
+          - chromium
+          - webkit
+        default: chromium
 
 permissions:
   contents: read
@@ -30,13 +37,17 @@ jobs:
           node-version: 26
           cache: npm
       - run: npm ci --no-audit --no-fund
-      - run: npx playwright install --with-deps chromium
+      - name: Install browser
+        env:
+          BROWSER_ENGINE: ${{ inputs.browser || 'chromium' }}
+        run: npx playwright install --with-deps "$BROWSER_ENGINE"
       - if: ${{ !inputs.live && !inputs.casino_preview }}
         run: npm run build
       - name: Capture responsive pages
         env:
           CAPTURE_LIVE: ${{ inputs.live }}
           CASINO_PREVIEW: ${{ inputs.casino_preview }}
+          BROWSER_ENGINE: ${{ inputs.browser || 'chromium' }}
         run: |
           if [ "$CAPTURE_LIVE" = "true" ] || [ -n "$CASINO_PREVIEW" ]; then
             node tools/verify-visual.mjs --live

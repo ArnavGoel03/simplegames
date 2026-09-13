@@ -1,6 +1,6 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import { spawn } from "node:child_process";
-import { chromium } from "playwright";
+import { chromium, webkit } from "playwright";
 import catalogue from "../src/lib/game-catalogue.json" with { type: "json" };
 
 const output = new URL("../.audit/visual/", import.meta.url);
@@ -8,6 +8,8 @@ await mkdir(output, { recursive: true });
 const live = process.argv.includes("--live");
 const local = "http://127.0.0.1:3187";
 const preview = process.env.CASINO_PREVIEW;
+const engine = process.env.BROWSER_ENGINE || "chromium";
+if (!["chromium", "webkit"].includes(engine)) throw new Error("Unknown browser engine");
 const sites = preview ? [{ id: "teenpatti", url: preview }] : live
   ? [{ id: "studio", url: "https://glasstablegames.com" }, ...catalogue.sites]
   : [{ id: "studio", url: local }];
@@ -15,6 +17,7 @@ const sizes = [[320, 720], [390, 844], [844, 390], [1024, 768], [1440, 1000], [2
 const results = [];
 let server;
 let browser;
+let activePage;
 
 async function verifyCasino(page, origin, colorScheme) {
   await page.locator(".casino-feature-picker").waitFor();
@@ -35,17 +38,17 @@ async function verifyCasino(page, origin, colorScheme) {
   await page.setViewportSize({ width: 390, height: 844 });
   if (await page.locator("#casino-feature-title").textContent() !== "Roulette") throw new Error("Resize reset selected game");
   await page.screenshot({ path: new URL(`casino-${colorScheme}-progress.jpg`, output).pathname, fullPage: true, type: "jpeg", quality: 80 });
-  await page.goto(new URL("/casino/roulette", origin).href, { waitUntil: "networkidle" });
+  await page.goto(new URL("/casino/roulette", origin).href, { waitUntil: "domcontentloaded" });
   await page.getByRole("button", { name: "Spin", exact: true }).click();
   await page.locator(".casino-proof").waitFor();
-  await page.goto(origin, { waitUntil: "networkidle" });
+  await page.goto(origin, { waitUntil: "domcontentloaded" });
   await page.locator(".casino-progress-details summary").click();
   const roulette = page.locator(".casino-progress-game").filter({ has: page.getByRole("link", { name: "Roulette", exact: true }) });
   await roulette.locator('[aria-label="Roulette: 1 / 1"]').waitFor();
-  await page.reload({ waitUntil: "networkidle" });
+  await page.reload({ waitUntil: "domcontentloaded" });
   await page.locator(".casino-progress-details summary").click();
   await roulette.locator('[aria-label="Roulette: 1 / 1"]').waitFor();
-  await page.goto(new URL("/casino/roulette?mode=chips", origin).href, { waitUntil: "networkidle" });
+  await page.goto(new URL("/casino/roulette?mode=chips", origin).href, { waitUntil: "domcontentloaded" });
   if (await page.getByRole("button", { name: "Chips", exact: true }).getAttribute("aria-pressed") !== "true") throw new Error("Chips deep link lost mode");
   if (await page.getByRole("button", { name: "Spin", exact: true }).isEnabled()) throw new Error("Signed-out Chips action must stay disabled");
   results.push({ name: `casino-${colorScheme}-interactions`, url: origin, overflow: false, images: [], errors: [], checks: ["featured destinations", "all filters", "eleven games", "resize state", "practice completion", "reload persistence", "Chips account boundary"] });
@@ -66,7 +69,7 @@ try {
       server.once("error", error => { clearTimeout(timeout); reject(error); });
     });
   }
-  browser = await chromium.launch();
+  browser = await ({ chromium, webkit })[engine].launch();
   for (const site of sites) {
     const url = new URL(site.url);
     if (!(url.origin === local || (url.protocol === "https:" && (url.hostname === "glasstablegames.com" || url.hostname.endsWith(".glasstablegames.com") || (preview && url.hostname.endsWith(".goelhome.workers.dev")))))) {
@@ -75,9 +78,11 @@ try {
     for (const colorScheme of ["light", "dark"]) {
       const context = await browser.newContext({ colorScheme, reducedMotion: "reduce", viewport: { width: sizes[0][0], height: sizes[0][1] } });
       const page = await context.newPage();
+      activePage = page;
+      page.setDefaultNavigationTimeout(20_000);
       const errors = [];
       page.on("pageerror", error => errors.push(error.message));
-      const response = await page.goto(url.href, { waitUntil: "networkidle", timeout: 30_000 });
+      const response = await page.goto(url.href, { waitUntil: "domcontentloaded", timeout: 20_000 });
       if (!response?.ok()) throw new Error(`${url.href}: HTTP ${response?.status()}`);
       await page.evaluate(() => document.fonts.ready);
       await page.evaluate(async () => {
@@ -113,13 +118,27 @@ try {
         await page.emulateMedia({ contrast: "more" });
         await page.screenshot({ path: new URL(`studio-${colorScheme}-contrast.jpg`, output).pathname, fullPage: true, type: "jpeg", quality: 80 });
       }
-      if (site.id === "teenpatti") await verifyCasino(page, url.origin, colorScheme);
+      if (site.id === "teenpatti") {
+        await verifyCasino(page, url.origin, colorScheme);
+        results.at(-1).errors = [...errors];
+      }
       await context.close();
     }
   }
   if (results.some(result => result.overflow || result.images.length || result.errors.length)) {
     throw new Error("Visual checks found overflow, failed images or runtime errors");
   }
+} catch (error) {
+  if (activePage && !activePage.isClosed()) {
+    await activePage.screenshot({ path: new URL("failure.jpg", output).pathname, fullPage: true, timeout: 5_000 }).catch(() => {});
+    const state = await activePage.evaluate(() => ({
+      url: location.origin + location.pathname, ready: document.readyState,
+      title: document.title, body: document.body?.innerText.slice(0, 1000),
+      styles: [...document.querySelectorAll('link[rel="stylesheet"]')].map(el => ({ path: new URL(el.href).pathname, loaded: Boolean(el.sheet) })),
+    })).catch(() => null);
+    await writeFile(new URL("failure.json", output), JSON.stringify({ engine, error: String(error), state }, null, 2));
+  }
+  throw error;
 } finally {
   await writeFile(new URL("report.json", output), JSON.stringify(results, null, 2));
   await browser?.close();
