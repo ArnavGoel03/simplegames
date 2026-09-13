@@ -75,6 +75,7 @@ jobs:
           BROWSER_ENGINE: ${{ inputs.browser || 'chromium' }}
         run: |
           node tools/verify-entry.mjs
+          node tools/verify-play.mjs
           node tools/verify-pwa.mjs
       - uses: actions/upload-artifact@v7.0.1
         if: always()
@@ -86,5 +87,11 @@ jobs:
         if: inputs.baseline && success()
         with:
           name: performance-baseline
+          path: .audit/visual/release-evidence.json
+          retention-days: 90
+      - uses: actions/upload-artifact@v7.0.1
+        if: inputs.release_candidates_json && success()
+        with:
+          name: candidate-evidence
           path: .audit/visual/release-evidence.json
           retention-days: 90

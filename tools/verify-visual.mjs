@@ -121,13 +121,26 @@ try {
         results.push({ name, url: url.href, ...state, errors: [...errors] });
         console.log(JSON.stringify(results.at(-1)));
       }
-      if (site.id === "studio") {
+      if (site.id === "studio" && !baseline) {
+        const destinations = await page.locator("header nav a").evaluateAll(links => links.map(link => link.getAttribute("href")));
+        assert(destinations.length > 0, "Studio has no primary navigation");
+        for (const href of destinations) {
+          const destination = new URL(href, url);
+          assert.equal(destination.origin, url.origin, "Primary navigation leaves the studio");
+          await page.locator(`header nav a[href="${href}"]`).click();
+          await page.waitForURL(destination.href, { waitUntil: "domcontentloaded" });
+          assert.equal(await observeSource(page, site.id), observedSourceHead);
+          await page.locator('header a[href="/"]').first().click();
+          await page.waitForURL(url.origin + "/", { waitUntil: "domcontentloaded" });
+        }
+        await recordEvidence(site.id, observedSourceHead, [{ id: "entry", status: "passed" }]);
         await page.emulateMedia({ contrast: "more" });
         await page.screenshot({ path: new URL(`studio-${colorScheme}-contrast.jpg`, output).pathname, fullPage: true, type: "jpeg", quality: 80 });
       }
       if (site.id === "teenpatti" && !baseline) {
         await verifyCasino(page, url.origin, colorScheme);
         results.at(-1).errors = [...errors];
+        await recordEvidence(site.id, observedSourceHead, [{ id: "entry", status: "passed" }]);
       }
       await recordEvidence(site.id, observedSourceHead, [{ id: "network", status: errors.length || probe.failed.length ? "failed" : "passed" }], [], url.origin);
       await context.close();

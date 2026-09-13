@@ -28,6 +28,10 @@ export function parseCandidates(value) {
 export const candidates = parseCandidates(process.env.RELEASE_CANDIDATES_JSON);
 
 export async function observeSource(page, site) {
+  // Some game homepages render the footer after client hydration.
+  await page.waitForFunction(() => [...document.querySelectorAll('.build-stamp[title], .play-num[title]')]
+    .some(element => /^[a-f0-9]{40}$/i.test(element.getAttribute("title") ?? "") && element.getBoundingClientRect().width > 0),
+  undefined, { timeout: 15_000 });
   const commits = await page.locator('.build-stamp[title], .play-num[title]').evaluateAll(elements =>
     [...new Set(elements.map(element => element.getAttribute("title")).filter(value => /^[a-f0-9]{40}$/i.test(value ?? "")))]);
   assert.equal(commits.length, 1, "Rendered page must expose one full source commit");
