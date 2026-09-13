@@ -2,8 +2,11 @@ import { readFileSync } from "node:fs";
 import vm from "node:vm";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-const effect = vi.hoisted(() => ({ run: null }));
-vi.mock("react", () => ({ useEffect: (run) => { effect.run = run; } }));
+const effect = vi.hoisted(() => ({ run: null, ready: false }));
+vi.mock("react", () => ({
+  useEffect: (run) => { effect.run = run; },
+  useState: () => [effect.ready, (value) => { effect.ready = value; }],
+}));
 import { ServiceWorker } from "../src/components/ServiceWorker";
 
 const origin = "https://glasstablegames.com";
@@ -37,7 +40,7 @@ function worker() {
   return { request, fetch, cache, stored, writes };
 }
 
-afterEach(() => vi.unstubAllGlobals());
+afterEach(() => { vi.unstubAllGlobals(); effect.ready = false; });
 
 describe("the shipped service worker", () => {
   it("refreshes stable artwork URLs after their contents change", async () => {
@@ -84,6 +87,47 @@ describe("the shipped service worker", () => {
 });
 
 describe("service worker registration", () => {
+  it.each([false, true])("shows an installed update only with an existing controller (%s)", async (controlled) => {
+    const registration = new EventTarget();
+    const installing = new EventTarget();
+    installing.state = "installing";
+    registration.installing = installing;
+    const serviceWorker = new EventTarget();
+    serviceWorker.controller = controlled ? {} : null;
+    serviceWorker.register = vi.fn(async () => registration);
+    vi.stubGlobal("navigator", { serviceWorker });
+    vi.stubGlobal("document", { readyState: "complete" });
+    vi.stubGlobal("window", { location: { reload: vi.fn() }, removeEventListener: vi.fn() });
+    ServiceWorker();
+    const cleanup = effect.run();
+    await Promise.resolve();
+    expect(effect.ready).toBe(false);
+    installing.state = "installed";
+    installing.dispatchEvent(new Event("statechange"));
+    expect(effect.ready).toBe(controlled);
+    cleanup();
+    effect.ready = false;
+    installing.dispatchEvent(new Event("statechange"));
+    expect(effect.ready).toBe(false);
+  });
+
+  it("does not attach update listeners after unmount during registration", async () => {
+    let finish;
+    const registration = { waiting: {}, addEventListener: vi.fn() };
+    const serviceWorker = new EventTarget();
+    serviceWorker.controller = {};
+    serviceWorker.register = () => new Promise((resolve) => { finish = resolve; });
+    vi.stubGlobal("navigator", { serviceWorker });
+    vi.stubGlobal("document", { readyState: "complete" });
+    vi.stubGlobal("window", { location: { reload: vi.fn() }, removeEventListener: vi.fn() });
+    ServiceWorker();
+    effect.run()();
+    finish(registration);
+    await Promise.resolve();
+    expect(effect.ready).toBe(false);
+    expect(registration.addEventListener).not.toHaveBeenCalled();
+  });
+
   it.each([false, true])("reloads only a replaced controller (existing: %s)", (controlled) => {
     const listeners = new Map();
     const reload = vi.fn();

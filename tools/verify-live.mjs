@@ -1,8 +1,10 @@
 // Check the rendered contract, including metadata inherited from the layout.
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import { SITE_URL } from "./site-url.mjs";
 
 const origin = new URL(process.argv[2] || SITE_URL).origin;
+const { version } = JSON.parse(readFileSync(new URL("../package.json", import.meta.url), "utf8"));
 const failures = [];
 let checks = 0;
 
@@ -49,6 +51,10 @@ for (let start = 0; start < paths.length; start += 4) {
       check(meta(html, "og:title") === title, `${path}: share title differs from page title`);
       check(meta(html, "og:description") === meta(html, "description"), `${path}: share description differs from page description`);
       check(Boolean(meta(html, "og:image")), `${path}: share image missing`);
+      const stamp = html.match(/<span class="build-stamp" title="([a-f0-9]{40,64})">([\s\S]*?)<\/span>/);
+      check(Boolean(stamp) && stamp[2].replace(/<[^>]*>/g, "").startsWith(`v${version} · ${stamp[1].slice(0, 7)}`), `${path}: release version/revision missing`);
+      const builtAt = stamp?.[2].match(/<time dateTime="([^"]+)"|<time datetime="([^"]+)"/)?.slice(1).find(Boolean);
+      check(Boolean(builtAt) && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}Z$/.test(builtAt) && Number.isFinite(Date.parse(builtAt)), `${path}: release timestamp missing`);
       console.log(`${path}: ${response.status}`);
     } catch (error) {
       failures.push(`${path}: ${error.message}`);

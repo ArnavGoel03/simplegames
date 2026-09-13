@@ -1,9 +1,11 @@
 import type { NextConfig } from "next";
 import { PLAYABLE, playPath } from "./src/lib/brand";
+import { buildInfo } from "./tools/build-info.mjs";
 
 // Nothing here is dynamic: three routes, no database, no images from anywhere
 // but this repository. Everything below is a header rather than a feature.
 const config: NextConfig = {
+  env: buildInfo(),
   reactStrictMode: true,
   poweredByHeader: false,
   /*

@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { MAKER, PLAYABLE, STUDIO_NAME, studio } from "@/lib/brand";
 import { LEGAL_DOCS, LEGAL_INDEX_PATH, legalPath } from "@/lib/legal";
+import { BuildStamp } from "./BuildStamp";
+import { ServiceWorker } from "./ServiceWorker";
 
 export function SiteFooter() {
   return (
@@ -32,6 +34,10 @@ export function SiteFooter() {
           </a>
         </p>
       </div>
+      <p className="colophon__release">
+        <BuildStamp />
+        <ServiceWorker />
+      </p>
     </footer>
   );
 }

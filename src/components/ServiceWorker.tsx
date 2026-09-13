@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 // Registers the worker, and only once the page has finished loading.
 //
@@ -13,6 +13,7 @@ import { useEffect } from "react";
 // a reason to put an error in a player's console on a site that works perfectly
 // without it.
 export function ServiceWorker() {
+  const [updateReady, setUpdateReady] = useState(false);
   useEffect(() => {
     if (!("serviceWorker" in navigator)) return;
 
@@ -38,6 +39,8 @@ export function ServiceWorker() {
     */
     let controlled = navigator.serviceWorker.controller !== null;
     let reloading = false;
+    let stopped = false;
+    const subscriptions: Array<() => void> = [];
     const onControllerChange = () => {
       // The first installation claims a fresh page too. Its document already
       // matches the build, so keep the reader's current demonstration intact.
@@ -51,7 +54,23 @@ export function ServiceWorker() {
     };
 
     const register = () => {
-      void navigator.serviceWorker.register("/sw.js").catch(() => {});
+      void navigator.serviceWorker.register("/sw.js").then((registration) => {
+        if (stopped) return;
+        if (registration.waiting && navigator.serviceWorker.controller) setUpdateReady(true);
+        const watchInstalling = () => {
+          const installing = registration.installing;
+          if (!installing) return;
+          const onStateChange = () => {
+            if (installing.state === "installed" && navigator.serviceWorker.controller) setUpdateReady(true);
+          };
+          installing.addEventListener("statechange", onStateChange);
+          subscriptions.push(() => installing.removeEventListener("statechange", onStateChange));
+          onStateChange();
+        };
+        registration.addEventListener("updatefound", watchInstalling);
+        subscriptions.push(() => registration.removeEventListener("updatefound", watchInstalling));
+        watchInstalling();
+      }).catch(() => {});
     };
 
     navigator.serviceWorker.addEventListener("controllerchange", onControllerChange);
@@ -60,10 +79,12 @@ export function ServiceWorker() {
     else window.addEventListener("load", register, { once: true });
 
     return () => {
+      stopped = true;
+      for (const unsubscribe of subscriptions) unsubscribe();
       navigator.serviceWorker.removeEventListener("controllerchange", onControllerChange);
       window.removeEventListener("load", register);
     };
   }, []);
 
-  return null;
+  return updateReady ? <span role="status">A new version is ready</span> : null;
 }

@@ -13,12 +13,12 @@ function project() {
   const root = mkdtempSync(join(tmpdir(), "studio-deploy-test-"));
   temporary.push(root);
   for (const path of ["tools", "src/lib", "public", "bin"]) mkdirSync(join(root, path), { recursive: true });
-  for (const file of ["cf.mjs", "site-url.mjs", "build-state.mjs", "html-policy.mjs"]) {
+  for (const file of ["cf.mjs", "site-url.mjs", "build-state.mjs", "html-policy.mjs", "build-info.mjs"]) {
     const source = new URL(file, import.meta.url);
     if (existsSync(source)) cpSync(source, join(root, "tools", file));
   }
   writeFileSync(join(root, "src/lib/brand.ts"), 'function resolveUrl() { return "https://glasstablegames.com"; }');
-  writeFileSync(join(root, "package.json"), '{"type":"module"}');
+  writeFileSync(join(root, "package.json"), '{"type":"module","version":"0.3.0"}');
   cpSync(new URL("../public/sw.js", import.meta.url), join(root, "public/sw.js"));
   writeFileSync(join(root, "bin/opennextjs-cloudflare"), `#!/usr/bin/env node
 import { appendFileSync, copyFileSync, mkdirSync, writeFileSync } from 'node:fs';
