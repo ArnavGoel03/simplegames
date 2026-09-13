@@ -24,7 +24,7 @@ let activePage;
 const traces = [];
 const baseline = process.env.BASELINE_ONLY === "true";
 
-async function verifyCasino(page, origin, colorScheme) {
+async function verifyCasino(page, origin, colorScheme, probe) {
   await page.locator(".casino-feature-picker").waitFor();
   if (await page.locator(".casino-floor-game").count() !== 11) throw new Error("Casino must expose eleven games");
   for (const [name, slug] of [["Blackjack", "blackjack"], ["Slots", "slots"], ["Roulette", "roulette"]]) {
@@ -43,17 +43,28 @@ async function verifyCasino(page, origin, colorScheme) {
   await page.setViewportSize({ width: 390, height: 844 });
   if (await page.locator("#casino-feature-title").textContent() !== "Roulette") throw new Error("Resize reset selected game");
   await page.screenshot({ path: new URL(`casino-${colorScheme}-progress.jpg`, output).pathname, fullPage: true, type: "jpeg", quality: 80 });
-  await page.goto(new URL("/casino/roulette", origin).href, { waitUntil: "domcontentloaded" });
+  probe.mark("casino-link-enter");
+  await page.locator(".casino-enter").click();
+  await page.waitForURL(new URL("/casino/roulette", origin).href);
   await page.getByRole("button", { name: "Spin", exact: true }).click();
   await page.locator(".casino-proof").waitFor();
-  await page.goto(origin, { waitUntil: "domcontentloaded" });
+  probe.mark("casino-link-back");
+  await page.locator('.casino-header a[href="/"]').click();
+  await page.waitForURL(origin + "/");
   await page.locator(".casino-progress-details summary").click();
   const roulette = page.locator(".casino-progress-game").filter({ has: page.getByRole("link", { name: "Roulette", exact: true }) });
   await roulette.locator('[aria-label="Roulette: 1 / 1"]').waitFor();
-  await page.reload({ waitUntil: "domcontentloaded" });
+  // This persistence assertion deliberately replaces the document. Let its
+  // preceding Link transition finish before testing a user-initiated reload.
+  await page.waitForLoadState("networkidle", { timeout: 10_000 });
+  probe.mark("casino-persistence-reload");
+  await page.reload({ waitUntil: "load" });
   await page.locator(".casino-progress-details summary").click();
   await roulette.locator('[aria-label="Roulette: 1 / 1"]').waitFor();
-  await page.goto(new URL("/casino/roulette?mode=chips", origin).href, { waitUntil: "domcontentloaded" });
+  probe.mark("casino-progress-link");
+  await roulette.getByRole("link", { name: "Roulette", exact: true }).click();
+  await page.waitForURL(new URL("/casino/roulette", origin).href);
+  await page.locator('.casino-mode-tabs button').filter({ hasText: /^Chips$/ }).click();
   await page.locator('.casino-mode-tabs button[aria-pressed="true"]').filter({ hasText: /^Chips$/ }).waitFor({ timeout: 10_000 });
   if (await page.getByRole("button", { name: "Spin", exact: true }).isEnabled()) throw new Error("Signed-out Chips action must stay disabled");
   results.push({ name: `casino-${colorScheme}-interactions`, url: origin, overflow: false, images: [], errors: [], checks: ["featured destinations", "all filters", "eleven games", "resize state", "practice completion", "reload persistence", "Chips account boundary"] });
@@ -146,7 +157,7 @@ try {
         await page.screenshot({ path: new URL(`studio-${colorScheme}-contrast.jpg`, output).pathname, fullPage: true, type: "jpeg", quality: 80 });
       }
       if (site.id === "teenpatti" && !baseline) {
-        await verifyCasino(page, url.origin, colorScheme);
+        await verifyCasino(page, url.origin, colorScheme, probe);
         results.at(-1).errors = [...errors];
         await recordEvidence(site.id, observedSourceHead, [{ id: "entry", status: "passed" }]);
       }

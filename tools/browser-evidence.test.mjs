@@ -46,7 +46,7 @@ describe("original prefetch signal observation", () => {
     expect(called.args[1]).toBe(init);
     expect(events).toMatchObject([{ kind: "prefetch-start", id: 1, hasSignal: true, aborted: false }]);
     controller.abort();
-    expect(events[1]).toMatchObject({ kind: "prefetch-signal-abort", documentId: "document-1", id: 1 });
+    expect(events[1]).toMatchObject({ kind: "fetch-signal-abort", documentId: "document-1", id: 1 });
   });
 
   it("distinguishes absent signals and concurrent requests without classifying either as harmless", () => {
@@ -56,16 +56,16 @@ describe("original prefetch signal observation", () => {
     window.fetch("/route", { headers, signal: controller.signal });
     controller.abort();
     expect(events.map(event => [event.kind, event.id, event.hasSignal])).toEqual([
-      ["prefetch-start", 1, false], ["prefetch-start", 2, true], ["prefetch-signal-abort", 2, undefined],
+      ["prefetch-start", 1, false], ["prefetch-start", 2, true], ["fetch-signal-abort", 2, undefined],
     ]);
   });
 
-  it("does not observe ordinary assets, private requests or cross-origin requests", () => {
+  it("distinguishes static HEAD probes without observing private or cross-origin requests", () => {
     const { window, events } = fixture(() => Promise.resolve());
-    window.fetch("/_next/static/file.css");
+    window.fetch("/_next/static/file.css", { method: "HEAD" });
     window.fetch("/api/account", { method: "POST", headers });
     window.fetch("https://other.test/route", { headers });
-    expect(events).toEqual([]);
+    expect(events).toMatchObject([{ kind: "asset-fetch-start", method: "HEAD", hasSignal: false }]);
   });
 
   it("caps observations and preserves original synchronous failures", () => {

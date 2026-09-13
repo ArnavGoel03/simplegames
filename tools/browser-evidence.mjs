@@ -112,12 +112,13 @@ export function observeFetchSignals() {
       const url = new URL(request ? request.url : input, location.href);
       const headers = new Headers(init?.headers ?? request?.headers);
       const method = (init?.method ?? request?.method ?? "GET").toUpperCase();
-      if (sequence < 1000 && url.origin === location.origin && method === "GET"
-        && headers.get("rsc") === "1" && headers.get("next-router-prefetch") === "1") {
+      const prefetch = method === "GET" && headers.get("rsc") === "1" && headers.get("next-router-prefetch") === "1";
+      const staticAsset = ["GET", "HEAD"].includes(method) && url.pathname.startsWith("/_next/static/");
+      if (sequence < 1000 && url.origin === location.origin && (prefetch || staticAsset)) {
         const id = ++sequence;
         const signal = init?.signal ?? request?.signal;
-        emit({ kind: "prefetch-start", id, url: url.href, hasSignal: Boolean(signal), aborted: signal?.aborted === true });
-        signal?.addEventListener("abort", () => emit({ kind: "prefetch-signal-abort", id, url: url.href }), { once: true });
+        emit({ kind: prefetch ? "prefetch-start" : "asset-fetch-start", id, url: url.href, method, hasSignal: Boolean(signal), aborted: signal?.aborted === true });
+        signal?.addEventListener("abort", () => emit({ kind: "fetch-signal-abort", id, url: url.href, method }), { once: true });
       }
     } catch { /* Instrumentation must not change fetch behavior. */ }
     return Reflect.apply(original, this, args);
@@ -132,16 +133,24 @@ export async function instrument(page) {
   const path = value => { try { const url = new URL(value); return url.origin + url.pathname; } catch { return value; } };
   const requestKey = value => createHash("sha256").update(value).digest("hex");
   const started = new WeakMap();
+  const requestIds = new WeakMap();
+  let requestSequence = 0;
   const add = event => { counts.events++; if (trace.length < 3000) trace.push({ at: Date.now(), ...event }); };
   page.on("pageerror", error => { errors.push(error.message); add({ kind: "pageerror", message: error.message }); });
   page.on("requestfailed", request => { const event = { kind: "requestfailed", url: path(request.url()), resource: request.resourceType(), error: request.failure()?.errorText,
     rsc: request.headers().rsc === "1", prefetch: request.headers()["next-router-prefetch"] === "1",
-    requestKey: requestKey(request.url()), startedAt: started.get(request),
+    requestKey: requestKey(request.url()), requestId: requestIds.get(request), method: request.method(), startedAt: started.get(request),
     queryKeys: [...new URL(request.url()).searchParams.keys()].slice(0, 6) };
     counts.failed++; if (failed.length < 3000) failed.push(event); add(event); });
-  page.on("request", request => { started.set(request, Date.now()); if (request.isNavigationRequest()) add({ kind: "navigation-request", url: path(request.url()) }); });
+  page.on("request", request => { started.set(request, Date.now()); requestIds.set(request, ++requestSequence); if (request.isNavigationRequest()) add({ kind: "navigation-request", url: path(request.url()) }); });
   page.on("framenavigated", frame => { if (frame === page.mainFrame()) add({ kind: "navigation-commit", url: path(frame.url()) }); });
-  page.on("response", response => { if (response.status() >= 400) add({ kind: "http-error", status: response.status(), url: path(response.url()) }); });
+  page.on("response", response => {
+    const request = response.request();
+    if (response.status() >= 400 || request.headers().rsc === "1" || new URL(request.url()).pathname.startsWith("/_next/static/")) {
+      add({ kind: "response", status: response.status(), url: path(response.url()), requestKey: requestKey(request.url()),
+        requestId: requestIds.get(request), method: request.method(), contentType: response.headers()["content-type"], fromServiceWorker: response.fromServiceWorker() });
+    }
+  });
   await page.exposeFunction("recordLifecycle", event => add({ kind: "lifecycle", event }));
   await page.exposeBinding("recordFetchObservation", ({ frame }, event) => {
     if (frame !== page.mainFrame()) return;

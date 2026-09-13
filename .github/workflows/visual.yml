@@ -66,17 +66,25 @@ jobs:
             node tools/verify-visual.mjs
           fi
       - name: Verify startup recovery under failed and stalled resources
+        if: ${{ !cancelled() }}
         env:
           BROWSER_ENGINE: ${{ inputs.browser || 'chromium' }}
         run: node tools/verify-startup.mjs
-      - name: Verify entry and service worker lifecycle
-        if: inputs.release_candidates_json
+      - name: Verify game entry
+        if: ${{ inputs.release_candidates_json && !cancelled() }}
         env:
           BROWSER_ENGINE: ${{ inputs.browser || 'chromium' }}
-        run: |
-          node tools/verify-entry.mjs
-          node tools/verify-play.mjs
-          node tools/verify-pwa.mjs
+        run: node tools/verify-entry.mjs
+      - name: Verify gameplay across resize
+        if: ${{ inputs.release_candidates_json && !cancelled() }}
+        env:
+          BROWSER_ENGINE: ${{ inputs.browser || 'chromium' }}
+        run: node tools/verify-play.mjs
+      - name: Verify service worker lifecycle
+        if: ${{ inputs.release_candidates_json && !cancelled() }}
+        env:
+          BROWSER_ENGINE: ${{ inputs.browser || 'chromium' }}
+        run: node tools/verify-pwa.mjs
       - uses: actions/upload-artifact@v7.0.1
         if: always()
         with:
