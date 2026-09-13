@@ -20,7 +20,7 @@ export function earlyDiagnosticsSource(config: EarlyDiagnosticsConfig): string {
 const faultSeen = new Set();
 function faultId() { try { return crypto.randomUUID(); } catch { return Date.now().toString(36) + Math.random().toString(36).slice(2); } }
 const faultSession = faultId();
-let diagnosticsHydrated = false;
+let diagnosticsHydrated = typeof window !== "undefined" && DIAGNOSTICS.readyEvent && window[DIAGNOSTICS.readyEvent] === true;
 function faultDevice() {
   const win = typeof window === "undefined" ? null : window;
   const media = query => { try { return win?.matchMedia(query).matches || false; } catch { return false; } };

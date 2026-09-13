@@ -3,11 +3,11 @@
   "files": [
     {
       "name": "service-worker.ts",
-      "sha256": "d49e081e437a7f548363867d58135ca8a97da86d0e2ca527dedb8c2f161efbac"
+      "sha256": "64bc74e857f837039a306e3164d0e382e50857312ef56114f075ee1aa264c101"
     },
     {
       "name": "worker-runtime.ts",
-      "sha256": "7d8e4f2702daafc9c6eca992460d9a83aeeb49a5451ef0bf8d437ff2b11c33f3"
+      "sha256": "02f206306b83d436fbeffd11abfab7db126a167b8d3bb74afb3609df94f68c6f"
     },
     {
       "name": "version.ts",
@@ -15,15 +15,15 @@
     },
     {
       "name": "asset-recovery.ts",
-      "sha256": "9b39a812df8ad3b3813a5d26798d25f2508e62a5d623ed198f4a7d4d378ed1f8"
+      "sha256": "5fe180744ace774a107483b8897ffcab27fcd92a50ca3d8bed9814206009c8a0"
     },
     {
       "name": "worker-client.ts",
-      "sha256": "a3f914ba02cf61574e30b4ae743cc69a55e3adee4959e6f323b3702b9b54b8e4"
+      "sha256": "bb126978855bdd6122501ebbdd48bd528efb459db21268256974d3aba098d95a"
     },
     {
       "name": "early-source.ts",
-      "sha256": "0bc4f99312b7831155df1fcf3609ca9975d282883fd966b14bf0dad529b85618"
+      "sha256": "29d340bba223657f626f17eb87cd04a97e1f5c4af8d5ed02259e8dd37b5484f2"
     },
     {
       "name": "diagnostic-limits.ts",

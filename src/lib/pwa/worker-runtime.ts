@@ -295,8 +295,7 @@ async function recoverStylesheet(event, response) {
   const client = await self.clients.get(event.clientId);
   if (!client || typeof client.navigate !== "function") return;
   const target = new URL(client.url);
-  if (target.origin !== self.location.origin || target.pathname === ESCAPE || target.searchParams.get("__gtg_recovery") === VERSION) return;
-  target.searchParams.delete("__gtg_recovery");
+  if (target.origin !== self.location.origin || target.pathname === ESCAPE || target.searchParams.has(ASSET_RECOVERY_QUERY)) return;
   // Client IDs change on navigation. A per-route/build receipt survives that
   // change and worker termination, without storing room IDs in cache keys.
   const hash = new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(target.pathname + target.search)));
@@ -311,11 +310,18 @@ async function recoverStylesheet(event, response) {
   writes = reserve.then(() => {}, () => {});
   if (!await reserve) return;
   const reporting = emitWorkerFault("pwa-missing-style", { status: response.status });
-  target.searchParams.set("__gtg_recovery", VERSION);
+  target.searchParams.set(ASSET_RECOVERY_QUERY, VERSION);
   // The new inline bootstrap yields to this navigation. Older documents have
   // no working JavaScript and simply ignore the message.
   client.postMessage({ type: ASSET_RECOVERY_STARTED, url: request.url });
-  await Promise.allSettled([client.navigate(target.href), reporting]);
+  const navigation = (async () => {
+    try { if (await client.navigate(target.href)) return; } catch {}
+    // A failed navigation did not consume the route's one successful repair.
+    // Allow a later resource request to retry, and release a live bootstrap.
+    try { await (await caches.open(STATIC_CACHE)).delete(key); } catch {}
+    client.postMessage({ type: ASSET_RECOVERY_CANCELLED, url: request.url });
+  })();
+  await Promise.allSettled([navigation, reporting]);
 }
 
 self.addEventListener("fetch", (event) => {
