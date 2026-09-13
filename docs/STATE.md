@@ -1,5 +1,16 @@
 # Glass Table Games: state of play
 
+## Pastel glass candidate, 13 September 2026
+
+Studio 0.5.0 is in review, not deployed. It replaces the green cast with pastel
+light over a checked background and translucent table, card and navigation
+surfaces, with opaque accessibility fallbacks. The canonical palette also
+updates the share card and revisioned studio icons. 110 tests, lint and
+typecheck pass. A free public-repository browser workflow is being added for
+repeatable candidate/live screenshot review; browser evidence is still pending.
+Casino progression/lobby and shared game chrome are parallel work in the games
+repository. `docs/GLASS-EXPERIENCE-2026-09-13.md` tracks the full request queue.
+
 ## Studio design, 13 September 2026
 
 Studio 0.4.0 is live from source `23ab6ce` (full revision

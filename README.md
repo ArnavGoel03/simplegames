@@ -29,7 +29,7 @@ The build stamps the generated service worker and records its input fingerprint.
 ## Visual assets
 
 `src/lib/studio-mark.json` defines the monogram and `src/lib/palette.json` defines
-its colors. Run `npm run assets` to regenerate the shared CSS, SVG, PNG and ICO
+the pastel, glass and checked-background colors. Run `npm run assets` to regenerate the shared CSS, SVG, PNG and ICO
 outputs. `cf:build` does this before taking its source fingerprint. Header,
 share-card and installed-app marks consume the same geometry. Icon metadata is
 revisioned so a new icon does not reuse an old request URL; existing installed
@@ -41,13 +41,22 @@ mirrors from Circuit; `npm run verify:live` checks for drift after release.
 Artwork provenance, screenshot evidence and remaining browser-validation limits
 are recorded in `docs/STUDIO-DESIGN-2026-09-13.md`.
 
+The public repository's Visual review workflow captures the production build
+on pull requests, with a manual mode for the six public homepages. It uploads
+light/dark screenshots at six viewport sizes and checks image loading, runtime
+errors and resize overflow. Run `npm run build` then `npm run verify:visual`
+locally when a supported Chromium environment is available. It has no schedule,
+account credentials or game mutations. Screenshots still need human review.
+Current glass-experience work is tracked in `docs/GLASS-EXPERIENCE-2026-09-13.md`.
+
 ## Where things live
 
 | File | What it holds |
 | --- | --- |
 | `src/lib/brand.ts` | Every string that names the studio, the route list, the games. Nothing here is repeated anywhere else. |
 | `src/lib/fairness.ts` | The roll derivation, mirrored from `packages/fairness/src/rng.ts` in the games monorepo so the home page demonstrates the real algorithm. |
-| `src/app/globals.css` | Every colour, size and component class, defined once as tokens. A hex value anywhere else is a bug. |
+| `src/lib/palette.json` | Canonical color tokens, including the light/dark glass and pastel surfaces. |
+| `src/app/globals.css` | Sizes, material treatment and component classes using the generated palette. |
 
 ## Two things to keep true
 

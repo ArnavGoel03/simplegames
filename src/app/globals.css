@@ -1,6 +1,6 @@
 @import "./palette.css";
 
-/* Shared neutral surfaces. Game artwork carries the color. */
+/* One checked backdrop, pastel light and glass surfaces across the studio. */
 
 :root {
   /* The three faces are loaded and self-hosted by next/font in layout.tsx,
@@ -44,6 +44,13 @@ body {
   font-size: var(--step-body);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px),
+    radial-gradient(ellipse 70rem 42rem at 5% 6rem, var(--pastel-blue), transparent 80%),
+    radial-gradient(ellipse 55rem 38rem at 100% 30rem, var(--pastel-rose), transparent 80%),
+    radial-gradient(ellipse 60rem 50rem at 35% 80rem, var(--pastel-lilac), transparent 80%);
+  background-size: 12px 12px, 12px 12px, auto, auto, auto;
 }
 
 h1,
@@ -106,6 +113,14 @@ a {
   gap: 1rem;
   padding-block: 1.25rem;
   flex-wrap: wrap;
+}
+
+.masthead nav {
+  padding: 0.25rem 1.1rem;
+  border: 1px solid var(--glass-edge);
+  border-radius: 999px;
+  background: var(--paper-raised);
+  box-shadow: 0 0.5rem 2rem var(--glass-shadow);
 }
 
 .wordmark {
@@ -513,7 +528,19 @@ a.button {
 .stage__art {
   position: relative;
   min-width: 0;
-  padding: 0 0 18% 5%;
+  padding: 6% 3% 20% 8%;
+  isolation: isolate;
+}
+.stage__art::before {
+  content: "";
+  position: absolute;
+  inset: 1% 0 5%;
+  z-index: -1;
+  border: 1px solid var(--glass-edge);
+  border-radius: 3rem;
+  background: var(--paper-raised);
+  box-shadow: inset 0 0 0 1px var(--rule), 0 2rem 5rem var(--glass-shadow);
+  transform: rotate(-3deg);
 }
 .stage__board {
   display: block;
@@ -522,7 +549,8 @@ a.button {
   overflow: clip;
   border-radius: 2rem;
   border: 1px solid var(--rule-strong);
-  background: var(--felt-deep);
+  background: var(--paper-raised);
+  padding: 0.65rem;
   transform: rotate(3deg);
   box-shadow: 0 1.5rem 4rem color-mix(in srgb, var(--ink) 10%, transparent);
 }
@@ -531,6 +559,7 @@ a.button {
   height: 100%;
   object-fit: cover;
   object-position: center;
+  border-radius: 1.4rem;
 }
 .stage__caption {
   position: absolute;
@@ -538,7 +567,7 @@ a.button {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: var(--paper);
+  background: var(--paper-raised);
   border: 1px solid var(--rule);
   border-radius: 999px;
   padding: 0.75rem 1.1rem;
@@ -626,7 +655,12 @@ a.button {
      strip's first word under the headline above it. */
   margin-block: 0;
   list-style: none;
-  border-block: 1px solid var(--rule);
+  border: 1px solid var(--glass-edge);
+  border-radius: 1.5rem;
+  background: var(--paper-raised);
+  box-shadow: 0 1rem 3rem var(--glass-shadow);
+  width: calc(100% - var(--gutter) * 2);
+  max-width: calc(var(--page-wide) - var(--gutter) * 2);
 }
 
 .facts li {
@@ -694,6 +728,7 @@ a.button {
   color: var(--muted);
   text-decoration: none;
   font-size: var(--step-small);
+  background: var(--paper-raised);
 }
 .collection-nav a:hover {
   color: var(--ink);
@@ -709,13 +744,14 @@ a.button {
   grid-column: span 2;
   display: grid;
   grid-template-rows: auto 1fr;
-  border: 1px solid var(--rule);
+  border: 1px solid var(--glass-edge);
   border-radius: 1.5rem;
   background: var(--paper-raised);
   text-decoration: none;
   overflow: clip;
   transition: border-color 180ms ease, transform 180ms ease;
   scroll-margin-top: 2rem;
+  box-shadow: 0 1rem 3rem var(--glass-shadow), inset 0 0 0 1px var(--rule);
 }
 .title:nth-child(-n+2) {
   grid-column: span 3;
@@ -730,6 +766,8 @@ a.title:hover {
   overflow: clip;
   background: var(--rule);
   border-bottom: 1px solid var(--rule);
+  margin: 0.6rem 0.6rem 0;
+  border-radius: 1rem;
 }
 .title:nth-child(-n+2) .title__art {
   aspect-ratio: 1.75;
@@ -763,6 +801,31 @@ a.title:hover .title__art img {
   border-radius: 50%;
   font-size: 1.25rem;
   flex: none;
+  background: var(--paper-raised);
+}
+
+/* Opaque surfaces are the baseline when blur is unavailable or unwanted. */
+@supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .masthead nav, .stage__caption {
+    background: var(--glass);
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
+  }
+  .stage__art::before, .facts, .title, .collection-nav a {
+    background: var(--glass);
+  }
+}
+
+@media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
+  body { background-image: none; }
+  .masthead nav, .stage__caption, .stage__art::before,
+  .facts, .title, .collection-nav a {
+    background: var(--paper-raised);
+    border-color: var(--rule-strong);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    box-shadow: none;
+  }
 }
 @media (max-width: 63.99rem) {
   .titles {
