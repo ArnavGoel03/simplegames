@@ -3,6 +3,7 @@ import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symli
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { spawnSync } from "node:child_process";
+import { sourceFingerprint } from "./build-state.mjs";
 import { outputFingerprint, sourceFingerprint } from "./build-state.mjs";
 
 const temporary = [];
@@ -185,4 +186,13 @@ describe("the Cloudflare command wrapper", () => {
     expect(p.run("upload").status).toBe(1);
     expect(p.calls()).toEqual(["build", "build"]);
   });
+});
+
+it("source certificates track the worker generator, not its derived public output", () => {
+  const p = project();
+  const before = sourceFingerprint(p.root, "https://glasstablegames.com");
+  writeFileSync(join(p.root, "public/sw.js"), "new generated attribution");
+  expect(sourceFingerprint(p.root, "https://glasstablegames.com")).toBe(before);
+  writeFileSync(join(p.root, "tools/generate-worker.mjs"), "changed canonical generator");
+  expect(sourceFingerprint(p.root, "https://glasstablegames.com")).not.toBe(before);
 });

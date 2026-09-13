@@ -37,6 +37,8 @@ export function sourceFingerprint(root, origin) {
     for (const entry of entries.sort((a, b) => a.name.localeCompare(b.name))) {
       if (generated(entry.name)) continue;
       const child = `${path}/${entry.name}`;
+      // Generated from src/lib/pwa and build attribution; output hashes cover it.
+      if (child === "public/sw.js") continue;
       if (entry.isDirectory()) read(child);
       else hash.update(child).update("\0").update(readFileSync(join(root, child))).update("\0");
     }
