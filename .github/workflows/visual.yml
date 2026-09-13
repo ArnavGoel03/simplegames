@@ -23,7 +23,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: visual-${{ github.ref }}
+  group: visual-${{ github.ref }}-${{ inputs.browser || 'chromium' }}
   cancel-in-progress: true
 
 jobs:
@@ -43,6 +43,10 @@ jobs:
         run: npx playwright install --with-deps "$BROWSER_ENGINE"
       - if: ${{ !inputs.live && !inputs.casino_preview }}
         run: npm run build
+      - name: Verify startup recovery under failed and stalled resources
+        env:
+          BROWSER_ENGINE: ${{ inputs.browser || 'chromium' }}
+        run: node tools/verify-startup.mjs
       - name: Capture responsive pages
         env:
           CAPTURE_LIVE: ${{ inputs.live }}

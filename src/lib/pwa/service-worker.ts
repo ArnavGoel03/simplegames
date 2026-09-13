@@ -1,6 +1,6 @@
 import { workerVersion } from "./version";
 import { WORKER_RUNTIME } from "./worker-runtime";
-import { ASSET_RECOVERY_STARTED } from "./asset-recovery";
+import { ASSET_RECOVERY_STARTED, ASSET_RECOVERY_CANCELLED, ASSET_RECOVERY_QUERY } from "./asset-recovery";
 
 // One shared service worker, not four apps writing the same file by hand.
 //
@@ -124,6 +124,8 @@ const STATIC_CACHE = VERSION + "-static";
 const CACHE_PREFIX = ${JSON.stringify(config.app + "-")};
 const OFFLINE = ${JSON.stringify(config.offline)};
 const ASSET_RECOVERY_STARTED = ${JSON.stringify(ASSET_RECOVERY_STARTED)};
+const ASSET_RECOVERY_CANCELLED = ${JSON.stringify(ASSET_RECOVERY_CANCELLED)};
+const ASSET_RECOVERY_QUERY = ${JSON.stringify(ASSET_RECOVERY_QUERY)};
 const LEGACY_CACHE_PREFIXES = ${JSON.stringify((config.legacyCachePrefixes ?? []).filter(Boolean).slice(0, 4))};
 
 // Derived at build time from the route registry and the icon list, so a page

@@ -41,3 +41,20 @@ the macOS sandbox. Do not count previous screenshots as a render of this work.
 Investigate an existing one-off CI browser gate before leaving visual QA open.
 Physical iPhone/foldable checks and the earlier Draw/Lattice reruns remain open.
 Existing public policy and support ownership decisions remain open.
+
+### TypeScript 7 migration requested
+
+- In flight: migrate all supported studio and game compiler paths to stable
+  TypeScript 7, with registry verification, old/new timing comparison, lint,
+  typechecks and release build compatibility. Preserve required compiler API
+  consumers explicitly; do not bypass diagnostics for speed.
+- Startup repair candidate now mirrors shared commit c58df0b. Local studio
+  tests pass 110/110 after regenerating the worker, with typecheck and lint.
+- Browser fixtures calibrate the old classic inline mount under a stalled
+  preceding stylesheet, then require the async module to recover a confirmed
+  retired asset without reloading a healthy slow stylesheet. CI verification
+  is pending for Chromium and WebKit.
+- WebKit Casino preview captured six sizes without overflow or runtime errors.
+  Its immediate Chips assertion raced hydration. The interactive Practice
+  Suspense fallback is under separate review; complete preview approval remains
+  open. Production promotion is still held.

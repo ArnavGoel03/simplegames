@@ -6,6 +6,7 @@ export interface WorkerFault { code: "pwa-register" | "pwa-update"; operation: "
 
 /** One registration lifecycle, including restored installed windows. */
 export function startWorkerClient(notify: () => void, reportFault?: (fault: WorkerFault) => void): () => void {
+  Reflect.set(window, ASSET_READY_EVENT, true);
   window.dispatchEvent(new Event(ASSET_READY_EVENT));
   if (!("serviceWorker" in navigator)) return () => {};
   let disposed = false;

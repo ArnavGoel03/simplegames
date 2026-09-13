@@ -49,7 +49,7 @@ async function verifyCasino(page, origin, colorScheme) {
   await page.locator(".casino-progress-details summary").click();
   await roulette.locator('[aria-label="Roulette: 1 / 1"]').waitFor();
   await page.goto(new URL("/casino/roulette?mode=chips", origin).href, { waitUntil: "domcontentloaded" });
-  if (await page.getByRole("button", { name: "Chips", exact: true }).getAttribute("aria-pressed") !== "true") throw new Error("Chips deep link lost mode");
+  await page.locator('.casino-mode-tabs button[aria-pressed="true"]').filter({ hasText: /^Chips$/ }).waitFor({ timeout: 10_000 });
   if (await page.getByRole("button", { name: "Spin", exact: true }).isEnabled()) throw new Error("Signed-out Chips action must stay disabled");
   results.push({ name: `casino-${colorScheme}-interactions`, url: origin, overflow: false, images: [], errors: [], checks: ["featured destinations", "all filters", "eleven games", "resize state", "practice completion", "reload persistence", "Chips account boundary"] });
 }
