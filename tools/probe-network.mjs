@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { createServer } from "node:http";
+import { createHash } from "node:crypto";
 import { mkdir, writeFile } from "node:fs/promises";
 import { chromium, webkit } from "playwright";
 import { candidates, engine, instrument, networkVerdict, output } from "./browser-evidence.mjs";
@@ -12,6 +13,63 @@ const result = { engine, site: candidates[0].site };
 const browser = await ({ chromium, webkit })[engine].launch();
 let server;
 try {
+  const casino = candidates.find(candidate => candidate.site === "teenpatti");
+  if (engine === "chromium" && casino && process.argv.includes("--trace-casino")) {
+    result.casinoRequests = [];
+    for (const mode of ["worker-cache", "no-worker-cache", "no-worker-no-cache"]) {
+      const context = await browser.newContext({ serviceWorkers: mode === "worker-cache" ? "allow" : "block", viewport: { width: 2560, height: 1440 }, reducedMotion: "reduce" });
+      const page = await context.newPage();
+      page.setDefaultTimeout(10_000);
+      const probe = await instrument(page);
+      const cdp = await context.newCDPSession(page);
+      const events = [];
+      const requests = new Set();
+      const digest = value => createHash("sha256").update(value).digest("hex");
+      const add = event => { if (events.length < 1500) events.push({ at: Date.now(), ...event }); };
+      cdp.on("Network.requestWillBeSent", event => {
+        const url = new URL(event.request.url);
+        if (url.origin !== casino.origin || !url.searchParams.has("_rsc")) return;
+        requests.add(event.requestId);
+        const headers = Object.fromEntries(Object.entries(event.request.headers).map(([key, value]) => [key.toLowerCase(), value]));
+        add({ kind: "request", id: event.requestId, type: event.type, wallTime: event.wallTime, loaderId: event.loaderId,
+          path: url.pathname, requestKey: digest(url.href), initiator: { type: event.initiator.type, requestId: event.initiator.requestId },
+          headers: Object.fromEntries(["rsc", "next-router-prefetch", "next-router-segment-prefetch", "if-none-match", "if-modified-since", "cache-control"].filter(key => key in headers).map(key => [key, headers[key]])) });
+      });
+      cdp.on("Network.responseReceived", event => {
+        if (!requests.has(event.requestId)) return;
+        const headers = Object.fromEntries(Object.entries(event.response.headers).map(([key, value]) => [key.toLowerCase(), value]));
+        add({ kind: "response", id: event.requestId, status: event.response.status, type: event.type,
+          fromDiskCache: event.response.fromDiskCache, fromServiceWorker: event.response.fromServiceWorker,
+          headers: Object.fromEntries(["cf-ray", "cache-control", "age", "etag", "content-type"].filter(key => key in headers).map(key => [key, headers[key]])) });
+      });
+      for (const [name, kind] of [["requestServedFromCache", "cached"], ["loadingFinished", "finished"], ["loadingFailed", "failed"]]) {
+        cdp.on(`Network.${name}`, event => { if (requests.has(event.requestId)) add({ kind, id: event.requestId, error: event.errorText, canceled: event.canceled, encodedDataLength: event.encodedDataLength }); });
+      }
+      await cdp.send("Network.enable");
+      if (mode === "no-worker-no-cache") await cdp.send("Network.setCacheDisabled", { cacheDisabled: true });
+      try {
+        await page.goto(casino.origin, { waitUntil: "networkidle", timeout: 15_000 });
+        await page.locator(".casino-feature-picker").getByRole("button", { name: "Roulette", exact: true }).click();
+        await page.locator(".casino-enter").click();
+        await page.getByRole("button", { name: "Spin", exact: true }).click();
+        await page.locator(".casino-proof").waitFor();
+        await page.locator('.casino-header a[href="/"]').click();
+        await page.waitForURL(casino.origin + "/");
+        await page.waitForLoadState("networkidle", { timeout: 10_000 });
+        probe.mark("diagnostic-reload");
+        await page.setViewportSize({ width: 390, height: 844 });
+        await page.reload({ waitUntil: "load" });
+        await page.locator(".casino-progress-details summary").click();
+        await page.locator(".casino-progress-game").getByRole("link", { name: "Roulette", exact: true }).click();
+        await page.waitForURL(casino.origin + "/casino/roulette");
+        await page.waitForLoadState("networkidle", { timeout: 10_000 });
+      } finally {
+        probe.mark("context-close-start");
+        await context.close();
+        result.casinoRequests.push({ mode, events, trace: probe.trace, failed: probe.failed });
+      }
+    }
+  }
   const context = await browser.newContext({ serviceWorkers: "block" });
   try {
     const page = await context.newPage();
@@ -82,15 +140,15 @@ self.addEventListener('fetch',event=>{if(new URL(event.request.url).pathname==='
       return { complete, failure };
     });
     await page.waitForTimeout(100);
+    const verdict = networkVerdict(probe);
+    result.streamControls = { outcomes, trace: probe.trace, failed: probe.failed, verdict };
     assert(outcomes.complete.includes("last-chunk") && outcomes.failure, "Stream controls did not complete and fail independently");
     assert(probe.trace.some(event => event.kind === "response-reader-cancel" && event.url.endsWith("/stream-cancelled")), "Explicit cancellation was not observed");
     assert(probe.trace.some(event => event.kind === "response-reader-complete" && event.url.endsWith("/stream-complete")), "Complete native stream consumption was not observed");
     assert(!probe.trace.some(event => /response-(?:reader|stream)-cancel/.test(event.kind) && event.url.endsWith("/stream-broken")), "Network failure was falsely classified as cancellation");
     assert(probe.failed.some(event => event.url.endsWith("/stream-broken")), "Network failure detector missed the broken response");
-    const verdict = networkVerdict(probe);
     assert(!verdict.passed && verdict.failures.some(event => event.url.endsWith("/stream-broken")), "Broken transport was waived");
     assert(!verdict.failures.some(event => event.url.endsWith("/stream-cancelled")), "Observed same-request cancellation was not correlated");
-    result.streamControls = { outcomes, trace: probe.trace, failed: probe.failed, verdict };
   } finally { await streamContext.close(); }
   const workerContext = await browser.newContext({ serviceWorkers: "allow" });
   try {

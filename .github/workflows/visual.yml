@@ -25,6 +25,10 @@ on:
       release_candidates_json:
         description: Exact candidate upload receipts to verify
         type: string
+      network_probe_only:
+        description: Run only the bounded network diagnostic controls
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -55,6 +59,7 @@ jobs:
       - if: ${{ !inputs.live && !inputs.casino_preview && !inputs.baseline && !inputs.release_candidates_json }}
         run: npm run build
       - name: Capture responsive pages
+        if: ${{ !inputs.network_probe_only }}
         env:
           CAPTURE_LIVE: ${{ inputs.live }}
           CASINO_PREVIEW: ${{ inputs.casino_preview }}
@@ -66,22 +71,22 @@ jobs:
             node tools/verify-visual.mjs
           fi
       - name: Verify startup recovery under failed and stalled resources
-        if: ${{ !cancelled() }}
+        if: ${{ !inputs.network_probe_only && !cancelled() }}
         env:
           BROWSER_ENGINE: ${{ inputs.browser || 'chromium' }}
         run: node tools/verify-startup.mjs
       - name: Verify game entry
-        if: ${{ inputs.release_candidates_json && !cancelled() }}
+        if: ${{ inputs.release_candidates_json && !inputs.network_probe_only && !cancelled() }}
         env:
           BROWSER_ENGINE: ${{ inputs.browser || 'chromium' }}
         run: node tools/verify-entry.mjs
       - name: Verify gameplay across resize
-        if: ${{ inputs.release_candidates_json && !cancelled() }}
+        if: ${{ inputs.release_candidates_json && !inputs.network_probe_only && !cancelled() }}
         env:
           BROWSER_ENGINE: ${{ inputs.browser || 'chromium' }}
         run: node tools/verify-play.mjs
       - name: Verify service worker lifecycle
-        if: ${{ inputs.release_candidates_json && !cancelled() }}
+        if: ${{ inputs.release_candidates_json && !inputs.network_probe_only && !cancelled() }}
         env:
           BROWSER_ENGINE: ${{ inputs.browser || 'chromium' }}
         run: node tools/verify-pwa.mjs
@@ -89,7 +94,18 @@ jobs:
         if: ${{ inputs.release_candidates_json && !cancelled() }}
         env:
           BROWSER_ENGINE: ${{ inputs.browser || 'chromium' }}
-        run: node tools/probe-network.mjs
+          TRACE_CASINO: ${{ inputs.network_probe_only }}
+        run: |
+          if [ "$TRACE_CASINO" = "true" ]; then
+            node tools/probe-network.mjs --trace-casino
+          else
+            node tools/probe-network.mjs
+          fi
+      - name: Compare live and candidate performance
+        if: ${{ inputs.network_probe_only && !cancelled() }}
+        env:
+          BROWSER_ENGINE: ${{ inputs.browser || 'chromium' }}
+        run: node tools/probe-performance.mjs
       - uses: actions/upload-artifact@v7.0.1
         if: always()
         with:
@@ -97,13 +113,13 @@ jobs:
           path: .audit/visual
           retention-days: 7
       - uses: actions/upload-artifact@v7.0.1
-        if: inputs.baseline && success()
+        if: inputs.baseline && !inputs.network_probe_only && success()
         with:
           name: performance-baseline
           path: .audit/visual/release-evidence.json
           retention-days: 90
       - uses: actions/upload-artifact@v7.0.1
-        if: inputs.release_candidates_json && success()
+        if: inputs.release_candidates_json && !inputs.network_probe_only && success()
         with:
           name: candidate-evidence
           path: .audit/visual/release-evidence.json
