@@ -192,9 +192,70 @@ export function observeResponseStreams() {
   }
 }
 
+export async function observeChromiumRequests(page, onEvent = () => {}) {
+  const cdp = await page.context().newCDPSession(page);
+  const events = [];
+  const requests = new Set();
+  const digest = value => createHash("sha256").update(value).digest("hex");
+  const add = event => { const observed = { at: Date.now(), ...event }; if (events.length < 1500) events.push(observed); onEvent(observed); };
+  cdp.on("Network.requestWillBeSent", event => {
+    const url = new URL(event.request.url);
+    if (url.origin !== new URL(page.url()).origin || !url.searchParams.has("_rsc")) return;
+    requests.add(event.requestId);
+    const headers = Object.fromEntries(Object.entries(event.request.headers).map(([key, value]) => [key.toLowerCase(), value]));
+    add({ kind: "request", id: event.requestId, type: event.type, wallTime: event.wallTime, loaderId: event.loaderId,
+      path: url.pathname, requestKey: digest(url.href), initiator: { type: event.initiator.type, requestId: event.initiator.requestId },
+      headers: Object.fromEntries(["rsc", "next-router-prefetch", "next-router-segment-prefetch", "if-none-match", "if-modified-since", "cache-control"].filter(key => key in headers).map(key => [key, headers[key]])) });
+  });
+  cdp.on("Network.responseReceived", event => {
+    if (!requests.has(event.requestId)) return;
+    const headers = Object.fromEntries(Object.entries(event.response.headers).map(([key, value]) => [key.toLowerCase(), value]));
+    add({ kind: "response", id: event.requestId, status: event.response.status, type: event.type,
+      fromDiskCache: event.response.fromDiskCache, fromServiceWorker: event.response.fromServiceWorker,
+      headers: Object.fromEntries(["cf-ray", "cache-control", "age", "etag", "content-type"].filter(key => key in headers).map(key => [key, headers[key]])) });
+  });
+  for (const [name, kind] of [["requestServedFromCache", "cached"], ["loadingFinished", "finished"], ["loadingFailed", "failed"]]) {
+    cdp.on(`Network.${name}`, event => { if (requests.has(event.requestId)) add({ kind, id: event.requestId, error: event.errorText, canceled: event.canceled, encodedDataLength: event.encodedDataLength }); });
+  }
+  await cdp.send("Network.enable");
+  return { cdp, events };
+}
+
+function backgroundRevalidation(probe, failure) {
+  if (failure.resource !== "other" || failure.error !== "net::ERR_ABORTED" || failure.method !== "GET" || !failure.rsc || !failure.prefetch) return null;
+  const requests = probe.trace.filter(event => event.kind === "native-request" && event.requestKey === failure.requestKey
+    && event.type === "Other" && event.initiator?.type === "other" && event.at <= failure.at);
+  if (requests.length !== 1) return null;
+  const request = requests[0];
+  if (request.headers?.rsc !== "1" || request.headers?.["next-router-prefetch"] !== "1") return null;
+  const response = probe.trace.find(event => event.kind === "native-response" && event.id === request.id);
+  if (response?.status !== 200 || response.type !== "Other" || response.at > failure.at || !response.headers?.["content-type"]?.startsWith("text/x-component")
+    || !/(?:^|,)\s*stale-while-revalidate=\d+(?:\s*,|$)/i.test(response.headers["cache-control"] ?? "")) return null;
+  if (probe.trace.some(event => event.kind === "native-failed" && event.id === request.id && event.error !== "net::ERR_ABORTED")) return null;
+  const cached = probe.trace.filter(event => event.kind === "native-response" && event.type === "Fetch"
+    && event.fromDiskCache === true && event.status === 200 && event.at <= request.at
+    && event.headers?.["content-type"]?.startsWith("text/x-component")
+    && /(?:^|,)\s*stale-while-revalidate=\d+(?:\s*,|$)/i.test(event.headers["cache-control"] ?? ""));
+  for (const cachedResponse of cached.reverse()) {
+    const original = probe.trace.find(event => event.kind === "native-request" && event.id === cachedResponse.id);
+    if (original?.requestKey !== failure.requestKey || original.loaderId !== request.loaderId || original.initiator?.type !== "script") continue;
+    if (!probe.trace.some(event => event.kind === "native-finished" && event.id === original.id && event.at <= request.at)) continue;
+    const ray = cachedResponse.headers["cf-ray"];
+    if (!/^[a-f0-9]{16}(?:-[a-z]{3})?$/i.test(ray ?? "")) continue;
+    const sameRead = event => event.requestKey === failure.requestKey && event.ray === ray && event.at >= original.wallTime * 1000 && event.at <= failure.at;
+    if (probe.trace.some(event => ["response-reader-error", "response-cancel-error"].includes(event.kind) && sameRead(event))) continue;
+    if (!probe.trace.some(event => event.kind === "response-reader-complete" && event.status === 200 && sameRead(event))) continue;
+    return { requestId: failure.requestId, requestKey: failure.requestKey, nativeRequestId: request.id,
+      cachedRequestId: original.id, ray, reason: "chromium-background-swr-revalidation" };
+  }
+  return null;
+}
+
 export function networkVerdict(probe) {
   const classified = [];
   const failures = probe.failed.filter(failure => {
+    const background = backgroundRevalidation(probe, failure);
+    if (background) { classified.push(background); return false; }
     const response = probe.trace.find(event => event.kind === "response" && event.requestId === failure.requestId);
     if (!["net::ERR_ABORTED", "Load request cancelled"].includes(failure.error) || failure.method !== "GET" || !failure.rsc || !failure.prefetch
       || response?.status !== 200 || !response.contentType?.startsWith("text/x-component")
@@ -261,6 +322,7 @@ export async function instrument(page) {
       requestAnimationFrame(() => requestAnimationFrame(() => window.gtgPerformance.interactions.push(performance.now() - start)));
     }, true);
   });
+  if (engine === "chromium") await observeChromiumRequests(page, event => add({ ...event, kind: `native-${event.kind}` }));
   return { trace, errors, failed, counts, mark: event => add({ kind: "harness", event }) };
 }
 

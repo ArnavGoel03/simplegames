@@ -1,44 +1,14 @@
 import assert from "node:assert/strict";
 import { createServer } from "node:http";
-import { createHash } from "node:crypto";
 import { mkdir, writeFile } from "node:fs/promises";
 import { chromium, webkit } from "playwright";
-import { candidates, engine, instrument, networkVerdict, output } from "./browser-evidence.mjs";
+import { candidates, engine, instrument, networkVerdict, observeChromiumRequests, output } from "./browser-evidence.mjs";
 
 // Diagnostic controls, not release check certificates. No failed event from
 // the application is filtered based on this probe's result.
 assert(candidates.length, "Network probe requires a candidate");
 await mkdir(output, { recursive: true });
 const result = { engine, site: candidates[0].site };
-async function traceNativeRequests(context, page, origin) {
-  const cdp = await context.newCDPSession(page);
-  const events = [];
-  const requests = new Set();
-  const digest = value => createHash("sha256").update(value).digest("hex");
-  const add = event => { if (events.length < 1500) events.push({ at: Date.now(), ...event }); };
-  cdp.on("Network.requestWillBeSent", event => {
-    const url = new URL(event.request.url);
-    if (url.origin !== origin || !url.searchParams.has("_rsc")) return;
-    requests.add(event.requestId);
-    const headers = Object.fromEntries(Object.entries(event.request.headers).map(([key, value]) => [key.toLowerCase(), value]));
-    add({ kind: "request", id: event.requestId, type: event.type, wallTime: event.wallTime, loaderId: event.loaderId,
-      path: url.pathname, requestKey: digest(url.href), initiator: { type: event.initiator.type, requestId: event.initiator.requestId },
-      headers: Object.fromEntries(["rsc", "next-router-prefetch", "next-router-segment-prefetch", "if-none-match", "if-modified-since", "cache-control"].filter(key => key in headers).map(key => [key, headers[key]])) });
-  });
-  cdp.on("Network.responseReceived", event => {
-    if (!requests.has(event.requestId)) return;
-    const headers = Object.fromEntries(Object.entries(event.response.headers).map(([key, value]) => [key.toLowerCase(), value]));
-    add({ kind: "response", id: event.requestId, status: event.response.status, type: event.type,
-      fromDiskCache: event.response.fromDiskCache, fromServiceWorker: event.response.fromServiceWorker,
-      headers: Object.fromEntries(["cf-ray", "cache-control", "age", "etag", "content-type"].filter(key => key in headers).map(key => [key, headers[key]])) });
-  });
-  for (const [name, kind] of [["requestServedFromCache", "cached"], ["loadingFinished", "finished"], ["loadingFailed", "failed"]]) {
-    cdp.on(`Network.${name}`, event => { if (requests.has(event.requestId)) add({ kind, id: event.requestId, error: event.errorText, canceled: event.canceled, encodedDataLength: event.encodedDataLength }); });
-  }
-  await cdp.send("Network.enable");
-  return { cdp, events };
-}
-
 const browser = await ({ chromium, webkit })[engine].launch();
 let server;
 try {
@@ -50,7 +20,7 @@ try {
       const page = await context.newPage();
       page.setDefaultTimeout(10_000);
       const probe = await instrument(page);
-      const { cdp, events } = await traceNativeRequests(context, page, casino.origin);
+      const { cdp, events } = await observeChromiumRequests(page);
       if (mode === "no-worker-no-cache") await cdp.send("Network.setCacheDisabled", { cacheDisabled: true });
       let flowError;
       let networkIdle;
@@ -144,7 +114,7 @@ self.addEventListener('fetch',event=>{if(new URL(event.request.url).pathname==='
     const page = await context.newPage();
     const origin = `http://127.0.0.1:${server.address().port}`;
     const probe = await instrument(page);
-    const { events } = await traceNativeRequests(context, page, origin);
+    const { events } = await observeChromiumRequests(page);
     try {
       await page.goto(origin, { waitUntil: "load" });
       const values = {};

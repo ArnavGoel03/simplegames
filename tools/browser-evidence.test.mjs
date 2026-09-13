@@ -206,6 +206,45 @@ describe("exact response network verdict", () => {
   });
 });
 
+describe("Chromium background cache revalidation", () => {
+  function fixture() {
+    const headers = { "content-type": "text/x-component", "cache-control": "s-maxage=31536000, stale-while-revalidate=2592000", "cf-ray": "1234567890abcdef-BOM" };
+    return {
+      errors: [], counts: { failed: 1 },
+      failed: [{ at: 30, startedAt: 20, requestId: 3, requestKey: "key", resource: "other", error: "net::ERR_ABORTED", method: "GET", rsc: true, prefetch: true }],
+      trace: [
+        { at: 10, kind: "native-request", id: "fetch", type: "Fetch", requestKey: "key", loaderId: "document", wallTime: 0.01, initiator: { type: "script" } },
+        { at: 11, kind: "native-response", id: "fetch", type: "Fetch", status: 200, fromDiskCache: true, headers },
+        { at: 12, kind: "native-finished", id: "fetch" },
+        { at: 12, kind: "response-reader-complete", requestKey: "key", status: 200, ray: headers["cf-ray"] },
+        { at: 13, kind: "native-request", id: "background", type: "Other", requestKey: "key", loaderId: "document", initiator: { type: "other" }, headers: { rsc: "1", "next-router-prefetch": "1" } },
+        { at: 14, kind: "native-response", id: "background", type: "Other", status: 200, headers },
+      ],
+    };
+  }
+  it("recognizes the independently reproduced cached read followed by native background revalidation", () => {
+    expect(networkVerdict(fixture())).toMatchObject({ passed: true, classified: [{ nativeRequestId: "background", cachedRequestId: "fetch", reason: "chromium-background-swr-revalidation" }] });
+  });
+  it("does not waive application fetches, failed responses, wrong keys or missing cache/completion proof", () => {
+    for (const mutate of [
+      p => { p.failed[0].resource = "fetch"; },
+      p => { p.failed[0].error = "net::ERR_CONNECTION_RESET"; },
+      p => { p.trace[5].status = 500; },
+      p => { p.trace[4].requestKey = "other"; },
+      p => { p.trace[4].loaderId = "other"; },
+      p => { p.trace[1].fromDiskCache = false; },
+      p => { p.trace[1].headers["cache-control"] = "max-age=0, must-revalidate"; },
+      p => { p.trace[2].kind = "not-finished"; },
+      p => { p.trace[3].kind = "response-reader-error"; },
+      p => { p.trace.push({ ...p.trace[4], id: "ambiguous" }); },
+      p => { p.trace.push({ kind: "native-failed", id: "background", error: "net::ERR_INCOMPLETE_CHUNKED_ENCODING" }); },
+    ]) {
+      const probe = fixture(); mutate(probe);
+      expect(networkVerdict(probe).passed).toBe(false);
+    }
+  });
+});
+
 describe("completed fragment navigation timing", () => {
   function fixture() {
     let now = 0;
