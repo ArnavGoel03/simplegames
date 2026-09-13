@@ -951,6 +951,7 @@ a.title:hover .title__art img {
 .fan {
   position: absolute;
   inset: 0;
+  isolation: isolate;
   display: grid;
   align-content: center;
   justify-items: center;
