@@ -1,3 +1,4 @@
+import { studioIconPath } from "@/lib/studio-mark";
 import type { MetadataRoute } from "next";
 import { PLAYABLE, playPath, studio, STUDIO_NAME, STUDIO_TAGLINE } from "@/lib/brand";
 
@@ -43,17 +44,17 @@ export default function manifest(): MetadataRoute.Manifest {
       short_name: game.name,
       description: game.holds,
       url: playPath(game),
-      icons: [{ src: "/icon-192.png", sizes: "192x192", type: "image/png" }],
+      icons: [{ src: studioIconPath("icon-192.png"), sizes: "192x192", type: "image/png" }],
     })),
     icons: [
       // Order matters less than purpose. `any` is the icon as drawn; `maskable`
       // is the same mark on a full bleed ground, because Android crops to a
       // circle or a squircle and would otherwise shave the corners off a
       // rounded square.
-      { src: "/icon.svg", sizes: "any", type: "image/svg+xml", purpose: "any" },
-      { src: "/icon-192.png", sizes: "192x192", type: "image/png", purpose: "any" },
-      { src: "/icon-512.png", sizes: "512x512", type: "image/png", purpose: "any" },
-      { src: "/icon-maskable-512.png", sizes: "512x512", type: "image/png", purpose: "maskable" },
+      { src: studioIconPath("icon.svg"), sizes: "any", type: "image/svg+xml", purpose: "any" },
+      { src: studioIconPath("icon-192.png"), sizes: "192x192", type: "image/png", purpose: "any" },
+      { src: studioIconPath("icon-512.png"), sizes: "512x512", type: "image/png", purpose: "any" },
+      { src: studioIconPath("icon-maskable-512.png"), sizes: "512x512", type: "image/png", purpose: "maskable" },
     ],
   };
 }

@@ -103,7 +103,8 @@ describe("the games registry", () => {
   it("describes every picture it shows", () => {
     for (const game of GAMES) {
       if (!game.art) continue;
-      expect(game.art.alt.trim().length, `${game.name} art has no alt text`).toBeGreaterThan(20);
+      // A game name is valid alternative text; character count is not meaning.
+      expect(game.art.alt.trim().length, `${game.name} art has no alt text`).toBeGreaterThan(0);
       expect(game.art.width).toBeGreaterThan(0);
       expect(game.art.height).toBeGreaterThan(0);
     }

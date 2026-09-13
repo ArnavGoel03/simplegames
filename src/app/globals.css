@@ -1,30 +1,8 @@
-/*
-  Ink on ledger paper.
+@import "./palette.css";
 
-  The palette is indigo and a cool, faintly blue paper rather than the warm
-  cream that every studio site reaches for. Indigo because it is the colour of
-  a pen that has checked something, and because these are games played in
-  India, where indigo is a dye before it is a brand colour. The paper is cooled
-  rather than warmed so the page reads as a ledger to be audited, not as
-  stationery.
-
-  Every colour is a token defined once here. A literal hex value anywhere else
-  in this project is a bug.
-*/
+/* Shared neutral surfaces. Game artwork carries the color. */
 
 :root {
-  --paper: #f1f1f5;
-  --paper-raised: #ffffff;
-  --ink: #171733;
-  --muted: #62627d;
-  --rule: #d6d6e2;
-  --rule-strong: #b9b9cb;
-  --indigo: #3b3bd0;
-  --indigo-wash: #e7e7fa;
-  --verify: #0b6f55;
-  --verify-wash: #dcf0e9;
-  --flag: #b8342a;
-
   /* The three faces are loaded and self-hosted by next/font in layout.tsx,
      which supplies the variables named below. Nothing here reaches out to a
      font CDN, which is why the content security policy can forbid one. */
@@ -32,21 +10,12 @@
   --font-body: var(--font-plex-sans), system-ui, sans-serif;
   --font-mono: var(--font-plex-mono), ui-monospace, monospace;
 
-  /* A card table is green under any light, and a playing card is white on
-     both. These four are deliberately not redefined for dark mode: they are
-     the colours of an object, not of the page it is printed on. */
-  --felt: #14453a;
-  --felt-deep: #0a251f;
-  --card-face: #fbfbf6;
-  --card-ink: #1a1a26;
-  --card-red: #c22a1c;
-
   --measure: 34rem;
   --gutter: clamp(1.25rem, 5vw, 2.5rem);
   --page: 64rem;
   /* Reading is narrow; looking is wide. Documents keep --page, the home page
      and the two rules that frame every page use this one. */
-  --page-wide: 84rem;
+  --page-wide: 100rem;
 
   --step-display: clamp(2.75rem, 8.5vw, 6rem);
   --step-hero: clamp(2.5rem, 7.5vw, 5rem);
@@ -55,22 +24,6 @@
   --step-body: 1rem;
   --step-small: 0.875rem;
   --step-label: 0.6875rem;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --paper: #0f0f18;
-    --paper-raised: #16162a;
-    --ink: #e9e9f3;
-    --muted: #9696b0;
-    --rule: #29293f;
-    --rule-strong: #3b3b57;
-    --indigo: #9e9eff;
-    --indigo-wash: #1c1c3a;
-    --verify: #46d3a6;
-    --verify-wash: #102c26;
-    --flag: #ff8a7e;
-  }
 }
 
 *,
@@ -148,10 +101,10 @@ a {
 
 .masthead {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  padding-block: 1.5rem;
+  padding-block: 1.25rem;
   flex-wrap: wrap;
 }
 
@@ -166,64 +119,16 @@ a {
   gap: 0.5rem;
 }
 
-/*
-  The mark: a glass table from above, drawn in StudioMark.tsx.
-
-  Every value is a token, because a mark that is the one hardcoded colour on the
-  site is a mark that will be the wrong colour the first time the palette moves.
-  The shadows sit under a translucent pane, which is what makes the surface read
-  as glass rather than as a tile.
-*/
-.mark {
-  width: 1.375rem;
-  height: 1.375rem;
+.arrow-icon {
+  width: 1.1em;
+  height: 1.1em;
   flex: none;
 }
 
-.mark__under {
-  fill: var(--ink);
-  opacity: 0.22;
-}
-
-.mark__pane {
-  fill: var(--indigo);
-  fill-opacity: 0.08;
-  stroke: var(--indigo);
-  stroke-width: 1.5;
-}
-
-.mark__pieces {
-  fill: var(--indigo);
-}
-
-/*
-  The frost clears once, on first paint. It is the studio's claim as an
-  animation: what was hidden becomes visible, and nothing about the page needed
-  to be trusted for it to happen.
-*/
-.mark__frost {
-  fill: var(--paper);
-  animation: mark-clear 700ms cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-
-@keyframes mark-clear {
-  from {
-    opacity: 1;
-  }
-  to {
-    opacity: 0;
-  }
-}
-
-/*
-  Asked for less motion, given the answer rather than the reveal. The cleared
-  state is the real one; the animation only delays it.
-*/
-@media (prefers-reduced-motion: reduce) {
-  .mark__frost {
-    animation: none;
-    opacity: 0;
-  }
+.mark {
+  width: 2.25rem;
+  height: 2.25rem;
+  flex: none;
 }
 
 .masthead nav {
@@ -233,6 +138,7 @@ a {
 }
 
 .masthead nav a {
+  display: inline-flex; align-items: center; min-height: 44px;
   color: var(--muted);
   text-decoration: none;
 }
@@ -478,6 +384,7 @@ a {
 /* ---------- controls ---------- */
 
 .button {
+  min-height: 44px; border-radius: 999px; gap: 1.5rem; justify-content: center;
   font-family: var(--font-body);
   font-size: var(--step-small);
   font-weight: 500;
@@ -577,105 +484,137 @@ a.button {
   color: var(--ink);
 }
 
-/* ---------- the stage: key art at the top of the home page ---------- */
-
-/*
-  Full width rather than inside the shell, because the point of key art is that
-  it runs off the edge of the screen. The copy pads itself back into line with
-  the masthead using the same arithmetic .shell--wide does, in percent rather
-  than vw so a scrollbar cannot knock the headline out of alignment with the
-  wordmark above it.
-*/
+/* ---------- studio cover ---------- */
 .stage {
-  position: relative;
-  isolation: isolate;
-  overflow: clip;
   display: grid;
-  gap: clamp(1.75rem, 5vw, 3rem);
-  padding-block: 0 clamp(3rem, 7vw, 5rem);
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  align-items: center;
+  gap: clamp(2rem, 5vw, 5rem);
+  padding-block: clamp(3rem, 6vw, 7rem) clamp(4rem, 7vw, 8rem);
+  min-height: min(48rem, 84svh);
 }
-
-/* The studio's own colour pooled under the art, so the photograph sits in the
-   page rather than on top of it. */
-.stage::before {
-  content: "";
-  position: absolute;
-  z-index: -2;
-  inset: -30% -5% 10% 25%;
-  background: radial-gradient(55% 55% at 68% 40%, var(--indigo-wash), transparent 72%);
-  pointer-events: none;
-}
-
-/* On a phone the art leads and the words follow, which is the order a poster
-   is read in. The markup keeps the headline first, where a screen reader and a
-   crawler both want it. */
-.stage__art {
-  position: relative;
-  line-height: 0;
-  order: -1;
-}
-
-/* Cropped to a band rather than left at its own proportions, so on a phone the
-   board reads as a poster at the top of the page instead of a strip between
-   the header and the headline. */
-.stage__art img {
-  display: block;
-  width: 100%;
-  height: min(40vh, 20rem);
-  object-fit: cover;
-}
-
 .stage__copy {
   display: grid;
   justify-items: start;
-  gap: clamp(1.25rem, 2.5vw, 1.75rem);
-  padding-inline: var(--gutter);
+  gap: 1.75rem;
 }
-
 .stage h1 {
-  font-size: var(--step-display);
-  max-width: 13ch;
+  font-size: clamp(4rem, 7.5vw, 8rem);
+  max-width: 9ch;
+  line-height: 0.98;
+  letter-spacing: -0.055em;
 }
-
 .stage__lede {
-  font-size: var(--step-lead);
+  max-width: 25ch;
+  font-size: clamp(1.25rem, 2.1vw, 1.9rem);
   color: var(--muted);
-  max-width: 44ch;
+  line-height: 1.4;
 }
-
-@media (min-width: 64rem) {
+.stage__art {
+  position: relative;
+  min-width: 0;
+  padding: 0 0 18% 5%;
+}
+.stage__board {
+  display: block;
+  position: relative;
+  aspect-ratio: 1.25;
+  overflow: clip;
+  border-radius: 2rem;
+  border: 1px solid var(--rule-strong);
+  background: var(--felt-deep);
+  transform: rotate(3deg);
+  box-shadow: 0 1.5rem 4rem color-mix(in srgb, var(--ink) 10%, transparent);
+}
+.stage__board img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+.stage__caption {
+  position: absolute;
+  inset: 1.5rem 1.5rem auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  padding: 0.75rem 1.1rem;
+  font-weight: 500;
+}
+.stage__hand {
+  position: absolute;
+  width: 58%;
+  aspect-ratio: 1.5;
+  inset: auto auto 0 0;
+  border-radius: 1.5rem;
+  overflow: clip;
+  border: 1px solid var(--rule-strong);
+  transform: rotate(-8deg);
+  box-shadow: 0 1rem 3rem color-mix(in srgb, var(--ink) 12%, transparent);
+}
+.stage__hand .fan {
+  padding: 0.7rem;
+  gap: 0.4rem;
+}
+.stage__hand .fan__cards {
+  --card-w: clamp(2rem, 3.5vw, 3.5rem);
+}
+.stage__hand .fan__caption {
+  display: none;
+}
+@media (max-width: 63.99rem) {
   .stage {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
-    align-items: center;
-    gap: clamp(2rem, 4vw, 4rem);
-    min-height: min(78vh, 42rem);
-    /* No padding on the section itself, so the art runs the full height of the
-       band. The copy carries its own instead. */
-    padding-block: 0;
-    padding-inline-start: max(var(--gutter), calc((100% - var(--page-wide)) / 2 + var(--gutter)));
+    gap: 2rem;
   }
-
+  .stage h1 {
+    font-size: clamp(3.5rem, 8vw, 6rem);
+  }
   .stage__copy {
-    padding-inline: 0;
-    padding-block: clamp(3rem, 6vw, 5rem);
+    gap: 1.25rem;
   }
-
   .stage__art {
-    order: 0;
-    align-self: stretch;
-    min-height: 26rem;
+    padding-bottom: 28%;
   }
-
-  /* Cover rather than contain, so the board fills the right of the screen the
-     way a photograph would, and fades into the paper on its left edge instead
-     of ending at a hard line beside the text. */
-  .stage__art img {
-    position: absolute;
-    inset: 0;
-    height: 100%;
-    object-fit: cover;
-    object-position: 60% 50%;
-    mask-image: linear-gradient(to right, transparent, #000 30%);
+}
+@media (max-width: 43.99rem) {
+  .stage {
+    grid-template-columns: minmax(0, 1fr);
+    min-height: auto;
+    padding-top: 2.5rem;
+    gap: 2.5rem;
+  }
+  .stage h1 {
+    font-size: clamp(3.6rem, 15vw, 6rem);
+    max-width: 10ch;
+  }
+  .stage__lede {
+    font-size: 1.35rem;
+    max-width: 28ch;
+  }
+  .stage__art {
+    max-width: 32rem;
+    width: 100%;
+    justify-self: center;
+    padding-bottom: 18%;
+  }
+  .stage__board {
+    aspect-ratio: 1.45;
+    border-radius: 1.5rem;
+  }
+  .stage__hand .fan__cards {
+    --card-w: clamp(2rem, 7vw, 3rem);
+  }
+  .masthead {
+    gap: 0.25rem;
+  }
+  .wordmark {
+    font-size: 1.15rem;
+  }
+  .masthead nav {
+    gap: 1.25rem;
   }
 }
 
@@ -735,63 +674,137 @@ a.button {
   max-width: 20ch;
 }
 
+.collection-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+.collection-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.collection-nav a {
+  min-height: 44px;
+  padding: 0.6rem 1rem;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  color: var(--muted);
+  text-decoration: none;
+  font-size: var(--step-small);
+}
+.collection-nav a:hover {
+  color: var(--ink);
+  border-color: var(--rule-strong);
+}
 .titles {
-  margin-top: clamp(2rem, 5vw, 3rem);
+  margin-top: 2rem;
   display: grid;
-  gap: clamp(1.25rem, 2.5vw, 2rem);
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: clamp(1rem, 2.5vw, 2rem);
 }
-
-@media (min-width: 60rem) {
-  .titles {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
 .title {
+  grid-column: span 2;
   display: grid;
   grid-template-rows: auto 1fr;
-  background: var(--paper-raised);
   border: 1px solid var(--rule);
+  border-radius: 1.5rem;
+  background: var(--paper-raised);
   text-decoration: none;
   overflow: clip;
-  transition:
-    border-color 200ms ease,
-    transform 200ms ease;
+  transition: border-color 180ms ease, transform 180ms ease;
+  scroll-margin-top: 2rem;
 }
-
+.title:nth-child(-n+2) {
+  grid-column: span 3;
+}
 a.title:hover {
-  border-color: var(--indigo);
-  transform: translateY(-3px);
+  transform: translateY(-4px);
+  border-color: var(--rule-strong);
 }
-
 .title__art {
   position: relative;
-  aspect-ratio: 16 / 10;
+  aspect-ratio: 1.35;
   overflow: clip;
-  /*
-    What a reader looks at while the picture is still arriving. It used to be
-    --felt-deep, which is very nearly black: on a cold open the page showed a
-    black rectangle inside a white card for as long as the image took, which
-    reads as something broken rather than as something loading. The card fan
-    paints its own felt in `.fan`, so nothing depended on this being green.
-  */
   background: var(--rule);
   border-bottom: 1px solid var(--rule);
 }
-
+.title:nth-child(-n+2) .title__art {
+  aspect-ratio: 1.75;
+}
 .title__art img {
   display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  /* The board's own middle, where the snakes are, rather than its numbered
-     edges. */
   object-position: 50% 45%;
   transition: transform 400ms ease;
 }
-
 a.title:hover .title__art img {
-  transform: scale(1.04);
+  transform: scale(1.035);
+}
+.title[data-game="teenpatti"] .title__art img {
+  object-position: center;
+}
+.title__heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+.title__arrow {
+  width: 2.5rem;
+  height: 2.5rem;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--rule);
+  border-radius: 50%;
+  font-size: 1.25rem;
+  flex: none;
+}
+@media (max-width: 63.99rem) {
+  .titles {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .title, .title:nth-child(-n+2) {
+    grid-column: auto;
+  }
+  .title:last-child {
+    grid-column: 1 / -1;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto;
+  }
+  .title:last-child .title__art {
+    aspect-ratio: auto;
+    min-height: 20rem;
+    border-bottom: 0;
+  }
+  .title:nth-child(-n+2) .title__art {
+    aspect-ratio: 1.35;
+  }
+}
+@media (max-width: 43.99rem) {
+  .titles {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .title:last-child {
+    grid-column: auto;
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .title:last-child .title__art {
+    aspect-ratio: 1.35;
+    min-height: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .title, .title__art img {
+    transition: none;
+  }
+  a.title:hover, a.title:hover .title__art img {
+    transform: none;
+  }
 }
 
 /*
@@ -826,7 +839,7 @@ a.title:hover .title__art img {
 }
 
 .title__body {
-  padding: clamp(1.5rem, 3.5vw, 2.25rem);
+  padding: clamp(1.25rem, 2.2vw, 2rem);
   display: grid;
   gap: 0.75rem;
   align-content: start;
@@ -842,9 +855,8 @@ a.title:hover .title__art img {
 
 .title__holds {
   font-family: var(--font-mono);
-  font-size: var(--step-label);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: 0;
   color: var(--muted);
 }
 

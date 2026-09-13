@@ -1,5 +1,14 @@
 # Glass Table Games: state of play
 
+## Studio design, 13 September 2026 (in progress)
+
+The 0.4.0 candidate replaces Charade/Casino title plates with rendered game
+previews, adds a responsive gallery and custom Glass Table monogram, and derives
+header/share/installed icons from one drawing and palette. Existing wording is
+reused. Seven hosted same-page viewport checks pass at 320 through 2560 pixels;
+light and dark surfaces were inspected. Final refined production rendering and
+deployment remain pending. See `docs/STUDIO-DESIGN-2026-09-13.md`.
+
 ## Installed app recovery, 13 September 2026 (pending release)
 
 Studio 0.3.1 now consumes the canonical game PWA worker, early recovery and

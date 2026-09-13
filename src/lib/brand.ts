@@ -1,3 +1,4 @@
+import palette from "./palette.json";
 import catalogue from "./game-catalogue.json";
 
 // The studio, authored once.
@@ -60,8 +61,8 @@ export const studio = {
   // reader's colour scheme and one value means a light band above a dark page
   // on half the phones that open it.
   themeColor: {
-    light: "#f1f1f5",
-    dark: "#0f0f18",
+    light: palette.light.paper,
+    dark: palette.dark.paper,
   },
 } as const;
 
@@ -105,9 +106,9 @@ export type GameStatus = "live" | "building";
 /**
  * Key art for a game.
  *
- * Every one of these is a screenshot of the real thing, taken from the live
- * deployment and cropped, never an illustration of a game that does not look
- * like that. A studio page that shows art the game does not match is making a
+ * Every one of these is a capture of the rendered game, cropped for the
+ * gallery. Reproducible fixture captures and their provenance are recorded in
+ * docs/STUDIO-DESIGN-2026-09-13.md. A studio page that shows art the game does not match is making a
  * claim it cannot keep, which is the one thing this site is not allowed to do.
  * Dimensions are carried because the layout must not move while they load.
  */
@@ -209,11 +210,9 @@ const GAME_PRESENTATION: readonly Omit<Game, "name" | "url">[] = [
     // uploaded, which spends no build minutes anywhere. Draw and Lattice sat on
     // Netlify for a few weeks in between, and those copies are still answering:
     // they are stale and are to be retired, not linked.
-    // No art yet, and not for want of trying: a Draw room shows an empty canvas
-    // and "waiting for somebody to join" until a second player arrives, so
-    // there is nothing to photograph that a person would recognise as the game.
-    // The moment a real two-player round can be captured, it replaces this.
-    art: null,
+    art: {
+      src: "/art/charade-drawing.webp", width: 1200, height: 1059, alt: "Charade",
+    },
     fallback: "type",
   },
   {
@@ -243,7 +242,7 @@ const GAME_PRESENTATION: readonly Omit<Game, "name" | "url">[] = [
       (game) => game.id !== "teenpatti",
     ) ? 1 : 2} to 6 players`,
     status: "live",
-    art: null,
+    art: { src: "/art/casino-roulette.webp", width: 900, height: 780, alt: "Casino" },
     fallback: "type",
   },
 ] as const;

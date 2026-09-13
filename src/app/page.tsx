@@ -1,10 +1,11 @@
+import { ArrowUpRight } from "@/components/ArrowUpRight";
 import Image from "next/image";
 import Link from "next/link";
 import { CardFan } from "@/components/CardFan";
 import { JsonLd } from "@/components/JsonLd";
 import { Commitment } from "@/components/Commitment";
 import { TitlePlate } from "@/components/TitlePlate";
-import { GAME_COUNT_WORD, GAMES, GAMES_LINK, HERO_ART, PLAYABLE, STUDIO_TAGLINE } from "@/lib/brand";
+import { GAME_COUNT_WORD, GAMES, GAMES_LINK, HERO_ART, PLAYABLE, STUDIO_NAME, STUDIO_TAGLINE } from "@/lib/brand";
 import { gameCatalogue, webSite } from "@/lib/structured-data";
 
 /**
@@ -30,35 +31,35 @@ export default function HomePage() {
           and the list a reader sees cannot come apart. */}
       <JsonLd data={webSite()} />
       <JsonLd data={gameCatalogue()} />
-      <section className="stage">
+      <section className="shell shell--wide stage">
         <div className="stage__copy">
           <p className="kicker">{STUDIO_TAGLINE}</p>
-          <h1>Every roll is settled before we know who it helps.</h1>
+          <h1>{STUDIO_NAME}</h1>
           <p className="stage__lede">
-            Board and card games for playing with friends. The number behind every roll and every
-            shuffle is fixed before the game starts and published when it ends, so the result can be
-            checked afterwards by anyone who cares to.
+            Every roll is settled before we know who it helps.
           </p>
           <p className="cta">
             {first ? (
-              <a className="button button--large" href={first.url}>
-                Play {first.name}
-              </a>
+              <Link className="button button--large" href={GAMES_LINK.path}>
+                {GAMES_LINK.label}<ArrowUpRight />
+              </Link>
             ) : null}
             <Link className="button button--large button--quiet" href="/fair-play">
               How the check works
             </Link>
           </p>
         </div>
-        <div className="stage__art">
+        <div className="stage__art"><a className="stage__board" href={first?.url}>
           <Image
             src={HERO_ART.src}
             alt={HERO_ART.alt}
             width={HERO_ART.width}
             height={HERO_ART.height}
             sizes="(min-width: 64rem) 60vw, 100vw"
-            priority
+            preload
           />
+          <span className="stage__caption">{first?.name}<ArrowUpRight /></span>
+          </a><div className="stage__hand"><CardFan /></div>
         </div>
       </section>
 
@@ -72,7 +73,12 @@ export default function HomePage() {
       </ul>
 
       <section className="shell shell--wide band band--flush" id="games">
-        <h2 className="section-title">{GAME_COUNT_WORD} games in the studio.</h2>
+        <div className="collection-heading">
+          <h2 className="section-title">{GAME_COUNT_WORD} games in the studio.</h2>
+          <nav className="collection-nav" aria-label={GAMES_LINK.label}>
+            {GAMES.map((game) => <a key={game.id} href={`#game-${game.id}`}>{game.name}</a>)}
+          </nav>
+        </div>
         <div className="titles">
           {GAMES.map((game) => {
             const inner = (
@@ -84,7 +90,7 @@ export default function HomePage() {
                       alt={game.art.alt}
                       width={game.art.width}
                       height={game.art.height}
-                      sizes="(min-width: 60rem) 45vw, 100vw"
+                      sizes="(min-width: 100rem) 700px, (min-width: 60rem) 45vw, (min-width: 44rem) 50vw, 100vw"
                     />
                   ) : game.fallback === "cards" ? (
                     <CardFan />
@@ -93,8 +99,9 @@ export default function HomePage() {
                   )}
                 </div>
                 <div className="title__body">
+                  <div className="title__heading"><h3 className="title__name">{game.name}</h3>
+                    <span className="title__arrow"><ArrowUpRight /></span></div>
                   <span className="title__holds">{game.holds}</span>
-                  <h3 className="title__name">{game.name}</h3>
                   <p className="title__blurb">{game.blurb}</p>
                   <span className="title__meta">{game.players}</span>
                   <span className="title__go">
@@ -104,11 +111,11 @@ export default function HomePage() {
               </>
             );
             return game.url ? (
-              <a key={game.id} className="title" href={game.url}>
+              <a key={game.id} id={`game-${game.id}`} data-game={game.id} className="title" href={game.url}>
                 {inner}
               </a>
             ) : (
-              <div key={game.id} className="title title--soon">
+              <div key={game.id} id={`game-${game.id}`} data-game={game.id} className="title title--soon">
                 {inner}
               </div>
             );
@@ -121,6 +128,7 @@ export default function HomePage() {
           <div>
             <h2 className="section-title">Nothing above is a promise. It is arithmetic.</h2>
             <div className="prose">
+              <p>Board and card games for playing with friends. The number behind every roll and every shuffle is fixed before the game starts and published when it ends, so the result can be checked afterwards by anyone who cares to.</p>
               <p>
                 A game that says it is fair is asking to be trusted. A game that publishes the
                 number it rolled from is not asking for anything, because you can run the same sum

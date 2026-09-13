@@ -1,3 +1,4 @@
+import { studioIconPath } from "@/lib/studio-mark";
 import type { Metadata, Viewport } from "next";
 import { Fraunces, IBM_Plex_Mono, IBM_Plex_Sans } from "next/font/google";
 import { JsonLd } from "@/components/JsonLd";
@@ -72,13 +73,13 @@ export const metadata: Metadata = {
   */
   icons: {
     icon: [
-      { url: "/icon.svg", type: "image/svg+xml", sizes: "any" },
-      { url: "/icon-192.png", type: "image/png", sizes: "192x192" },
-      { url: "/icon-512.png", type: "image/png", sizes: "512x512" },
-      { url: "/favicon.ico", sizes: "16x16 32x32 48x48" },
+      { url: studioIconPath("icon.svg"), type: "image/svg+xml", sizes: "any" },
+      { url: studioIconPath("icon-192.png"), type: "image/png", sizes: "192x192" },
+      { url: studioIconPath("icon-512.png"), type: "image/png", sizes: "512x512" },
+      { url: studioIconPath("favicon.ico"), sizes: "16x16 32x32 48x48" },
     ],
-    apple: [{ url: "/apple-touch-icon.png", type: "image/png", sizes: "180x180" }],
-    shortcut: ["/favicon.ico"],
+    apple: [{ url: studioIconPath("apple-touch-icon.png"), type: "image/png", sizes: "180x180" }],
+    shortcut: [studioIconPath("favicon.ico")],
   },
   manifest: "/manifest.webmanifest",
   appleWebApp: {
