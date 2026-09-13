@@ -3,7 +3,6 @@ import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symli
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { spawnSync } from "node:child_process";
-import { sourceFingerprint } from "./build-state.mjs";
 import { outputFingerprint, sourceFingerprint } from "./build-state.mjs";
 
 const temporary = [];
