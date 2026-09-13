@@ -5,6 +5,8 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { STUDIO_NAME, STUDIO_TAGLINE, studio } from "@/lib/brand";
 import { studioNode } from "@/lib/structured-data";
+import { studioDiagnosticsSource } from "@/lib/pwa-diagnostics";
+import { assetRecoverySource } from "@/lib/pwa/asset-recovery";
 import "./globals.css";
 
 // Fraunces carries the personality. SOFT rounds the terminals and WONK swaps
@@ -101,6 +103,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       lang={studio.lang}
       className={`${fraunces.variable} ${plexSans.variable} ${plexMono.variable}`}
     >
+      <head><script dangerouslySetInnerHTML={{ __html: assetRecoverySource(process.env.NEXT_PUBLIC_APP_COMMIT || process.env.NEXT_PUBLIC_APP_BUILT_AT || "local", studioDiagnosticsSource()) }} /></head>
       <body>
         {/* Who publishes this, on every page rather than on the front page
             alone.

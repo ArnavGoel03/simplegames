@@ -14,3 +14,6 @@ next-env.d.ts
 .env*
 .audit/
 .firecrawl/
+
+# Generated from the byte-mirrored shared PWA sources.
+/public/sw.js

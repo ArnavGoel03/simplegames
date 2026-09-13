@@ -1,5 +1,18 @@
 # Glass Table Games: state of play
 
+## Installed app recovery, 13 September 2026 (pending release)
+
+Studio 0.3.1 now consumes the canonical game PWA worker, early recovery and
+registration source through a checked SHA-256 mirror. It includes bounded
+legacy-asset migration, a self-contained reset route, and capped automatic
+diagnostics forwarding to the existing Circuit ingestion pipeline. All seven
+source files match the frozen primary helpers. The 106-test full suite,
+typecheck, lint and candidate production build pass; one additional reset
+failure regression also passes after reproducing the defect. Hosted Chromium
+desktop, phone and landscape rendering, footer update and reset checks pass.
+Deployment and live mirror/diagnostic verification remain pending; see
+`docs/PWA-RECOVERY-2026-09-13.md`.
+
 ## Casino release, 13 September 2026
 
 Studio 0.3.0 is live from source `55c9f43` (PR 5, merge `cc19365`), Worker

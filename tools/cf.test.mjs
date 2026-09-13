@@ -17,6 +17,7 @@ function project() {
     const source = new URL(file, import.meta.url);
     if (existsSync(source)) cpSync(source, join(root, "tools", file));
   }
+  writeFileSync(join(root, "tools/generate-worker.mjs"), "export async function writeServiceWorker() {}\n");
   writeFileSync(join(root, "src/lib/brand.ts"), 'function resolveUrl() { return "https://glasstablegames.com"; }');
   writeFileSync(join(root, "package.json"), '{"type":"module","version":"0.3.0"}');
   cpSync(new URL("../public/sw.js", import.meta.url), join(root, "public/sw.js"));
