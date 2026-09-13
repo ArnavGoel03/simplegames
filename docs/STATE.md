@@ -47,7 +47,8 @@ separate from this automated release verification.
 Supplementary local PR browser run `34779977061` exposed a test-environment
 registration fault in Playwright's blocked-worker mode, after all twelve
 responsive captures passed. Its performance contexts now model the intended
-absent capability; 25 focused tests pass, and the browser rerun is pending.
+absent capability; 25 focused tests and rerun `34780722592` pass. All five
+browser contexts have zero runtime errors and zero failed network requests.
 No application or deployed release bytes changed. See the release record.
 
 
