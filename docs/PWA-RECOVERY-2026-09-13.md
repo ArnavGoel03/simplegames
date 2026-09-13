@@ -1,6 +1,6 @@
 # Installed app recovery, 13 September 2026
 
-Status: implementation, local tests and candidate rendering complete, release pending. This is the
+Status: 0.3.1 is live; the diagnosed edge proxy correction in 0.3.2 is pending release. This is the
 studio index integration of the shared game worker/recovery fix. No claim about
 physical Safari verification is made.
 
@@ -29,7 +29,8 @@ healthy. These are replaced by the canonical shared implementation.
   active after hydration and retries only on navigation/reconnect events.
 - [x] Final mirror sync after the primary diagnostic hooks are frozen.
 - [x] Candidate production build and rendered browser check.
-- [ ] Live mirror verification, automatic diagnostic receipt verification and deployment.
+- [x] Deploy 0.3.1 and verify live worker, source mirror and 144 HTTP assertions.
+- [ ] Deploy edge proxy correction and verify its automatic diagnostic receipt.
 
 Verification: the full 106-test suite passes. An additional reset regression
 reproduced denied worker access skipping accessible caches, and all three reset
@@ -58,3 +59,23 @@ Unrelated AGENTS.md, CLAUDE.md and pnpm-lock.yaml were left untouched.
 Release branch: `fix/shared-pwa-diagnostics`, based on current `origin/main`
 (`b6c27cf`). Production deployment waits for the canonical Circuit source bundle
 and diagnostic receipt backend to be confirmed live.
+
+## Edge proxy finding
+
+The first live synthetic report through studio returned 503, while the same
+schema probe reached Circuit directly. A temporary binding-free Cloudflare
+Worker reproduced the exact cause: the runtime implements redirect `follow`
+and `manual`, and throws TypeError for `error`. Node's fetch accepts that option,
+so the original unit mocks and Next build did not detect the platform mismatch.
+
+The proxy now uses `manual` and refuses any 3xx without forwarding the report
+again. Both regression tests failed before the fix and pass afterward. The
+entire 109-test suite and typecheck pass. A second real-edge probe using manual
+mode reached Circuit and received its expected schema rejection. The temporary
+`gtg-pwa-qa-proxy-mtzku168` Worker was deleted. No production report was created
+by that fixed invalid-body probe; the earlier synthetic report IDs were queried
+and removed with absence verified.
+
+Evidence: `.audit/pwa/live-results.json` records the initial failed receipt;
+`.audit/pwa/proxy-fixture/result.json` records successful edge forwarding and
+`cleanup.json` records deletion. The canonical source mirror remains unchanged.
