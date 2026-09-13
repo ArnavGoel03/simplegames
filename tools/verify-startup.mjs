@@ -2,7 +2,10 @@ import assert from "node:assert/strict";
 import { createServer } from "node:http";
 import { mkdir, writeFile } from "node:fs/promises";
 import { chromium, webkit } from "playwright";
-import { ASSET_RECOVERY_SCRIPT_PROPS, assetRecoverySource } from "../src/lib/pwa/asset-recovery.ts";
+import { build } from "esbuild";
+
+const compiled = await build({ entryPoints: [new URL("../src/lib/pwa/asset-recovery.ts", import.meta.url).pathname], bundle: true, platform: "node", format: "esm", write: false });
+const { ASSET_RECOVERY_SCRIPT_PROPS, assetRecoverySource } = await import(`data:text/javascript;base64,${Buffer.from(compiled.outputFiles[0].text).toString("base64")}`);
 
 // Real parser/network fixture: a preceding stylesheet and unrelated async
 // script never finish. The recovery script must still execute and diagnose.
