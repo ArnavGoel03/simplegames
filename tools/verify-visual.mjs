@@ -2,6 +2,8 @@ import { mkdir, writeFile } from "node:fs/promises";
 import { spawn } from "node:child_process";
 import { chromium, webkit } from "playwright";
 import catalogue from "../src/lib/game-catalogue.json" with { type: "json" };
+import assert from "node:assert/strict";
+import { candidates, instrument, observeSource, recordEvidence, startupMeasurement, timedClick } from "./browser-evidence.mjs";
 
 const output = new URL("../.audit/visual/", import.meta.url);
 await mkdir(output, { recursive: true });
@@ -10,14 +12,17 @@ const local = "http://127.0.0.1:3187";
 const preview = process.env.CASINO_PREVIEW;
 const engine = process.env.BROWSER_ENGINE || "chromium";
 if (!["chromium", "webkit"].includes(engine)) throw new Error("Unknown browser engine");
-const sites = preview ? [{ id: "teenpatti", url: preview }] : live
+const sites = candidates.length ? candidates.map(item => ({ id: item.site, url: item.origin })) : preview ? [{ id: "teenpatti", url: preview }] : live
   ? [{ id: "studio", url: "https://glasstablegames.com" }, ...catalogue.sites]
   : [{ id: "studio", url: local }];
 const sizes = [[320, 720], [390, 844], [844, 390], [1024, 768], [1440, 1000], [2560, 1440]];
 const results = [];
+const performanceResults = [];
 let server;
 let browser;
 let activePage;
+const traces = [];
+const baseline = process.env.BASELINE_ONLY === "true";
 
 async function verifyCasino(page, origin, colorScheme) {
   await page.locator(".casino-feature-picker").waitFor();
@@ -72,7 +77,7 @@ try {
   browser = await ({ chromium, webkit })[engine].launch();
   for (const site of sites) {
     const url = new URL(site.url);
-    if (!(url.origin === local || (url.protocol === "https:" && (url.hostname === "glasstablegames.com" || url.hostname.endsWith(".glasstablegames.com") || (preview && url.hostname.endsWith(".goelhome.workers.dev")))))) {
+    if (!(url.origin === local || (url.protocol === "https:" && (url.hostname === "glasstablegames.com" || url.hostname.endsWith(".glasstablegames.com") || ((preview || candidates.length) && url.hostname.endsWith(".goelhome.workers.dev")))))) {
       throw new Error(`Unexpected visual target: ${url.origin}`);
     }
     for (const colorScheme of ["light", "dark"]) {
@@ -80,8 +85,9 @@ try {
       const page = await context.newPage();
       activePage = page;
       page.setDefaultNavigationTimeout(20_000);
-      const errors = [];
-      page.on("pageerror", error => errors.push(error.message));
+      const probe = await instrument(page);
+      const { errors } = probe;
+      traces.push({ site: site.id, colorScheme, ...probe });
       const response = await page.goto(url.href, { waitUntil: "domcontentloaded", timeout: 20_000 });
       if (!response?.ok()) throw new Error(`${url.href}: HTTP ${response?.status()}`);
       await page.evaluate(() => document.fonts.ready);
@@ -89,6 +95,7 @@ try {
         for (const image of document.images) image.loading = "eager";
         await Promise.all([...document.images].map(image => image.decode().catch(() => {})));
       });
+      const observedSourceHead = await observeSource(page, site.id);
       // Calibrate the overflow detector against a known oversized element.
       const detectsOverflow = await page.evaluate(() => {
         const probe = document.createElement("div");
@@ -118,12 +125,48 @@ try {
         await page.emulateMedia({ contrast: "more" });
         await page.screenshot({ path: new URL(`studio-${colorScheme}-contrast.jpg`, output).pathname, fullPage: true, type: "jpeg", quality: 80 });
       }
-      if (site.id === "teenpatti") {
+      if (site.id === "teenpatti" && !baseline) {
         await verifyCasino(page, url.origin, colorScheme);
         results.at(-1).errors = [...errors];
       }
+      await recordEvidence(site.id, observedSourceHead, [{ id: "network", status: errors.length || probe.failed.length ? "failed" : "passed" }], [], url.origin);
       await context.close();
     }
+    const samples = [];
+    const interactions = [];
+    let observedSourceHead;
+    for (let sample = 0; sample < 3; sample++) {
+      const context = await browser.newContext({ viewport: { width: 390, height: 844 }, reducedMotion: "reduce", serviceWorkers: "block" });
+      const page = await context.newPage();
+      const probe = await instrument(page);
+      traces.push({ site: site.id, sample, ...probe });
+      page.setDefaultTimeout(10_000);
+      try {
+        const response = await page.goto(url.href, { waitUntil: "domcontentloaded", timeout: 20_000 });
+        assert(response?.ok(), "Startup navigation failed");
+        observedSourceHead = await observeSource(page, site.id);
+        const measurement = await startupMeasurement(page);
+        assert(measurement.stylesReady && measurement.decodedCssBytes > 0 && measurement.decodedJsBytes > 0, "Startup did not load measurable CSS and JS");
+        samples.push(measurement);
+        // A real existing control; no synthetic click target is inserted.
+        const selectors = ['.casino-feature-picker button:not([aria-pressed="true"])', '.play-entry-choices button:not([aria-pressed="true"])', 'summary', 'header a[href="/#games"]', 'header a[href="#games"]', 'header a[href="/"]'];
+        let control;
+        for (const selector of selectors) {
+          const found = page.locator(selector).first();
+          if (await found.isVisible()) { control = found; break; }
+        }
+        assert(control, "No safe existing interaction target found");
+        interactions.push(await timedClick(page, control));
+        assert.deepEqual(probe.errors, [], "Startup or interaction raised browser errors");
+      } finally { await context.close(); }
+    }
+    performanceResults.push({ site: site.id, engine, observedSourceHead, samples, interactionMs: interactions,
+      definition: "startup: navigation to loaded styles/fonts and two animation frames; interaction: trusted existing-control click to two animation frames; fresh browser context per sample" });
+    await recordEvidence(site.id, observedSourceHead, [{ id: "startup", status: "passed" }], [
+      { id: "startup", unit: "ms", samples: samples.map(item => item.startupMs) },
+      { id: "interaction", unit: "ms", samples: interactions },
+      { id: "initial-assets", unit: "bytes", samples: samples.map(item => item.decodedJsBytes + item.decodedCssBytes) },
+    ], url.origin);
   }
   if (results.some(result => result.overflow || result.images.length || result.errors.length)) {
     throw new Error("Visual checks found overflow, failed images or runtime errors");
@@ -141,6 +184,8 @@ try {
   throw error;
 } finally {
   await writeFile(new URL("report.json", output), JSON.stringify(results, null, 2));
+  await writeFile(new URL("performance.json", output), JSON.stringify(performanceResults, null, 2));
+  await writeFile(new URL("network-trace.json", output), JSON.stringify(traces, null, 2));
   await browser?.close();
   if (server && server.exitCode === null) {
     server.kill("SIGTERM");
