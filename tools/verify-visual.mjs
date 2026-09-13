@@ -3,7 +3,7 @@ import { spawn } from "node:child_process";
 import { chromium, webkit } from "playwright";
 import catalogue from "../src/lib/game-catalogue.json" with { type: "json" };
 import assert from "node:assert/strict";
-import { candidates, instrument, observeSource, recordEvidence, startupMeasurement, timedClick } from "./browser-evidence.mjs";
+import { candidates, instrument, networkVerdict, observeSource, recordEvidence, startupMeasurement, timedClick } from "./browser-evidence.mjs";
 
 const output = new URL("../.audit/visual/", import.meta.url);
 await mkdir(output, { recursive: true });
@@ -166,7 +166,6 @@ try {
         results.at(-1).errors = [...errors];
         await recordEvidence(site.id, observedSourceHead, [{ id: "entry", status: "passed" }]);
       }
-      await recordEvidence(site.id, observedSourceHead, [{ id: "network", status: errors.length || probe.failed.length ? "failed" : "passed" }], [], url.origin);
       probe.mark("context-close-start");
       await context.close();
     }
@@ -208,10 +207,10 @@ try {
   }
   for (const measured of performanceResults) {
     const siteTraces = traces.filter(trace => trace.site === measured.site);
-    const faulted = siteTraces.some(trace => trace.errors.length || trace.counts.failed);
+    const faulted = siteTraces.some(trace => !networkVerdict(trace).passed);
     await recordEvidence(measured.site, measured.observedSourceHead, [{ id: "network", status: faulted ? "failed" : "passed" }], [], new URL(sites.find(site => site.id === measured.site).url).origin);
   }
-  if (!baseline && traces.some(trace => trace.errors.length || trace.counts.failed)) {
+  if (!baseline && traces.some(trace => !networkVerdict(trace).passed)) {
     throw new Error("Candidate network checks found failed requests or runtime errors; inspect network-trace.json");
   }
   if (results.some(result => result.overflow || result.footerStampClipped || result.images.length || result.errors.length)) {
@@ -231,7 +230,7 @@ try {
 } finally {
   await writeFile(new URL("report.json", output), JSON.stringify(results, null, 2));
   await writeFile(new URL("performance.json", output), JSON.stringify(performanceResults, null, 2));
-  await writeFile(new URL("network-trace.json", output), JSON.stringify(traces, null, 2));
+  await writeFile(new URL("network-trace.json", output), JSON.stringify(traces.map(probe => ({ ...probe, verdict: networkVerdict(probe) })), null, 2));
   await browser?.close();
   if (server && server.exitCode === null) {
     server.kill("SIGTERM");

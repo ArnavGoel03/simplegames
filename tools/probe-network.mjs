@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { createServer } from "node:http";
 import { mkdir, writeFile } from "node:fs/promises";
 import { chromium, webkit } from "playwright";
-import { candidates, engine, output } from "./browser-evidence.mjs";
+import { candidates, engine, instrument, networkVerdict, output } from "./browser-evidence.mjs";
 
 // Diagnostic controls, not release check certificates. No failed event from
 // the application is filtered based on this probe's result.
@@ -47,10 +47,51 @@ self.addEventListener('message',event=>event.ports[0].postMessage({online:self.n
 self.addEventListener('fetch',event=>{if(new URL(event.request.url).pathname==='/oracle'){intercepted++;event.respondWith(new Response('worker-answer'));}});`;
   server = createServer((request, response) => {
     response.setHeader("Cache-Control", "no-store");
+    if (request.url.startsWith("/stream-")) {
+      response.setHeader("Content-Type", "text/x-component");
+      response.setHeader("CF-Ray", ({ "/stream-cancelled": "0000000000000001-BOM", "/stream-complete": "0000000000000002-BOM", "/stream-broken": "0000000000000003-BOM" })[request.url]);
+      response.write("0:first-chunk\n");
+      const timeout = setTimeout(() => {
+        if (request.url === "/stream-broken") response.destroy();
+        else response.end("1:last-chunk\n");
+      }, 200);
+      response.on("close", () => clearTimeout(timeout));
+      return;
+    }
     response.setHeader("Content-Type", request.url === "/sw.js" ? "text/javascript" : "text/html");
     response.end(request.url === "/sw.js" ? worker : "<!doctype html><title>Offline control</title><p>Offline control</p>");
   });
   await new Promise(resolve => server.listen(0, "127.0.0.1", resolve));
+  const streamContext = await browser.newContext({ serviceWorkers: "block" });
+  try {
+    const page = await streamContext.newPage();
+    const probe = await instrument(page);
+    await page.goto(`http://127.0.0.1:${server.address().port}`, { waitUntil: "load" });
+    const outcomes = await page.evaluate(async () => {
+      const headers = { rsc: "1", "next-router-prefetch": "1" };
+      const cancelled = await fetch("/stream-cancelled", { headers });
+      const reader = cancelled.body.getReader();
+      await reader.read();
+      await reader.cancel();
+      const completeReader = (await fetch("/stream-complete", { headers })).body.getReader();
+      let complete = "";
+      while (true) { const { done, value } = await completeReader.read(); if (done) break; complete += new TextDecoder().decode(value); }
+      let failure;
+      try { await (await fetch("/stream-broken", { headers })).text(); }
+      catch (error) { failure = error.name; }
+      return { complete, failure };
+    });
+    await page.waitForTimeout(100);
+    assert(outcomes.complete.includes("last-chunk") && outcomes.failure, "Stream controls did not complete and fail independently");
+    assert(probe.trace.some(event => event.kind === "response-reader-cancel" && event.url.endsWith("/stream-cancelled")), "Explicit cancellation was not observed");
+    assert(probe.trace.some(event => event.kind === "response-reader-complete" && event.url.endsWith("/stream-complete")), "Complete native stream consumption was not observed");
+    assert(!probe.trace.some(event => /response-(?:reader|stream)-cancel/.test(event.kind) && event.url.endsWith("/stream-broken")), "Network failure was falsely classified as cancellation");
+    assert(probe.failed.some(event => event.url.endsWith("/stream-broken")), "Network failure detector missed the broken response");
+    const verdict = networkVerdict(probe);
+    assert(!verdict.passed && verdict.failures.some(event => event.url.endsWith("/stream-broken")), "Broken transport was waived");
+    assert(!verdict.failures.some(event => event.url.endsWith("/stream-cancelled")), "Observed same-request cancellation was not correlated");
+    result.streamControls = { outcomes, trace: probe.trace, failed: probe.failed, verdict };
+  } finally { await streamContext.close(); }
   const workerContext = await browser.newContext({ serviceWorkers: "allow" });
   try {
     const page = await workerContext.newPage();

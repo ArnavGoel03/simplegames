@@ -15,7 +15,9 @@ export function SiteHeader() {
         {STUDIO_NAME}
       </Link>
       <nav aria-label="Primary">
-        {LINKS.map((link) => (
+        {LINKS.map((link) => link.path === GAMES_LINK.path ? (
+          <a key={link.path} href={link.path}>{link.label}</a>
+        ) : (
           <Link key={link.path} href={link.path}>
             {link.label}
           </Link>

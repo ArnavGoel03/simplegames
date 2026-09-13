@@ -133,6 +133,87 @@ export function observeFetchSignals() {
   };
 }
 
+// Observe native stream cancellation without consuming, cloning or replacing
+// the response, stream, reader or returned promise.
+export function observeResponseStreams() {
+  const streams = new WeakMap();
+  const readers = new WeakMap();
+  const completed = new WeakSet();
+  let sequence = 0;
+  const emit = event => {
+    if (sequence++ < 1000) void window.recordFetchObservation({ at: Date.now(), ...event }).catch(() => {});
+  };
+  const descriptor = Object.getOwnPropertyDescriptor(Response.prototype, "body");
+  Object.defineProperty(Response.prototype, "body", { ...descriptor, get() {
+    const body = Reflect.apply(descriptor.get, this, []);
+    try {
+      const url = new URL(this.url);
+      if (body && url.origin === location.origin && this.headers.get("content-type")?.startsWith("text/x-component")) {
+        streams.set(body, { url: url.href, status: this.status, ray: this.headers.get("cf-ray") });
+      }
+    } catch { /* Invalid metadata must not change a native getter. */ }
+    return body;
+  } });
+  const getReader = ReadableStream.prototype.getReader;
+  ReadableStream.prototype.getReader = function (...args) {
+    const reader = Reflect.apply(getReader, this, args);
+    const metadata = streams.get(this);
+    if (metadata) readers.set(reader, metadata);
+    return reader;
+  };
+  for (const prototype of [ReadableStreamDefaultReader.prototype, ReadableStreamBYOBReader.prototype]) {
+    const read = prototype.read;
+    prototype.read = function (...args) {
+      const promise = Reflect.apply(read, this, args);
+      const metadata = readers.get(this);
+      if (metadata) void promise.then(result => {
+        if (result.done && !completed.has(this)) {
+          completed.add(this);
+          emit({ kind: "response-reader-complete", ...metadata });
+        }
+      }, () => emit({ kind: "response-reader-error", ...metadata })).catch(() => {});
+      return promise;
+    };
+  }
+  for (const [prototype, map, kind] of [
+    [ReadableStream.prototype, streams, "response-stream-cancel"],
+    [ReadableStreamDefaultReader.prototype, readers, "response-reader-cancel"],
+    [ReadableStreamBYOBReader.prototype, readers, "response-reader-cancel"],
+  ]) {
+    const cancel = prototype.cancel;
+    prototype.cancel = function (...args) {
+      const promise = Reflect.apply(cancel, this, args);
+      try { const metadata = map.get(this); if (metadata) emit({ kind, ...metadata }); }
+      catch { /* Observation cannot alter cancellation. */ }
+      const metadata = map.get(this);
+      if (metadata) void promise.catch(() => emit({ kind: "response-cancel-error", ...metadata })).catch(() => {});
+      return promise;
+    };
+  }
+}
+
+export function networkVerdict(probe) {
+  const classified = [];
+  const failures = probe.failed.filter(failure => {
+    const response = probe.trace.find(event => event.kind === "response" && event.requestId === failure.requestId);
+    if (failure.error !== "net::ERR_ABORTED" || failure.method !== "GET" || !failure.rsc || !failure.prefetch
+      || response?.status !== 200 || !response.contentType?.startsWith("text/x-component")
+      || !/^[a-f0-9]{16}(?:-[a-z]{3})?$/i.test(response.ray ?? "")) return true;
+    // A unique edge request reference binds the native reader observation to
+    // this response. URL/status alone cannot prove which request was consumed.
+    if (probe.trace.filter(event => event.kind === "response" && event.ray === response.ray).length !== 1) return true;
+    if (probe.trace.some(event => ["response-reader-error", "response-cancel-error"].includes(event.kind)
+      && event.requestKey === failure.requestKey && event.ray === response.ray)) return true;
+    const intent = probe.trace.find(event => ["response-reader-complete", "response-reader-cancel", "response-stream-cancel"].includes(event.kind)
+      && event.requestKey === failure.requestKey && event.ray === response.ray && event.status === 200
+      && event.at >= failure.startedAt && event.at <= failure.at);
+    if (!intent) return true;
+    classified.push({ requestId: failure.requestId, requestKey: failure.requestKey, ray: response.ray, reason: intent.kind });
+    return false;
+  });
+  return { failures, classified, passed: !probe.errors.length && failures.length === 0 && probe.counts.failed === probe.failed.length };
+}
+
 export async function instrument(page) {
   const trace = [];
   const errors = [];
@@ -145,7 +226,7 @@ export async function instrument(page) {
   let requestSequence = 0;
   const add = event => { counts.events++; if (trace.length < 3000) trace.push({ at: Date.now(), ...event }); };
   page.on("pageerror", error => { errors.push(error.message); add({ kind: "pageerror", message: error.message }); });
-  page.on("requestfailed", request => { const event = { kind: "requestfailed", url: path(request.url()), resource: request.resourceType(), error: request.failure()?.errorText,
+  page.on("requestfailed", request => { const event = { at: Date.now(), kind: "requestfailed", url: path(request.url()), resource: request.resourceType(), error: request.failure()?.errorText,
     rsc: request.headers().rsc === "1", prefetch: request.headers()["next-router-prefetch"] === "1",
     requestKey: requestKey(request.url()), requestId: requestIds.get(request), method: request.method(), startedAt: started.get(request),
     queryKeys: [...new URL(request.url()).searchParams.keys()].slice(0, 6) };
@@ -156,7 +237,7 @@ export async function instrument(page) {
     const request = response.request();
     if (response.status() >= 400 || request.headers().rsc === "1" || new URL(request.url()).pathname.startsWith("/_next/static/")) {
       add({ kind: "response", status: response.status(), url: path(response.url()), requestKey: requestKey(request.url()),
-        requestId: requestIds.get(request), method: request.method(), contentType: response.headers()["content-type"], fromServiceWorker: response.fromServiceWorker() });
+        requestId: requestIds.get(request), method: request.method(), contentType: response.headers()["content-type"], ray: response.headers()["cf-ray"], fromServiceWorker: response.fromServiceWorker() });
     }
   });
   await page.exposeFunction("recordLifecycle", event => add({ kind: "lifecycle", event }));
@@ -166,9 +247,11 @@ export async function instrument(page) {
     add({ ...event, url: path(event.url), requestKey: requestKey(event.url) });
   });
   await page.addInitScript(observeFetchSignals);
+  await page.addInitScript(observeResponseStreams);
   await page.addInitScript(() => {
     window.gtgPerformance = { lcpMs: null, interactions: [], readyMs: null };
     for (const event of ["pagehide", "beforeunload"]) window.addEventListener(event, () => { void window.recordLifecycle(event); });
+    navigator.serviceWorker?.addEventListener("controllerchange", () => { void window.recordLifecycle("service-worker-controllerchange"); });
     window.addEventListener("gtg:app-ready", () => { window.gtgPerformance.readyMs = performance.now(); }, { once: true });
     if (PerformanceObserver.supportedEntryTypes.includes("largest-contentful-paint")) {
       new PerformanceObserver(list => { window.gtgPerformance.lcpMs = list.getEntries().at(-1).startTime; }).observe({ type: "largest-contentful-paint", buffered: true });
