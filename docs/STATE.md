@@ -9,7 +9,16 @@ reused. Seven hosted same-page viewport checks pass at 320 through 2560 pixels;
 light and dark surfaces were inspected. Final refined production rendering and
 deployment remain pending. See `docs/STUDIO-DESIGN-2026-09-13.md`.
 
-## Installed app recovery, 13 September 2026 (pending release)
+## Installed app recovery, 13 September 2026
+
+Studio 0.3.1 is live from source `6d492b8` (PR 7, merge `6384e88`), Worker
+`8a26317f-799b-47e5-a00d-c0448a3360e6`. All 144 live HTTP checks pass, the
+deployed worker matches its build exactly, and all seven shared sources and the
+HTML policy match live Circuit. The live diagnostic probe found a platform-only
+failure: Cloudflare rejects `fetch` with `redirect: "error"`, so the proxy
+returned 503. Version 0.3.2 changes it to manual redirect handling and refuses
+3xx responses explicitly. The real edge probe and both new regressions pass;
+109 tests and typecheck pass. The fix is not deployed yet.
 
 Studio 0.3.1 now consumes the canonical game PWA worker, early recovery and
 registration source through a checked SHA-256 mirror. It includes bounded
@@ -19,8 +28,8 @@ source files match the frozen primary helpers. The 106-test full suite,
 typecheck, lint and candidate production build pass; one additional reset
 failure regression also passes after reproducing the defect. Hosted Chromium
 desktop, phone and landscape rendering, footer update and reset checks pass.
-Deployment and live mirror/diagnostic verification remain pending; see
-`docs/PWA-RECOVERY-2026-09-13.md`.
+The remaining release item is the corrected live diagnostic receipt check;
+see `docs/PWA-RECOVERY-2026-09-13.md`.
 
 ## Casino release, 13 September 2026
 

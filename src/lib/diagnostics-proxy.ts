@@ -46,11 +46,14 @@ export async function diagnosticsProxy(request: Request): Promise<Response> {
   let response: Response;
   try {
     response = await fetch(upstream, {
-      method: "POST", redirect: "error", credentials: "omit", cache: "no-store",
+      // Workers implements manual/follow only; never send a report onward to
+      // an unexpected redirect target.
+      method: "POST", redirect: "manual", credentials: "omit", cache: "no-store",
       headers: { "content-type": "application/json", origin: upstream.origin }, body,
       signal: AbortSignal.timeout(10_000),
     });
   } catch { return refuse(503); }
+  if (response.status >= 300 && response.status < 400) return refuse(503);
   const headers = new Headers({ "cache-control": "no-store" });
   for (const name of ["content-type", "retry-after", "x-diagnostic-id"]) {
     const value = response.headers.get(name); if (value !== null) headers.set(name, value);
