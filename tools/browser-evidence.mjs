@@ -265,9 +265,14 @@ export function networkVerdict(probe) {
     if (probe.trace.filter(event => event.kind === "response" && event.ray === response.ray).length !== 1) return true;
     if (probe.trace.some(event => ["response-reader-error", "response-cancel-error"].includes(event.kind)
       && event.requestKey === failure.requestKey && event.ray === response.ray)) return true;
+    // Native browser timestamps precede delivery of Playwright's request event.
+    // Compare reader intent with the observed fetch start in that same clock.
+    const browserStarts = probe.trace.filter(event => event.kind === "prefetch-start" && event.method === "GET"
+      && event.requestKey === failure.requestKey && event.at <= failure.at);
+    const startedAt = browserStarts.length ? Math.max(...browserStarts.map(event => event.at)) : failure.startedAt;
     const intent = probe.trace.find(event => ["response-reader-complete", "response-reader-cancel", "response-stream-cancel"].includes(event.kind)
       && event.requestKey === failure.requestKey && event.ray === response.ray && event.status === 200
-      && event.at >= failure.startedAt && event.at <= failure.at);
+      && event.at >= startedAt && event.at <= failure.at);
     if (!intent) return true;
     classified.push({ requestId: failure.requestId, requestKey: failure.requestKey, ray: response.ray, reason: intent.kind });
     return false;

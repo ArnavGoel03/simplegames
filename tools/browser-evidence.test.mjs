@@ -204,6 +204,16 @@ describe("exact response network verdict", () => {
     observed.failed = [{ ...failure, error: "Connection terminated unexpectedly" }];
     expect(networkVerdict(observed).passed).toBe(false);
   });
+  it("uses browser fetch time when native cancellation precedes delivery of the request event", () => {
+    const observed = probe([response, { ...intent, kind: "response-reader-cancel", at: 1920 },
+      { kind: "prefetch-start", method: "GET", requestKey: "key", at: 1917 }]);
+    observed.failed = [{ ...failure, startedAt: 1921, at: 1926 }];
+    expect(networkVerdict(observed).passed).toBe(true);
+    observed.trace[2].at = 1922;
+    expect(networkVerdict(observed).passed).toBe(false);
+    observed.trace[2].requestKey = "other";
+    expect(networkVerdict(observed).passed).toBe(false);
+  });
 });
 
 describe("Chromium background cache revalidation", () => {
