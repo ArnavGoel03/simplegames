@@ -10,9 +10,9 @@ into the game saga without replacing each game's useful visual identity.
 
 ## Active work
 
-- [ ] Studio: central pastel palette, glass layers, checked backdrop and clear
+- [x] Studio: central pastel palette, glass layers, checked backdrop and clear
   reading surfaces in light and dark modes.
-- [ ] Studio: reduced transparency/motion, contrast and responsive review.
+- [x] Studio: reduced transparency/motion, contrast and responsive review.
 - [ ] Casino: redesign the lobby, game discovery and presentation.
 - [ ] Casino: durable play progression and meaningful exploration, using the
   existing account and play-chip system with no real money.
@@ -22,6 +22,12 @@ into the game saga without replacing each game's useful visual identity.
 - [ ] Refresh project and Atlas release records.
 
 ## Verification constraints
+
+Public PR browser runs passed twelve light/dark resize captures. Visual review
+found a real clipped card-fan paint defect after resizing; isolating each fan's
+indexed layers fixed it in the same capture sequence. Before/after artifacts
+are retained locally in `.audit/`. Text contrast is at least 4.91:1 light and
+6.10:1 dark across the sampled base, pastel and glass backgrounds.
 
 The in-app browser currently lists no available browser. The previous hosted
 browser allowance is exhausted; the prior local Chromium launch was denied by

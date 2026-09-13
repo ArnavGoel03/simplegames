@@ -8,6 +8,9 @@ on:
         description: Capture the public studio and game homepages
         type: boolean
         default: false
+      casino_preview:
+        description: Optional Casino version URL on the studio Workers account
+        type: string
 
 permissions:
   contents: read
@@ -28,13 +31,14 @@ jobs:
           cache: npm
       - run: npm ci --no-audit --no-fund
       - run: npx playwright install --with-deps chromium
-      - if: ${{ !inputs.live }}
+      - if: ${{ !inputs.live && !inputs.casino_preview }}
         run: npm run build
       - name: Capture responsive pages
         env:
           CAPTURE_LIVE: ${{ inputs.live }}
+          CASINO_PREVIEW: ${{ inputs.casino_preview }}
         run: |
-          if [ "$CAPTURE_LIVE" = "true" ]; then
+          if [ "$CAPTURE_LIVE" = "true" ] || [ -n "$CASINO_PREVIEW" ]; then
             node tools/verify-visual.mjs --live
           else
             node tools/verify-visual.mjs
