@@ -27,7 +27,27 @@ export function parseCandidates(value) {
 }
 export const candidates = parseCandidates(process.env.RELEASE_CANDIDATES_JSON);
 
+const observations = new Map();
 export async function observeSource(page, site) {
+  const key = siteKey(site);
+  const url = new URL(page.url());
+  if (process.env.BASELINE_ONLY === "true" && candidates.length === 0 && key === "board" && url.pathname === "/") {
+    const saved = observations.get(key);
+    if (saved?.origin === url.origin && saved.kind === "baseline-reading-page") return saved.sourceHead;
+    // The live legacy Circuit homepage omitted BuildStamp. This baseline-only
+    // provenance is explicit; candidate homepages must expose their own stamp.
+    const probe = await page.context().newPage();
+    const errors = [];
+    probe.on("pageerror", error => errors.push(error.message));
+    try {
+      const response = await probe.goto(new URL("/fair-play", url.origin).href, { waitUntil: "domcontentloaded", timeout: 15_000 });
+      assert(response?.ok(), "Baseline provenance route failed");
+      const sourceHead = await observeSource(probe, site);
+      assert.deepEqual(errors, [], "Baseline provenance route raised browser errors");
+      observations.set(key, { kind: "baseline-reading-page", origin: url.origin, path: "/fair-play", sourceHead });
+      return sourceHead;
+    } finally { await probe.close(); }
+  }
   // Some game homepages render the footer after client hydration.
   await page.waitForFunction(() => [...document.querySelectorAll('.build-stamp[title], .play-num[title]')]
     .some(element => /^[a-f0-9]{40}$/i.test(element.getAttribute("title") ?? "") && element.getBoundingClientRect().width > 0),
@@ -37,6 +57,7 @@ export async function observeSource(page, site) {
   assert.equal(commits.length, 1, "Rendered page must expose one full source commit");
   const candidate = candidates.find(item => item.site === siteKey(site));
   if (candidate) assert.equal(commits[0], candidate.sourceHead, "Rendered source differs from the certified candidate");
+  observations.set(key, { kind: "requested-page", origin: url.origin, path: url.pathname, sourceHead: commits[0] });
   return commits[0];
 }
 
@@ -44,7 +65,7 @@ export async function recordEvidence(site, observedSourceHead, checks = [], meas
   const bound = candidates.find(item => item.site === siteKey(site));
   if (!bound && process.env.BASELINE_ONLY !== "true") return;
   // Partial baseline records omit the candidate tuple and cannot certify deploys.
-  const candidate = bound ?? { site: siteKey(site), sourceHead: observedSourceHead, origin };
+  const candidate = bound ?? { site: siteKey(site), sourceHead: observedSourceHead, origin, sourceObservation: observations.get(siteKey(site)) };
   assert.equal(observedSourceHead, candidate.sourceHead, "Unobserved candidate source");
   await mkdir(output, { recursive: true });
   const file = new URL("release-evidence.json", output);
@@ -79,10 +100,14 @@ export async function instrument(page) {
   const trace = [];
   const errors = [];
   const failed = [];
+  const counts = { events: 0, failed: 0 };
   const path = value => { try { const url = new URL(value); return url.origin + url.pathname; } catch { return value; } };
-  const add = event => { trace.push({ at: Date.now(), ...event }); };
+  const add = event => { counts.events++; if (trace.length < 3000) trace.push({ at: Date.now(), ...event }); };
   page.on("pageerror", error => { errors.push(error.message); add({ kind: "pageerror", message: error.message }); });
-  page.on("requestfailed", request => { const event = { kind: "requestfailed", url: path(request.url()), resource: request.resourceType(), error: request.failure()?.errorText }; failed.push(event); add(event); });
+  page.on("requestfailed", request => { const event = { kind: "requestfailed", url: path(request.url()), resource: request.resourceType(), error: request.failure()?.errorText,
+    rsc: request.headers().rsc === "1", prefetch: request.headers()["next-router-prefetch"] === "1",
+    queryKeys: [...new URL(request.url()).searchParams.keys()].slice(0, 6) };
+    counts.failed++; if (failed.length < 3000) failed.push(event); add(event); });
   page.on("request", request => { if (request.isNavigationRequest()) add({ kind: "navigation-request", url: path(request.url()) }); });
   page.on("framenavigated", frame => { if (frame === page.mainFrame()) add({ kind: "navigation-commit", url: path(frame.url()) }); });
   page.on("response", response => { if (response.status() >= 400) add({ kind: "http-error", status: response.status(), url: path(response.url()) }); });
@@ -99,7 +124,7 @@ export async function instrument(page) {
       requestAnimationFrame(() => requestAnimationFrame(() => window.gtgPerformance.interactions.push(performance.now() - start)));
     }, true);
   });
-  return { trace, errors, failed };
+  return { trace, errors, failed, counts };
 }
 
 export async function startupMeasurement(page) {
