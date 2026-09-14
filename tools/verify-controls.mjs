@@ -12,6 +12,8 @@ assert(target, "Casino candidate missing");
 const frames = [[320, 720], [844, 390], [1440, 1000]];
 const results = [];
 const observations = [];
+const focusEvents = [];
+const nativeTabControl = [];
 await mkdir(output, { recursive: true });
 const browser = await ({ chromium, webkit })[engine].launch({ timeout: 20_000 });
 const context = await browser.newContext({ reducedMotion: "reduce", viewport: { width: 320, height: 720 } });
@@ -26,6 +28,15 @@ page.setDefaultTimeout(7_000);
 page.setDefaultNavigationTimeout(15_000);
 const errors = [];
 page.on("pageerror", error => errors.push(error.message));
+async function focusState(page) {
+  return page.evaluate(() => {
+    const active = document.activeElement;
+    const modal = document.querySelector("dialog:modal");
+    return { activeTag: active?.tagName, activeRole: active?.getAttribute("role"),
+      documentFocused: document.hasFocus(), withinDialog: Boolean(modal?.contains(active)),
+      withinSheet: Boolean(active?.closest(".play-sheet")), modal: Boolean(modal) };
+  });
+}
 async function check(id, action) {
   try { await action(); results.push({ id, status: "passed" }); }
   catch (error) { results.push({ id, status: "failed", error: String(error.message).slice(0, 1200) }); }
@@ -47,6 +58,20 @@ async function resize(width, height) {
 }
 
 try {
+  // Calibrate native browser chrome traversal separately from application UI.
+  const control = await context.newPage();
+  await control.setContent('<button id="outside">Outside</button><dialog><button>Close</button><textarea></textarea><button>Send</button></dialog>');
+  await control.evaluate(() => { document.querySelector("dialog").showModal(); document.querySelector("textarea").focus(); });
+  for (const key of ["Tab", "Tab", "Tab", "Shift+Tab", "Shift+Tab", "Shift+Tab"]) {
+    await control.keyboard.press(key);
+    const state = await focusState(control);
+    if (!state.withinDialog) {
+      await control.keyboard.press(key);
+      state.nextInside = (await focusState(control)).withinDialog;
+    }
+    nativeTabControl.push({ key, ...state });
+  }
+  await control.close();
   await check("report-setup", () => open("blackjack"));
   const trigger = page.getByRole("button", { name: "Report a problem", exact: true });
   const sheet = page.locator(".play-sheet").filter({ has: page.locator("textarea") });
@@ -76,7 +101,20 @@ try {
       await field.focus();
       for (const key of ["Tab", "Tab", "Tab", "Shift+Tab", "Shift+Tab", "Shift+Tab"]) {
         await page.keyboard.press(key);
-        assert(await sheet.evaluate(element => element.contains(document.activeElement)), `${key} left the report sheet`);
+        const state = await focusState(page);
+        focusEvents.push({ width, key, ...state });
+        if (state.withinSheet || state.withinDialog) continue;
+        const calibratedChrome = nativeTabControl.some(event => event.key === key && !event.documentFocused
+          && event.activeTag === "BODY" && event.modal && event.nextInside);
+        if (calibratedChrome && !state.documentFocused && state.activeTag === "BODY" && state.modal) {
+          // Native dialog may yield to browser chrome, never to page controls.
+          await trigger.evaluate(element => element.focus());
+          assert.equal(await trigger.evaluate(element => element === document.activeElement), false, "Background trigger was not inert");
+          await page.keyboard.press(key);
+          const returned = await focusState(page);
+          focusEvents.push({ width, key, returnFromChrome: true, ...returned });
+          assert(returned.withinDialog, "Tab did not return from browser chrome to the modal");
+        } else assert.fail(`${key} left the report modal: ${JSON.stringify(state)}`);
       }
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth + 1), false);
     });
@@ -170,7 +208,7 @@ try {
   });
   await check("no-writes-or-runtime-errors", async () => { assert.deepEqual(writes, []); assert.deepEqual(errors, []); });
 } finally {
-  await writeFile(new URL(`controls-${engine}.json`, output), JSON.stringify({ schema: 1, calibration, engine, target, observations, results, writes, errors }, null, 2));
+  await writeFile(new URL(`controls-${engine}.json`, output), JSON.stringify({ schema: 1, calibration, engine, target, observations, nativeTabControl, focusEvents, results, writes, errors }, null, 2));
   await context.close();
   await browser.close();
 }
