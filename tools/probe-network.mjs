@@ -160,13 +160,14 @@ self.addEventListener('fetch',event=>{if(new URL(event.request.url).pathname==='
       const deadline = Date.now() + 2_000;
       while (cacheRequests["/swr-cancel"] < 2 && Date.now() < deadline) await page.waitForTimeout(20);
       assert.equal(cacheRequests["/swr-cancel"], 2, "Native background refresh did not reach the fixture");
-      // Real navigation cancels the delayed background load before its headers.
+      // Navigation need not cancel a background refresh. The cached application
+      // response must remain complete while that independent refresh is pending.
       await page.goto(origin + "/after-cancel", { waitUntil: "load" });
       await page.waitForTimeout(100);
       const verdict = networkVerdict(probe);
-      result.backgroundCancellation = { first, cached, trace: probe.trace, failed: probe.failed, verdict };
-      assert(verdict.classified.some(event => event.reason === "chromium-background-swr-cancelled-before-headers"),
-        "Native delayed background cancellation was not reproduced");
+      result.backgroundReadControl = { first, cached, trace: probe.trace, failed: probe.failed, verdict };
+      assert(probe.trace.some(event => event.kind === "native-request" && event.type === "Other" && event.initiator?.type === "other"),
+        "Native independent background refresh was not observed");
       assert(verdict.passed, "Background control contained an unexplained failure");
     } finally { await context.close(); }
   }

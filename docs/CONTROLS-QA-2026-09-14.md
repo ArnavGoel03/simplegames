@@ -36,3 +36,20 @@ default 18; those three failures are fixture errors, not evidence of a game
 defect. The verifier now derives an unselected number before toggling it.
 Candidate checks also scroll to the final board number and hit-test the
 primary action, and existing guide dismissal supports the native modal wrapper.
+
+The native-dialog calibration distinguishes browser chrome from background page
+controls: Chromium and WebKit both yield an unfocused BODY at the tab-order
+boundary, then return inside on the next Tab. The actual report matches that
+control; background focus remains inert. Candidate WebKit run `34877895055`
+passes all 32 controls checks and the complete release checks. Four-game runs
+`34877557250` and `34877560223` pass both engines and all recorded budgets.
+
+Chromium's later network trace recorded completed disk-cache reads followed by
+native Other background refreshes canceled before headers. The classifier
+requires the complete cached predecessor, matching document/request identity,
+SWR headers, native completion, reader completion and explicit native cancellation.
+Negative tests remove each prerequisite and retain real response/transport errors.
+The local delayed-background control confirms the cached read is independent of
+the refresh; navigation does not deterministically cancel it and is not asserted
+to do so. The cancellation case is evidenced by the recorded candidate trace.
+Final Chromium workflow verification remains pending; no application bytes change.
