@@ -38,8 +38,8 @@ async function open(game) {
   const sourceHead = await observeSource(page, target.site);
   observations.push({ game, sourceHead, origin: new URL(page.url()).origin });
 }
-async function capture(name) {
-  await page.screenshot({ path: new URL(`controls-${engine}-${name}.jpg`, output).pathname, fullPage: true, type: "jpeg", quality: 80 });
+async function capture(name, fullPage = true) {
+  await page.screenshot({ path: new URL(`controls-${engine}-${name}.jpg`, output).pathname, fullPage, type: "jpeg", quality: 80 });
 }
 async function resize(width, height) {
   await page.setViewportSize({ width, height });
@@ -103,6 +103,7 @@ try {
     const board = controls.locator(`.casino-${game}-board`);
     await board.getByRole("button", { name: "17", exact: true }).click();
     const expected = await board.locator('[aria-pressed="true"]').allTextContents();
+    const alternate = await board.locator('button[aria-pressed="false"]:not(:disabled)').first().textContent();
     for (const [width, height] of frames) {
       await resize(width, height);
       await check(`${game}-targets-${width}`, async () => {
@@ -116,12 +117,24 @@ try {
       await check(`${game}-selection-${width}`, async () => {
         assert.deepEqual(await board.locator('[aria-pressed="true"]').allTextContents(), expected);
         assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth + 1), false);
-        await board.getByRole("button", { name: "18", exact: true }).click();
-        assert.equal(await board.getByRole("button", { name: "18", exact: true }).getAttribute("aria-pressed"), "true");
-        if (game === "keno") await board.getByRole("button", { name: "18", exact: true }).click();
+        await board.getByRole("button", { name: alternate, exact: true }).click();
+        assert.equal(await board.getByRole("button", { name: alternate, exact: true }).getAttribute("aria-pressed"), "true");
+        if (game === "keno") await board.getByRole("button", { name: alternate, exact: true }).click();
         else await board.getByRole("button", { name: "17", exact: true }).click();
       });
       await capture(`${game}-${width}`);
+      await check(`${game}-scrolled-action-${width}`, async () => {
+        const action = controls.locator(".casino-actionbar .casino-deal");
+        assert.equal(await action.count(), 1, "Action bar missing");
+        await board.locator("button").last().scrollIntoViewIfNeeded();
+        await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+        assert(await action.evaluate(button => {
+          const box = button.getBoundingClientRect();
+          return box.width >= 44 && box.height >= 44 && box.top >= 0 && box.bottom <= innerHeight + 1
+            && button.contains(document.elementFromPoint(box.left + box.width / 2, box.top + box.height / 2));
+        }), "Primary action is hidden or covered after scrolling the number grid");
+        await capture(`${game}-scrolled-${width}`, false);
+      });
     }
   }
 
