@@ -25,7 +25,7 @@ Catalogue, runtime, PWA and glass source match live Circuit. Temporary preview
 settings were restored to false/false with provider readback.
 
 Evidence: `.audit/glass-material/live-studio/exact-content.json`,
-`.audit/glass-verify-live.log`, `.audit/glass-studio-deploy.log`, and
+`.audit/glass-studio-verify-live.log`, `.audit/glass-studio-deploy.log`, and
 `.audit/quality/deployments/studio-1789418162233.json`. Chromium and WebKit
 candidate-evidence archives were downloaded and SHA-256 checked. Complete
 Chromium renders and an earlier WebKit image of the same immutable candidate
