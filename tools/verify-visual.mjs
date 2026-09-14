@@ -120,28 +120,39 @@ try {
       const layouts = [];
       if (candidates.length && !baseline) {
         const glass = await page.evaluate((studio) => {
-          const surface = document.querySelector(studio ? ".masthead nav" : ".play-site-header");
-          if (!surface) throw new Error("Missing glass navigation surface");
+          const surface = studio ? document.querySelector(".masthead nav")
+            : document.querySelector(".play-site-header") || document.querySelector(".play-entry");
+          if (!surface) throw new Error("Missing glass reading surface");
           const root = document.documentElement;
+          // Circuit's full-bleed home uses an opaque entry panel without a header.
+          const translucent = studio || surface.matches(".play-site-header");
+          const property = translucent ? "--gtg-glass-blur" : "--gtg-glass-shadow";
           const read = () => {
             const style = getComputedStyle(surface);
-            return style.backdropFilter || style.webkitBackdropFilter;
+            return translucent ? style.backdropFilter || style.webkitBackdropFilter : style.boxShadow;
           };
           const before = read();
-          const previous = root.style.getPropertyValue("--gtg-glass-blur");
-          const priority = root.style.getPropertyPriority("--gtg-glass-blur");
+          const previous = root.style.getPropertyValue(property);
+          const priority = root.style.getPropertyPriority(property);
           try {
-            root.style.setProperty("--gtg-glass-blur", "1px");
+            root.style.setProperty(property, translucent ? "1px" : "0 1px 2px rgb(0 0 0 / 0.5)");
             const calibrated = read();
-            return { before, calibrated, foreground: getComputedStyle(surface).color,
+            return { before, calibrated, translucent, rootBlur: getComputedStyle(root).getPropertyValue("--gtg-glass-blur").trim(),
+              foreground: getComputedStyle(surface).color,
               gameForeground: getComputedStyle(document.body).color };
           } finally {
-            if (previous) root.style.setProperty("--gtg-glass-blur", previous, priority);
-            else root.style.removeProperty("--gtg-glass-blur");
+            if (previous) root.style.setProperty(property, previous, priority);
+            else root.style.removeProperty(property);
           }
         }, site.id === "studio");
-        assert.equal(glass.before, "blur(16px)", "Shared glass material missing");
-        assert.equal(glass.calibrated, "blur(1px)", "Glass surface ignores canonical material");
+        if (glass.translucent) {
+          assert.equal(glass.before, "blur(16px)", "Shared glass material missing");
+          assert.equal(glass.calibrated, "blur(1px)", "Glass surface ignores canonical material");
+        } else {
+          assert.equal(glass.rootBlur, "16px", "Shared glass material missing");
+          assert.notEqual(glass.before, "none", "Shared glass depth missing");
+          assert.notEqual(glass.calibrated, glass.before, "Glass surface ignores canonical depth");
+        }
         if (site.id !== "studio") assert.equal(glass.foreground, glass.gameForeground, "Glass overrides game foreground");
         console.log(JSON.stringify({ site: site.id, colorScheme, glass }));
       }
