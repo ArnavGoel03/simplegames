@@ -52,7 +52,8 @@ try {
   const sheet = page.locator(".play-sheet").filter({ has: page.locator("textarea") });
   const field = sheet.locator("textarea");
   const draft = "keyboard focus regression";
-  await trigger.click();
+  await trigger.focus();
+  await trigger.press("Enter");
   await sheet.waitFor();
   await check("report-initial-focus", async () => {
     assert(await sheet.locator('.play-sheet-bar button').evaluate(button => button === document.activeElement));
@@ -87,7 +88,8 @@ try {
     assert(await trigger.evaluate(element => element === document.activeElement));
   });
   await check("report-draft-preserved", async () => {
-    await trigger.click();
+    await trigger.focus();
+    await trigger.press("Enter");
     await field.waitFor();
     assert.equal(await field.inputValue(), draft);
     await sheet.locator(".play-sheet-bar button").click();
