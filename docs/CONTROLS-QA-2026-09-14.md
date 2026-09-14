@@ -16,6 +16,10 @@ candidate verification requires every recorded assertion to pass. The script
 prevents all API writes; no reports or accounts are created. Results and actual
 rendered source identities are saved in `controls-<engine>.json`, alongside
 screenshots. These diagnostic artifacts are separate from release certificates.
+Normal candidate workflows also run these checks when the receipts include
+Casino, sharing their install/gate with the full release verification. A failed
+controls check keeps that workflow unsuccessful; its diagnostic results do not
+replace any mandatory release check.
 
 Live calibration at exact `d587cddf7cfd8d602df209e2fc2f2805339085fa`:
 Chromium run `34876420049`, artifact `10360899155`; WebKit run `34876424208`,
