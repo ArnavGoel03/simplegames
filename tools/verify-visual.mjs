@@ -119,7 +119,7 @@ try {
       const observedSourceHead = await observeSource(page, site.id);
       const layouts = [];
       if (candidates.length && !baseline) {
-        const glass = await page.evaluate((studio) => {
+        const glass = await page.evaluate(async (studio) => {
           const surface = studio ? document.querySelector(".masthead nav")
             : document.querySelector(".play-site-header") || document.querySelector(".play-entry");
           if (!surface) throw new Error("Missing glass reading surface");
@@ -127,34 +127,54 @@ try {
           // Circuit's full-bleed home uses an opaque entry panel without a header.
           const translucent = studio || surface.matches(".play-site-header");
           const property = translucent ? "--gtg-glass-blur" : "--gtg-glass-shadow";
-          const read = () => {
-            const style = getComputedStyle(surface);
-            return translucent ? style.backdropFilter || style.webkitBackdropFilter : style.boxShadow;
+          const readFilter = (element) => {
+            const style = getComputedStyle(element);
+            return style.backdropFilter || style.webkitBackdropFilter;
           };
-          const before = read();
+          const read = () => {
+            return translucent ? readFilter(surface) : getComputedStyle(surface).boxShadow;
+          };
+          const settle = () => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+          const control = translucent ? document.createElement("div") : null;
+          if (control) {
+            control.style.cssText = "position:fixed;top:0;left:0;width:2px;height:2px;pointer-events:none;-webkit-backdrop-filter:blur(var(--gtg-glass-blur));backdrop-filter:blur(var(--gtg-glass-blur))";
+            document.body.append(control);
+          }
+          const result = { before: read(), translucent,
+            rootBlur: getComputedStyle(root).getPropertyValue("--gtg-glass-blur").trim(),
+            controlBefore: control ? readFilter(control) : null,
+            foreground: getComputedStyle(surface).color, gameForeground: getComputedStyle(document.body).color };
           const previous = root.style.getPropertyValue(property);
           const priority = root.style.getPropertyPriority(property);
           try {
             root.style.setProperty(property, translucent ? "1px" : "0 1px 2px rgb(0 0 0 / 0.5)");
-            const calibrated = read();
-            return { before, calibrated, translucent, rootBlur: getComputedStyle(root).getPropertyValue("--gtg-glass-blur").trim(),
-              foreground: getComputedStyle(surface).color,
-              gameForeground: getComputedStyle(document.body).color };
+            await settle();
+            result.calibrated = read();
+            result.controlCalibrated = control ? readFilter(control) : null;
           } finally {
             if (previous) root.style.setProperty(property, previous, priority);
             else root.style.removeProperty(property);
+            await settle();
+            result.restored = read();
+            result.controlRestored = control ? readFilter(control) : null;
+            control?.remove();
           }
+          return result;
         }, site.id === "studio");
+        console.log(JSON.stringify({ site: site.id, colorScheme, glass }));
         if (glass.translucent) {
           assert.equal(glass.before, "blur(16px)", "Shared glass material missing");
           assert.equal(glass.calibrated, "blur(1px)", "Glass surface ignores canonical material");
+          assert.equal(glass.controlBefore, "blur(16px)", "Native filter control is not initialized");
+          assert.equal(glass.controlCalibrated, "blur(1px)", "Native filter control did not invalidate");
+          assert.equal(glass.controlRestored, "blur(16px)", "Native filter control did not restore");
         } else {
           assert.equal(glass.rootBlur, "16px", "Shared glass material missing");
           assert.notEqual(glass.before, "none", "Shared glass depth missing");
           assert.notEqual(glass.calibrated, glass.before, "Glass surface ignores canonical depth");
         }
+        assert.equal(glass.restored, glass.before, "Glass calibration did not restore the surface");
         if (site.id !== "studio") assert.equal(glass.foreground, glass.gameForeground, "Glass overrides game foreground");
-        console.log(JSON.stringify({ site: site.id, colorScheme, glass }));
       }
       // Calibrate the overflow detector against a known oversized element.
       const detectsOverflow = await page.evaluate(() => {
