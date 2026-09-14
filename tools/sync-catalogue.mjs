@@ -3,6 +3,7 @@ import { readFileSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import assert from "node:assert/strict";
 import { mirrorPwaSource, validatePwaSource } from "./pwa-mirror.mjs";
+import { fetchGlassSource, mirrorGlassSource } from "./glass-mirror.mjs";
 
 const path = fileURLToPath(new URL("../src/lib/game-catalogue.json", import.meta.url));
 const previous = JSON.parse(readFileSync(path, "utf8"));
@@ -22,6 +23,8 @@ assert(Buffer.byteLength(pwaText) <= 1000000, "PWA source bundle exceeds limit")
 const pwa = JSON.parse(pwaText);
 validatePwaSource(pwa);
 const pwaDirectory = fileURLToPath(new URL("../src/lib/pwa", import.meta.url));
+const glass = await fetchGlassSource(source);
+const glassPath = fileURLToPath(new URL("../src/app/glass.css", import.meta.url));
 assert.equal(current.version, 1);
 assert(Array.isArray(current.sites) && current.sites.length > 0);
 const ids = new Set();
@@ -45,10 +48,12 @@ if (process.argv.includes("--check")) {
   assert.deepEqual(previous, current, "Studio catalogue differs from the released games; run npm run sync:catalogue");
   assert.equal(readFileSync(policyPath, "utf8"), policy, "Runtime policy differs from the game release");
   mirrorPwaSource(pwa, pwaDirectory, true);
-  console.log("Studio catalogue, runtime policy and PWA source match the game release");
+  mirrorGlassSource(glass, glassPath, true);
+  console.log("Studio catalogue, runtime policy, PWA and glass source match the game release");
 } else {
   writeFileSync(path, JSON.stringify(current, null, 2) + "\n");
   writeFileSync(policyPath, policy);
   mirrorPwaSource(pwa, pwaDirectory);
-  console.log("Studio catalogue, runtime policy and PWA source updated; review before release");
+  mirrorGlassSource(glass, glassPath);
+  console.log("Studio catalogue, runtime policy, PWA and glass source updated; review before release");
 }

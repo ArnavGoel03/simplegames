@@ -1,0 +1,13 @@
+/* Canonical glass mechanics. Palettes belong to the consuming site or game.
+   The standalone studio mirrors this file from the Circuit build asset. */
+:root {
+  --gtg-glass-blur: 16px;
+  --gtg-glass-angle: 125deg;
+  --gtg-glass-reflection: 9%;
+  --gtg-glass-clear-stop: 46%;
+  --gtg-glass-reflection-tail: 5%;
+  --gtg-glass-rim: 19%;
+  --gtg-glass-fill: 85%;
+  --gtg-glass-dense-fill: 94%;
+  --gtg-glass-shadow: 0 12px 32px rgb(0 0 0 / 0.2);
+}

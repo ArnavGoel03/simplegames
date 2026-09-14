@@ -1,4 +1,5 @@
 @import "./palette.css";
+@import "./glass.css";
 
 /* One checked backdrop, pastel light and glass surfaces across the studio. */
 
@@ -806,13 +807,23 @@ a.title:hover .title__art img {
 
 /* Opaque surfaces are the baseline when blur is unavailable or unwanted. */
 @supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-  .masthead nav, .stage__caption {
-    background: var(--glass);
-    -webkit-backdrop-filter: blur(16px);
-    backdrop-filter: blur(16px);
+  .masthead nav, .stage__caption, .stage__art::before,
+  .facts, .title, .collection-nav a {
+    background:
+      linear-gradient(
+        var(--gtg-glass-angle),
+        color-mix(in srgb, var(--glass-edge) var(--gtg-glass-reflection), transparent),
+        transparent var(--gtg-glass-clear-stop),
+        color-mix(in srgb, var(--glass-edge) var(--gtg-glass-reflection-tail), transparent)
+      ) var(--glass);
+    box-shadow:
+      inset 0 1px 0 color-mix(in srgb, var(--glass-edge) var(--gtg-glass-rim), transparent),
+      var(--gtg-glass-shadow);
   }
-  .stage__art::before, .facts, .title, .collection-nav a {
-    background: var(--glass);
+  /* Keep expensive backdrop sampling on the two small foreground surfaces. */
+  .masthead nav, .stage__caption {
+    -webkit-backdrop-filter: blur(var(--gtg-glass-blur));
+    backdrop-filter: blur(var(--gtg-glass-blur));
   }
 }
 

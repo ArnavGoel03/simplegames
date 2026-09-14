@@ -1,5 +1,16 @@
 # Glass Table Games: state of play
 
+## Shared glass material live, 15 September 2026
+
+Studio 0.5.2 is live from `bdd9c16`, Worker
+`dfa1b3d7-5f8d-4d08-9d72-2aeca9eed578`, serving 100%. The approved palette
+remains; glass mechanics are mirrored from the canonical game source. Both
+browser engines, 174 Vitest/33 release tests and the warning-free build pass.
+All 144 live checks, ten exact startup assets, the worker and source mirrors
+pass. Preview settings are restored. `GLASS-MATERIAL-2026-09-15.md` records
+immutable sources, calibrated browser evidence and physical-device limits.
+QA-only commits after `bdd9c16` do not change the deployed application source.
+
 ## Studio 0.5.1 release, 14 September 2026
 
 Studio 0.5.1 is live at source
