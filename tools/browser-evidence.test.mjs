@@ -280,6 +280,33 @@ describe("Chromium background cache revalidation", () => {
   it("recognizes the independently reproduced cached read followed by native background revalidation", () => {
     expect(networkVerdict(fixture())).toMatchObject({ passed: true, classified: [{ nativeRequestId: "background", cachedRequestId: "fetch", reason: "chromium-background-swr-revalidation" }] });
   });
+  it("requires every cache and native-cancellation proof for background cancellation before headers", () => {
+    const cancelled = () => {
+      const p = fixture();
+      p.trace.pop();
+      p.trace.push({ at: 30, kind: "native-failed", id: "background", canceled: true, error: "net::ERR_ABORTED" });
+      return p;
+    };
+    expect(networkVerdict(cancelled())).toMatchObject({ passed: true,
+      classified: [{ reason: "chromium-background-swr-cancelled-before-headers" }] });
+    for (const mutate of [
+      p => { p.trace.pop(); },
+      p => { p.trace[5].canceled = false; },
+      p => { p.trace[5].id = "other"; },
+      p => { p.trace[5].error = "net::ERR_CONNECTION_RESET"; },
+      p => { p.trace[4].type = "Fetch"; },
+      p => { p.trace[4].initiator.type = "script"; },
+      p => { p.trace[4].requestKey = "other"; },
+      p => { p.trace[4].loaderId = "other"; },
+      p => { p.trace[4].headers.rsc = "0"; },
+      p => { p.trace[1].status = 500; },
+      p => { p.trace[1].fromDiskCache = false; },
+      p => { p.trace[1].headers["cache-control"] = "max-age=0"; },
+      p => { p.trace[2].kind = "not-finished"; },
+      p => { p.trace[3].kind = "response-reader-error"; },
+      p => { p.trace.push({ at: 20, kind: "native-response", id: "background", type: "Other", status: 500 }); },
+    ]) { const p = cancelled(); mutate(p); expect(networkVerdict(p).passed).toBe(false); }
+  });
   it("does not waive application fetches, failed responses, wrong keys or missing cache/completion proof", () => {
     for (const mutate of [
       p => { p.failed[0].resource = "fetch"; },

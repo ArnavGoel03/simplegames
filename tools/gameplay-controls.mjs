@@ -5,7 +5,7 @@ export async function waitForReady(page) {
 
 // Fresh contexts receive the real first-game guide after hydration.
 export async function dismissFirstGuide(page) {
-  const sheet = page.locator('.play-sheet[role="dialog"]');
+  const sheet = page.locator(".play-sheet");
   await sheet.waitFor({ state: "visible" });
   await sheet.locator(".play-sheet-bar button").click();
   await sheet.waitFor({ state: "hidden" });

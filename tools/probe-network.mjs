@@ -82,15 +82,20 @@ self.addEventListener('install',event=>event.waitUntil(self.skipWaiting()));
 self.addEventListener('activate',event=>event.waitUntil(self.clients.claim()));
 self.addEventListener('message',event=>event.ports[0].postMessage({online:self.navigator.onLine,intercepted}));
 self.addEventListener('fetch',event=>{if(new URL(event.request.url).pathname==='/oracle'){intercepted++;event.respondWith(new Response('worker-answer'));}});`;
-  const cacheRequests = { "/swr": 0, "/revalidate": 0 };
+  const cacheRequests = { "/swr": 0, "/revalidate": 0, "/swr-cancel": 0 };
   server = createServer((request, response) => {
     response.setHeader("Cache-Control", "no-store");
     const pathname = new URL(request.url, "http://fixture.test").pathname;
     if (pathname in cacheRequests) {
       const count = ++cacheRequests[pathname];
       response.setHeader("Content-Type", "text/x-component");
-      response.setHeader("Cache-Control", pathname === "/swr" ? "s-maxage=31536000, stale-while-revalidate=2592000" : "max-age=0, must-revalidate");
+      response.setHeader("Cache-Control", pathname.startsWith("/swr") ? "s-maxage=31536000, stale-while-revalidate=2592000" : "max-age=0, must-revalidate");
       response.setHeader("CF-Ray", `${count.toString(16).padStart(16, "0")}-BOM`);
+      if (pathname === "/swr-cancel" && count > 1) {
+        const timeout = setTimeout(() => response.end(`0:fixture-${count}\n`), 5_000);
+        response.on("close", () => clearTimeout(timeout));
+        return;
+      }
       response.end(`0:fixture-${count}\n`);
       return;
     }
@@ -118,7 +123,7 @@ self.addEventListener('fetch',event=>{if(new URL(event.request.url).pathname==='
     try {
       await page.goto(origin, { waitUntil: "load" });
       const values = {};
-      for (const path of Object.keys(cacheRequests)) {
+      for (const path of ["/swr", "/revalidate"]) {
         values[path] = [];
         for (let index = 0; index < 3; index++) {
           values[path].push(await page.evaluate(async path => {
@@ -132,6 +137,38 @@ self.addEventListener('fetch',event=>{if(new URL(event.request.url).pathname==='
         }
       }
       result.cacheControl = { values, serverRequests: cacheRequests, events, trace: probe.trace, failed: probe.failed };
+    } finally { await context.close(); }
+  }
+  if (engine === "chromium") {
+    const context = await browser.newContext({ serviceWorkers: "block" });
+    const page = await context.newPage();
+    const probe = await instrument(page);
+    const origin = `http://127.0.0.1:${server.address().port}`;
+    try {
+      await page.goto(origin, { waitUntil: "load" });
+      const read = () => page.evaluate(async () => {
+        const response = await fetch("/swr-cancel?_rsc=control", { headers: { rsc: "1", "next-router-prefetch": "1" } });
+        const reader = response.body.getReader();
+        let body = "";
+        while (true) { const { done, value } = await reader.read(); if (done) break; body += new TextDecoder().decode(value); }
+        return body;
+      });
+      const first = await read();
+      await page.waitForTimeout(1100);
+      const cached = await read();
+      assert.equal(cached, first, "Second fetch must consume the cached response");
+      const deadline = Date.now() + 2_000;
+      while (cacheRequests["/swr-cancel"] < 2 && Date.now() < deadline) await page.waitForTimeout(20);
+      assert.equal(cacheRequests["/swr-cancel"], 2, "Native background refresh did not reach the fixture");
+      // Navigation need not cancel a background refresh. The cached application
+      // response must remain complete while that independent refresh is pending.
+      await page.goto(origin + "/after-cancel", { waitUntil: "load" });
+      await page.waitForTimeout(100);
+      const verdict = networkVerdict(probe);
+      result.backgroundReadControl = { first, cached, trace: probe.trace, failed: probe.failed, verdict };
+      assert(probe.trace.some(event => event.kind === "native-request" && event.type === "Other" && event.initiator?.type === "other"),
+        "Native independent background refresh was not observed");
+      assert(verdict.passed, "Background control contained an unexplained failure");
     } finally { await context.close(); }
   }
   const streamContext = await browser.newContext({ serviceWorkers: "block" });
