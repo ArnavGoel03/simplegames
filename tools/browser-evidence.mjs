@@ -229,8 +229,10 @@ function backgroundRevalidation(probe, failure) {
   const request = requests[0];
   if (request.headers?.rsc !== "1" || request.headers?.["next-router-prefetch"] !== "1") return null;
   const response = probe.trace.find(event => event.kind === "native-response" && event.id === request.id);
-  if (response?.status !== 200 || response.type !== "Other" || response.at > failure.at || !response.headers?.["content-type"]?.startsWith("text/x-component")
-    || !/(?:^|,)\s*stale-while-revalidate=\d+(?:\s*,|$)/i.test(response.headers["cache-control"] ?? "")) return null;
+  const cancelledBeforeHeaders = !response && probe.trace.some(event => event.kind === "native-failed" && event.id === request.id
+    && event.at >= request.at && event.canceled === true && event.error === "net::ERR_ABORTED");
+  if (!cancelledBeforeHeaders && (response?.status !== 200 || response.type !== "Other" || response.at > failure.at || !response.headers?.["content-type"]?.startsWith("text/x-component")
+    || !/(?:^|,)\s*stale-while-revalidate=\d+(?:\s*,|$)/i.test(response.headers["cache-control"] ?? ""))) return null;
   if (probe.trace.some(event => event.kind === "native-failed" && event.id === request.id && event.error !== "net::ERR_ABORTED")) return null;
   const cached = probe.trace.filter(event => event.kind === "native-response" && event.type === "Fetch"
     && event.fromDiskCache === true && event.status === 200 && event.at <= request.at
@@ -246,7 +248,8 @@ function backgroundRevalidation(probe, failure) {
     if (probe.trace.some(event => ["response-reader-error", "response-cancel-error"].includes(event.kind) && sameRead(event))) continue;
     if (!probe.trace.some(event => event.kind === "response-reader-complete" && event.status === 200 && sameRead(event))) continue;
     return { requestId: failure.requestId, requestKey: failure.requestKey, nativeRequestId: request.id,
-      cachedRequestId: original.id, ray, reason: "chromium-background-swr-revalidation" };
+      cachedRequestId: original.id, ray, reason: cancelledBeforeHeaders
+        ? "chromium-background-swr-cancelled-before-headers" : "chromium-background-swr-revalidation" };
   }
   return null;
 }

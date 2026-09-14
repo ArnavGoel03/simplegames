@@ -14,6 +14,7 @@ const results = [];
 const observations = [];
 const focusEvents = [];
 const nativeTabControl = [];
+const readinessFailures = [];
 await mkdir(output, { recursive: true });
 const browser = await ({ chromium, webkit })[engine].launch({ timeout: 20_000 });
 const context = await browser.newContext({ reducedMotion: "reduce", viewport: { width: 320, height: 720 } });
@@ -27,7 +28,11 @@ const page = await context.newPage();
 page.setDefaultTimeout(7_000);
 page.setDefaultNavigationTimeout(15_000);
 const errors = [];
+const network = [];
 page.on("pageerror", error => errors.push(error.message));
+page.on("requestfailed", request => network.push({ kind: "failed", path: new URL(request.url()).pathname,
+  method: request.method(), error: request.failure()?.errorText }));
+page.on("response", response => { if (response.status() >= 400) network.push({ kind: "response", path: new URL(response.url()).pathname, status: response.status() }); });
 async function focusState(page) {
   return page.evaluate(() => {
     const active = document.activeElement;
@@ -45,7 +50,15 @@ async function check(id, action) {
 async function open(game) {
   const response = await page.goto(`${target.origin}/casino/${game}?mode=practice`, { waitUntil: "domcontentloaded" });
   assert(response?.ok());
-  await page.waitForFunction(() => window["gtg:app-ready"] === true);
+  try { await page.waitForFunction(() => window["gtg:app-ready"] === true, undefined, { timeout: 15_000 }); }
+  catch (error) {
+    readinessFailures.push({ game, url: page.url(), ...await page.evaluate(() => ({ readyState: document.readyState,
+      ready: window["gtg:app-ready"] === true, visibility: document.visibilityState,
+      scripts: [...document.scripts].filter(script => script.src).map(script => new URL(script.src).pathname),
+      styles: [...document.querySelectorAll('link[rel="stylesheet"]')].map(link => ({ path: new URL(link.href).pathname, loaded: Boolean(link.sheet) })) })) });
+    await capture(`readiness-failure-${game}`);
+    throw error;
+  }
   const sourceHead = await observeSource(page, target.site);
   observations.push({ game, sourceHead, origin: new URL(page.url()).origin });
 }
@@ -208,7 +221,7 @@ try {
   });
   await check("no-writes-or-runtime-errors", async () => { assert.deepEqual(writes, []); assert.deepEqual(errors, []); });
 } finally {
-  await writeFile(new URL(`controls-${engine}.json`, output), JSON.stringify({ schema: 1, calibration, engine, target, observations, nativeTabControl, focusEvents, results, writes, errors }, null, 2));
+  await writeFile(new URL(`controls-${engine}.json`, output), JSON.stringify({ schema: 1, calibration, engine, target, observations, nativeTabControl, focusEvents, readinessFailures, network, results, writes, errors }, null, 2));
   await context.close();
   await browser.close();
 }
