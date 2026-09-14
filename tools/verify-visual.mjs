@@ -118,6 +118,33 @@ try {
       });
       const observedSourceHead = await observeSource(page, site.id);
       const layouts = [];
+      if (candidates.length && !baseline) {
+        const glass = await page.evaluate((studio) => {
+          const surface = document.querySelector(studio ? ".masthead nav" : ".play-site-header");
+          if (!surface) throw new Error("Missing glass navigation surface");
+          const root = document.documentElement;
+          const read = () => {
+            const style = getComputedStyle(surface);
+            return style.backdropFilter || style.webkitBackdropFilter;
+          };
+          const before = read();
+          const previous = root.style.getPropertyValue("--gtg-glass-blur");
+          const priority = root.style.getPropertyPriority("--gtg-glass-blur");
+          try {
+            root.style.setProperty("--gtg-glass-blur", "1px");
+            const calibrated = read();
+            return { before, calibrated, foreground: getComputedStyle(surface).color,
+              gameForeground: getComputedStyle(document.body).color };
+          } finally {
+            if (previous) root.style.setProperty("--gtg-glass-blur", previous, priority);
+            else root.style.removeProperty("--gtg-glass-blur");
+          }
+        }, site.id === "studio");
+        assert.equal(glass.before, "blur(16px)", "Shared glass material missing");
+        assert.equal(glass.calibrated, "blur(1px)", "Glass surface ignores canonical material");
+        if (site.id !== "studio") assert.equal(glass.foreground, glass.gameForeground, "Glass overrides game foreground");
+        console.log(JSON.stringify({ site: site.id, colorScheme, glass }));
+      }
       // Calibrate the overflow detector against a known oversized element.
       const detectsOverflow = await page.evaluate(() => {
         const probe = document.createElement("div");
