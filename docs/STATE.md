@@ -51,6 +51,14 @@ absent capability; 25 focused tests and rerun `34780722592` pass. All five
 browser contexts have zero runtime errors and zero failed network requests.
 No application or deployed release bytes changed. See the release record.
 
+The controls follow-up verifies game candidate `7dac09d` in both browser
+engines, including 32 Casino report-focus, number-target and active-hand
+assertions per engine. All five games pass their full candidate checks and
+recorded performance limits. This studio change is verification tooling only;
+the deployed studio remains `007ca22`. Exact runs, artifact hashes, calibrated
+browser behavior and physical-device limits are in
+`docs/CONTROLS-QA-2026-09-14.md`.
+
 
 ## Pastel glass release, 13 September 2026
 
