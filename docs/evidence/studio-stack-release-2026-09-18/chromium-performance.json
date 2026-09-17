@@ -1,0 +1,52 @@
+[
+  {
+    "site": "studio",
+    "engine": "chromium",
+    "observedSourceHead": "cfdf6a486095d9e939a29a9adba7e2e9e50f2ea4",
+    "samples": [
+      {
+        "startupMs": 385.20000000001164,
+        "observedMs": 403.6000000000058,
+        "driverDelayMs": 18.39999999999418,
+        "domReadyMs": 206.5,
+        "appReadyMs": 358.70000000001164,
+        "lcpMs": 308,
+        "decodedJsBytes": 485982,
+        "decodedCssBytes": 27023,
+        "resources": 9,
+        "stylesReady": true
+      },
+      {
+        "startupMs": 571.1999999999825,
+        "observedMs": 592.1000000000058,
+        "driverDelayMs": 20.900000000023283,
+        "domReadyMs": 392.29999999998836,
+        "appReadyMs": 549.2999999999884,
+        "lcpMs": 500,
+        "decodedJsBytes": 485982,
+        "decodedCssBytes": 27023,
+        "resources": 9,
+        "stylesReady": true
+      },
+      {
+        "startupMs": 301,
+        "observedMs": 304.8999999999942,
+        "driverDelayMs": 3.8999999999941792,
+        "domReadyMs": 122.10000000000582,
+        "appReadyMs": 270.8999999999942,
+        "lcpMs": 216,
+        "decodedJsBytes": 485982,
+        "decodedCssBytes": 27023,
+        "resources": 9,
+        "stylesReady": true
+      }
+    ],
+    "interactionMs": [
+      43.70000000001164,
+      45.5,
+      45.30000000001746
+    ],
+    "interactionMetric": "games-navigation",
+    "definition": "startup: navigation to DOM and app readiness, loaded fonts, then two animation frames, timestamped inside the browser; loaded styles validated separately; games-navigation: trusted existing-control click to completed fragment scroll and two further stable frames; fresh browser context per sample"
+  }
+]

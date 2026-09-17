@@ -1,0 +1,864 @@
+{
+  "candidate": {
+    "schema": 1,
+    "kind": "candidate",
+    "site": "studio",
+    "worker": "glasstablegames",
+    "sourceHead": "cfdf6a486095d9e939a29a9adba7e2e9e50f2ea4",
+    "sourceFingerprint": "1c141a651dd2d2b9e27e0f13f81eec45be46014d00d86839c0135c748aa64b08",
+    "buildSource": "0509384fbc930bc26b38e8f1da72baac394b8aeceed8b55361787329fecb4e2c",
+    "buildOutput": "32200b6ab90d71b0a8d6d5c9196f60800a5b54b3ca36c4c34806633f1b7ffff6",
+    "candidateVersion": "a7e23fdd-b31c-4f73-bb38-0e8dba884f7a",
+    "origin": "https://a7e23fdd-glasstablegames.goelhome.workers.dev",
+    "recordedAt": "2026-09-17T20:47:46.026Z",
+    "upload": {
+      "command": [
+        "wrangler",
+        "versions",
+        "upload"
+      ],
+      "startedAt": "2026-09-17T20:47:28.427Z",
+      "durationMs": 17272,
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "logDigest": "3d433ade10663d21f28f13e697b721a7deab0e29339d3dea9790ab7003aac1f0"
+    }
+  },
+  "gate": {
+    "schema": 1,
+    "kind": "gate",
+    "sourceHead": "cfdf6a486095d9e939a29a9adba7e2e9e50f2ea4",
+    "sourceFingerprint": "1c141a651dd2d2b9e27e0f13f81eec45be46014d00d86839c0135c748aa64b08",
+    "outcome": {
+      "command": [
+        "npm",
+        "run",
+        "gate"
+      ],
+      "startedAt": "2026-09-17T20:46:02.792Z",
+      "durationMs": 21016,
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "logDigest": "4014c9ac149be77fdd16680b83396427f29c774de1da8649384758078b4aa691"
+    },
+    "measurements": [
+      {
+        "id": "verify:toolchain",
+        "unit": "ms",
+        "samples": [
+          360
+        ]
+      },
+      {
+        "id": "typecheck",
+        "unit": "ms",
+        "samples": [
+          313
+        ]
+      },
+      {
+        "id": "lint",
+        "unit": "ms",
+        "samples": [
+          2155
+        ]
+      },
+      {
+        "id": "pretest",
+        "unit": "ms",
+        "samples": [
+          101
+        ]
+      },
+      {
+        "id": "test",
+        "unit": "ms",
+        "samples": [
+          17593
+        ]
+      },
+      {
+        "id": "test:release",
+        "unit": "ms",
+        "samples": [
+          363
+        ]
+      }
+    ],
+    "log": "gate.log",
+    "verifiedMetrics": [
+      {
+        "id": "typecheck",
+        "actual": 313,
+        "limit": 900,
+        "baselineDigest": "dc2a17e4203dc1d5452a267a412a7e85569ab776363dd7ae8771705549c61d56"
+      }
+    ]
+  },
+  "release": {
+    "schema": 1,
+    "kind": "release",
+    "recordedAt": "2026-09-17T20:55:14.142Z",
+    "candidateDigest": "6c79306247f95038b5ecb4b9dee2da8f1deb752af767b174e6594bd55091b26f",
+    "policyDigest": "c8c1360cc97de86738cd6b06415ea865c8541736941d3bda9fba5b6c40fd78e6",
+    "ci": [
+      {
+        "repository": "ArnavGoel03/simplegames",
+        "workflow": ".github/workflows/visual.yml",
+        "runId": 35273378467,
+        "artifactId": 10518763668,
+        "workflowSourceHead": "cfdf6a486095d9e939a29a9adba7e2e9e50f2ea4",
+        "runUrl": "https://github.com/ArnavGoel03/simplegames/actions/runs/35273378467",
+        "artifactDigest": "sha256:b606d5cec85eabc557ed2b6a757e8da58fa8aac3b8a6141bcd917ff004433850",
+        "artifactName": "candidate-evidence"
+      },
+      {
+        "repository": "ArnavGoel03/simplegames",
+        "workflow": ".github/workflows/visual.yml",
+        "runId": 35273380596,
+        "artifactId": 10519664019,
+        "workflowSourceHead": "cfdf6a486095d9e939a29a9adba7e2e9e50f2ea4",
+        "runUrl": "https://github.com/ArnavGoel03/simplegames/actions/runs/35273380596",
+        "artifactDigest": "sha256:5710e5f46cc0d1a5ab9d0250cf95609883a6b192ab3e47e329022d4dd1e04e96",
+        "artifactName": "candidate-evidence"
+      }
+    ],
+    "reports": [
+      {
+        "schema": 1,
+        "kind": "candidate",
+        "site": "studio",
+        "worker": "glasstablegames",
+        "sourceHead": "cfdf6a486095d9e939a29a9adba7e2e9e50f2ea4",
+        "sourceFingerprint": "1c141a651dd2d2b9e27e0f13f81eec45be46014d00d86839c0135c748aa64b08",
+        "buildSource": "0509384fbc930bc26b38e8f1da72baac394b8aeceed8b55361787329fecb4e2c",
+        "buildOutput": "32200b6ab90d71b0a8d6d5c9196f60800a5b54b3ca36c4c34806633f1b7ffff6",
+        "candidateVersion": "a7e23fdd-b31c-4f73-bb38-0e8dba884f7a",
+        "origin": "https://a7e23fdd-glasstablegames.goelhome.workers.dev",
+        "recordedAt": "2026-09-17T20:47:46.026Z",
+        "upload": {
+          "command": [
+            "wrangler",
+            "versions",
+            "upload"
+          ],
+          "startedAt": "2026-09-17T20:47:28.427Z",
+          "durationMs": 17272,
+          "exitCode": 0,
+          "signal": null,
+          "error": null,
+          "logDigest": "3d433ade10663d21f28f13e697b721a7deab0e29339d3dea9790ab7003aac1f0"
+        },
+        "browsers": [
+          {
+            "engine": "chromium",
+            "observedSourceHead": "cfdf6a486095d9e939a29a9adba7e2e9e50f2ea4",
+            "checks": [
+              {
+                "id": "responsive",
+                "status": "passed"
+              },
+              {
+                "id": "entry",
+                "status": "passed"
+              },
+              {
+                "id": "startup",
+                "status": "passed"
+              },
+              {
+                "id": "network",
+                "status": "passed"
+              },
+              {
+                "id": "failed-css",
+                "status": "passed"
+              },
+              {
+                "id": "offline",
+                "status": "passed",
+                "mechanism": "Actual candidate document with Chromium browser-emulated offline network",
+                "workerSha256": "2a5a97c6231b0e914c4ef8ce9b2652706f9f5bc335ad31ddabbd3ce399d5e001"
+              },
+              {
+                "id": "update",
+                "status": "passed"
+              }
+            ],
+            "measurements": [
+              {
+                "id": "startup",
+                "unit": "ms",
+                "samples": [
+                  385.20000000001164,
+                  571.1999999999825,
+                  301
+                ]
+              },
+              {
+                "id": "games-navigation",
+                "unit": "ms",
+                "samples": [
+                  43.70000000001164,
+                  45.5,
+                  45.30000000001746
+                ]
+              },
+              {
+                "id": "initial-assets",
+                "unit": "bytes",
+                "samples": [
+                  513005,
+                  513005,
+                  513005
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "schema": 1,
+        "kind": "candidate",
+        "site": "studio",
+        "worker": "glasstablegames",
+        "sourceHead": "cfdf6a486095d9e939a29a9adba7e2e9e50f2ea4",
+        "sourceFingerprint": "1c141a651dd2d2b9e27e0f13f81eec45be46014d00d86839c0135c748aa64b08",
+        "buildSource": "0509384fbc930bc26b38e8f1da72baac394b8aeceed8b55361787329fecb4e2c",
+        "buildOutput": "32200b6ab90d71b0a8d6d5c9196f60800a5b54b3ca36c4c34806633f1b7ffff6",
+        "candidateVersion": "a7e23fdd-b31c-4f73-bb38-0e8dba884f7a",
+        "origin": "https://a7e23fdd-glasstablegames.goelhome.workers.dev",
+        "recordedAt": "2026-09-17T20:47:46.026Z",
+        "upload": {
+          "command": [
+            "wrangler",
+            "versions",
+            "upload"
+          ],
+          "startedAt": "2026-09-17T20:47:28.427Z",
+          "durationMs": 17272,
+          "exitCode": 0,
+          "signal": null,
+          "error": null,
+          "logDigest": "3d433ade10663d21f28f13e697b721a7deab0e29339d3dea9790ab7003aac1f0"
+        },
+        "browsers": [
+          {
+            "engine": "webkit",
+            "observedSourceHead": "cfdf6a486095d9e939a29a9adba7e2e9e50f2ea4",
+            "checks": [
+              {
+                "id": "responsive",
+                "status": "passed"
+              },
+              {
+                "id": "entry",
+                "status": "passed"
+              },
+              {
+                "id": "startup",
+                "status": "passed"
+              },
+              {
+                "id": "network",
+                "status": "passed"
+              },
+              {
+                "id": "failed-css",
+                "status": "passed"
+              },
+              {
+                "id": "offline",
+                "status": "passed",
+                "mechanism": "Exact candidate worker runtime with acknowledged navigator.onLine=false test environment; actual fixture HTTP origin stopped; uncached request failure calibrated",
+                "limitation": "Controlled worker-branch verification, not WebKit native offline-toggle or physical-device certification; candidate online source/styles checked separately",
+                "workerSha256": "2a5a97c6231b0e914c4ef8ce9b2652706f9f5bc335ad31ddabbd3ce399d5e001",
+                "environmentSha256": "a4f54054b832075dd1f791bbe61da511e35b8e9b6b043b9239e5ab26fe5f176a",
+                "transportControl": {
+                  "upstreamStopped": true,
+                  "uncachedFetchFailed": true,
+                  "workerOnline": false
+                }
+              },
+              {
+                "id": "update",
+                "status": "passed"
+              }
+            ],
+            "measurements": [
+              {
+                "id": "startup",
+                "unit": "ms",
+                "samples": [
+                  634,
+                  785,
+                  620
+                ]
+              },
+              {
+                "id": "games-navigation",
+                "unit": "ms",
+                "samples": [
+                  139,
+                  143,
+                  134
+                ]
+              },
+              {
+                "id": "initial-assets",
+                "unit": "bytes",
+                "samples": [
+                  513005,
+                  513005,
+                  513005
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "verified": [
+      {
+        "engine": "chromium",
+        "checks": [
+          "responsive",
+          "entry",
+          "startup",
+          "network",
+          "failed-css",
+          "offline",
+          "update"
+        ],
+        "measurements": [
+          {
+            "id": "startup",
+            "unit": "ms",
+            "statistic": "median",
+            "actual": 385.20000000001164,
+            "limit": 750
+          },
+          {
+            "id": "games-navigation",
+            "unit": "ms",
+            "statistic": "median",
+            "actual": 45.30000000001746,
+            "limit": 400
+          },
+          {
+            "id": "initial-assets",
+            "unit": "bytes",
+            "statistic": "max",
+            "actual": 513005,
+            "limit": 655360
+          }
+        ]
+      },
+      {
+        "engine": "webkit",
+        "checks": [
+          "responsive",
+          "entry",
+          "startup",
+          "network",
+          "failed-css",
+          "offline",
+          "update"
+        ],
+        "measurements": [
+          {
+            "id": "startup",
+            "unit": "ms",
+            "statistic": "median",
+            "actual": 634,
+            "limit": 750
+          },
+          {
+            "id": "games-navigation",
+            "unit": "ms",
+            "statistic": "median",
+            "actual": 139,
+            "limit": 400
+          },
+          {
+            "id": "initial-assets",
+            "unit": "bytes",
+            "statistic": "max",
+            "actual": 513005,
+            "limit": 655360
+          }
+        ]
+      }
+    ],
+    "baselines": [
+      {
+        "id": "startup",
+        "sourceHead": "e3812bed22a15b57349bdb87df22f5db6e3a768f",
+        "runId": 34764064297,
+        "artifactId": 10319967902,
+        "value": 474,
+        "lookup": {
+          "repository": "ArnavGoel03/simplegames",
+          "workflow": ".github/workflows/visual.yml",
+          "runId": 34764064297,
+          "artifactId": 10319967902,
+          "workflowSourceHead": "e035d1d363b7e5818c5d503358c9207b0f1973e5",
+          "runUrl": "https://github.com/ArnavGoel03/simplegames/actions/runs/34764064297",
+          "artifactDigest": "sha256:4dfd269c31d7ff63500765cb3c343df82067fe6abd772071215fdf55757fece5",
+          "artifactName": "performance-baseline"
+        }
+      },
+      {
+        "id": "games-navigation",
+        "sourceHead": "e3812bed22a15b57349bdb87df22f5db6e3a768f",
+        "runId": 34776157501,
+        "artifactId": 10324295125,
+        "value": 245.89999999999418,
+        "lookup": {
+          "repository": "ArnavGoel03/simplegames",
+          "workflow": ".github/workflows/visual.yml",
+          "runId": 34776157501,
+          "artifactId": 10324295125,
+          "workflowSourceHead": "d407937aeec90e4ee82757b475b2fc713243f38c",
+          "runUrl": "https://github.com/ArnavGoel03/simplegames/actions/runs/34776157501",
+          "artifactDigest": "sha256:f0e1c9aa9e60d2e41a0232c792de7bf938fc9b941b19d2d8f131d93c121afc29",
+          "artifactName": "performance-baseline"
+        }
+      },
+      {
+        "id": "initial-assets",
+        "sourceHead": "e3812bed22a15b57349bdb87df22f5db6e3a768f",
+        "runId": 34764063259,
+        "artifactId": 10318919838,
+        "value": 511522,
+        "lookup": {
+          "repository": "ArnavGoel03/simplegames",
+          "workflow": ".github/workflows/visual.yml",
+          "runId": 34764063259,
+          "artifactId": 10318919838,
+          "workflowSourceHead": "e035d1d363b7e5818c5d503358c9207b0f1973e5",
+          "runUrl": "https://github.com/ArnavGoel03/simplegames/actions/runs/34764063259",
+          "artifactDigest": "sha256:00b45f86e62122718d0b90b58f9370f39b9df5f7809cf07223432ebf39167f0c",
+          "artifactName": "performance-baseline"
+        }
+      }
+    ]
+  },
+  "deployment": {
+    "schema": 1,
+    "kind": "deployment",
+    "startedAt": "2026-09-17T20:57:43.261Z",
+    "site": "studio",
+    "sourceHead": "cfdf6a486095d9e939a29a9adba7e2e9e50f2ea4",
+    "sourceFingerprint": "1c141a651dd2d2b9e27e0f13f81eec45be46014d00d86839c0135c748aa64b08",
+    "candidateVersion": "a7e23fdd-b31c-4f73-bb38-0e8dba884f7a",
+    "buildOutput": "32200b6ab90d71b0a8d6d5c9196f60800a5b54b3ca36c4c34806633f1b7ffff6",
+    "previous": {
+      "id": "7e316c3e-730c-4af9-9eca-184257501559",
+      "createdAt": "2026-09-14T20:36:08.98694Z",
+      "versions": [
+        {
+          "version_id": "dfa1b3d7-5f8d-4d08-9d72-2aeca9eed578",
+          "percentage": 100
+        }
+      ]
+    },
+    "rollbackCommand": [
+      "wrangler",
+      "versions",
+      "deploy",
+      "dfa1b3d7-5f8d-4d08-9d72-2aeca9eed578@100",
+      "--name",
+      "glasstablegames",
+      "--yes"
+    ],
+    "outcome": {
+      "command": [
+        "wrangler",
+        "versions",
+        "deploy",
+        "a7e23fdd-b31c-4f73-bb38-0e8dba884f7a@100%",
+        "--name",
+        "glasstablegames",
+        "--yes"
+      ],
+      "startedAt": "2026-09-17T20:57:43.262Z",
+      "durationMs": 8902,
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "logDigest": "f05b0e35a89c2d3f73e3dba4b80fd8f02f8b39b509ad977427d19924370a57a1"
+    },
+    "observedDeployment": {
+      "id": "56b15abd-d938-4d9e-a532-56cab0a2847f",
+      "createdAt": "2026-09-17T20:57:49.194209Z",
+      "versions": [
+        {
+          "version_id": "a7e23fdd-b31c-4f73-bb38-0e8dba884f7a",
+          "percentage": 100
+        }
+      ]
+    }
+  },
+  "previewHttpAssertions": 144,
+  "liveHttpAssertions": 144,
+  "previewExactContent": {
+    "startedAt": "2026-09-17T20:50:04.089Z",
+    "source": "cfdf6a486095d9e939a29a9adba7e2e9e50f2ea4",
+    "sites": [
+      {
+        "site": "studio",
+        "origin": "https://a7e23fdd-glasstablegames.goelhome.workers.dev",
+        "version": "0.5.3",
+        "candidateVersion": "a7e23fdd-b31c-4f73-bb38-0e8dba884f7a",
+        "assets": [
+          {
+            "path": "/_next/static/chunks/0cz1d0mv5g_q7.js",
+            "bytes": 112594,
+            "sha256": "0973c1d64c88adc8e3c950410cb58b288f72118d5965b78049438deb8f2f9683",
+            "mime": "text/javascript"
+          },
+          {
+            "path": "/_next/static/chunks/19mx3mg6lkumu.js",
+            "bytes": 28907,
+            "sha256": "170f3982866674a829571beec30cc23c69fcd36196739ff34b9d586b3ad73cd7",
+            "mime": "text/javascript"
+          },
+          {
+            "path": "/_next/static/chunks/19uz82_42frvi.js",
+            "bytes": 21562,
+            "sha256": "fc65f1bbd2056c68da6eb95879de60d13e8612a9d93fb09e95cbdd55b3c6699d",
+            "mime": "text/javascript"
+          },
+          {
+            "path": "/_next/static/chunks/2a1jwyyjjm6km.js",
+            "bytes": 10524,
+            "sha256": "f77e50c38ccd8c9a5fd9bb39bee11ef8fe1ee9ba1bacecd9af0135f0e1ca2c0a",
+            "mime": "text/javascript"
+          },
+          {
+            "path": "/_next/static/chunks/3_kk1jv_49nf9.js",
+            "bytes": 165146,
+            "sha256": "b9c9783ba69be72698724be950c47db33f00b4d561f98d91137cc83b5312e785",
+            "mime": "text/javascript"
+          },
+          {
+            "path": "/_next/static/chunks/3fntmmi971322.js",
+            "bytes": 14377,
+            "sha256": "34ed6abf4c6d0d1bb3dc56d3f133d2a5dbc3a3c89c791deab314e27143ac14ce",
+            "mime": "text/javascript"
+          },
+          {
+            "path": "/_next/static/chunks/3g1x_ier6ps-s.css",
+            "bytes": 27023,
+            "sha256": "acb9ba56602301b7ce3bf924bd359914b51d8e4297b02312dc71e74ef85a93a1",
+            "mime": "text/css"
+          },
+          {
+            "path": "/_next/static/chunks/3kmozkq6tgqnz.js",
+            "bytes": 228922,
+            "sha256": "5041f52530a4c19c096ff1fd24f890f17301ade46cf0b21a3a4f5b20d024eca4",
+            "mime": "text/javascript"
+          },
+          {
+            "path": "/_next/static/chunks/3s6nzrbk-8mnv.js",
+            "bytes": 5598,
+            "sha256": "1d36f2e3f57740f75eb021aaec1208d7e938130e36c106a9f28678e4a98559b0",
+            "mime": "text/javascript"
+          },
+          {
+            "path": "/_next/static/chunks/turbopack-0eqy1r-un1hsb.js",
+            "bytes": 10946,
+            "sha256": "d94fb89f02e5855a922fa94552c213e3e682d2971ff421c1ac789c467757fdc5",
+            "mime": "text/javascript"
+          }
+        ],
+        "passed": true,
+        "observedSource": "cfdf6a486095d9e939a29a9adba7e2e9e50f2ea4",
+        "htmlSha256": "49c85bb0d062f86419cb7da5dfb4241446419c02e2390ba33fa4f0f34ae4dbcd",
+        "cacheControl": "s-maxage=31536000, max-age=0, must-revalidate, no-transform",
+        "worker": {
+          "path": "/sw.js",
+          "certifiedPath": ".open-next/assets/sw.js",
+          "bytes": 18683,
+          "sha256": "2a5a97c6231b0e914c4ef8ce9b2652706f9f5bc335ad31ddabbd3ce399d5e001"
+        },
+        "calibration": "Same-size one-byte CSS mutation rejected"
+      }
+    ],
+    "failures": [],
+    "finishedAt": "2026-09-17T20:50:06.355Z"
+  },
+  "liveExactContent": {
+    "startedAt": "2026-09-17T20:58:28.617Z",
+    "source": "cfdf6a486095d9e939a29a9adba7e2e9e50f2ea4",
+    "sites": [
+      {
+        "site": "studio",
+        "origin": "https://glasstablegames.com",
+        "version": "0.5.3",
+        "candidateVersion": "a7e23fdd-b31c-4f73-bb38-0e8dba884f7a",
+        "assets": [
+          {
+            "path": "/_next/static/chunks/0cz1d0mv5g_q7.js",
+            "bytes": 112594,
+            "sha256": "0973c1d64c88adc8e3c950410cb58b288f72118d5965b78049438deb8f2f9683",
+            "mime": "text/javascript"
+          },
+          {
+            "path": "/_next/static/chunks/19mx3mg6lkumu.js",
+            "bytes": 28907,
+            "sha256": "170f3982866674a829571beec30cc23c69fcd36196739ff34b9d586b3ad73cd7",
+            "mime": "text/javascript"
+          },
+          {
+            "path": "/_next/static/chunks/19uz82_42frvi.js",
+            "bytes": 21562,
+            "sha256": "fc65f1bbd2056c68da6eb95879de60d13e8612a9d93fb09e95cbdd55b3c6699d",
+            "mime": "text/javascript"
+          },
+          {
+            "path": "/_next/static/chunks/2a1jwyyjjm6km.js",
+            "bytes": 10524,
+            "sha256": "f77e50c38ccd8c9a5fd9bb39bee11ef8fe1ee9ba1bacecd9af0135f0e1ca2c0a",
+            "mime": "text/javascript"
+          },
+          {
+            "path": "/_next/static/chunks/3_kk1jv_49nf9.js",
+            "bytes": 165146,
+            "sha256": "b9c9783ba69be72698724be950c47db33f00b4d561f98d91137cc83b5312e785",
+            "mime": "text/javascript"
+          },
+          {
+            "path": "/_next/static/chunks/3fntmmi971322.js",
+            "bytes": 14377,
+            "sha256": "34ed6abf4c6d0d1bb3dc56d3f133d2a5dbc3a3c89c791deab314e27143ac14ce",
+            "mime": "text/javascript"
+          },
+          {
+            "path": "/_next/static/chunks/3g1x_ier6ps-s.css",
+            "bytes": 27023,
+            "sha256": "acb9ba56602301b7ce3bf924bd359914b51d8e4297b02312dc71e74ef85a93a1",
+            "mime": "text/css"
+          },
+          {
+            "path": "/_next/static/chunks/3kmozkq6tgqnz.js",
+            "bytes": 228922,
+            "sha256": "5041f52530a4c19c096ff1fd24f890f17301ade46cf0b21a3a4f5b20d024eca4",
+            "mime": "text/javascript"
+          },
+          {
+            "path": "/_next/static/chunks/3s6nzrbk-8mnv.js",
+            "bytes": 5598,
+            "sha256": "1d36f2e3f57740f75eb021aaec1208d7e938130e36c106a9f28678e4a98559b0",
+            "mime": "text/javascript"
+          },
+          {
+            "path": "/_next/static/chunks/turbopack-0eqy1r-un1hsb.js",
+            "bytes": 10946,
+            "sha256": "d94fb89f02e5855a922fa94552c213e3e682d2971ff421c1ac789c467757fdc5",
+            "mime": "text/javascript"
+          }
+        ],
+        "passed": true,
+        "observedSource": "cfdf6a486095d9e939a29a9adba7e2e9e50f2ea4",
+        "htmlSha256": "49c85bb0d062f86419cb7da5dfb4241446419c02e2390ba33fa4f0f34ae4dbcd",
+        "cacheControl": "s-maxage=31536000, max-age=0, must-revalidate, no-transform",
+        "worker": {
+          "path": "/sw.js",
+          "certifiedPath": ".open-next/assets/sw.js",
+          "bytes": 18683,
+          "sha256": "2a5a97c6231b0e914c4ef8ce9b2652706f9f5bc335ad31ddabbd3ce399d5e001"
+        },
+        "calibration": "Same-size one-byte CSS mutation rejected"
+      }
+    ],
+    "failures": [],
+    "finishedAt": "2026-09-17T20:58:30.085Z"
+  },
+  "livePrivacyRetirement": {
+    "at": "2026-09-17T20:59:20.573Z",
+    "url": "https://glasstablegames.com/api/diagnostics",
+    "method": "POST",
+    "bodySent": "empty",
+    "status": 410,
+    "bodyReceived": "empty",
+    "cacheControl": "no-store"
+  },
+  "previewSettings": {
+    "site": "studio",
+    "worker": "glasstablegames",
+    "at": "2026-09-17T20:47:46.046948+00:00",
+    "before": {
+      "enabled": false,
+      "previews_enabled": false
+    },
+    "enable": {
+      "at": "2026-09-17T20:48:26.603523+00:00",
+      "after": {
+        "enabled": false,
+        "previews_enabled": true
+      }
+    },
+    "restore": {
+      "at": "2026-09-17T20:58:42.257702+00:00",
+      "after": {
+        "enabled": false,
+        "previews_enabled": false
+      }
+    }
+  },
+  "visualReview": {
+    "source": "cfdf6a486095d9e939a29a9adba7e2e9e50f2ea4",
+    "candidateVersion": "a7e23fdd-b31c-4f73-bb38-0e8dba884f7a",
+    "reviewed": {
+      "responsiveCaptures": 24,
+      "contrastCaptures": 4,
+      "phoneDetailSheets": 2
+    },
+    "findings": "No overflow, clipped stamps, unreadable phone sections, broken artwork or runtime errors observed. Lifecycle fixture captures reviewed separately.",
+    "artifactDigestsVerified": true
+  },
+  "browserArtifacts": {
+    "35273378467": {
+      "total_count": 2,
+      "artifacts": [
+        {
+          "id": 10518763668,
+          "node_id": "MDg6QXJ0aWZhY3QxMDUxODc2MzY2OA==",
+          "name": "candidate-evidence",
+          "size_in_bytes": 1055,
+          "url": "https://api.github.com/repos/ArnavGoel03/simplegames/actions/artifacts/10518763668",
+          "archive_download_url": "https://api.github.com/repos/ArnavGoel03/simplegames/actions/artifacts/10518763668/zip",
+          "expired": false,
+          "digest": "sha256:b606d5cec85eabc557ed2b6a757e8da58fa8aac3b8a6141bcd917ff004433850",
+          "created_at": "2026-09-17T20:54:13Z",
+          "updated_at": "2026-09-17T20:54:13Z",
+          "expires_at": "2026-12-16T20:52:12Z",
+          "workflow_run": {
+            "id": 35273378467,
+            "repository_id": 1330366938,
+            "head_repository_id": 1330366938,
+            "head_branch": "release/studio-stack-20260918",
+            "head_sha": "cfdf6a486095d9e939a29a9adba7e2e9e50f2ea4"
+          }
+        },
+        {
+          "id": 10518483887,
+          "node_id": "MDg6QXJ0aWZhY3QxMDUxODQ4Mzg4Nw==",
+          "name": "visual-review",
+          "size_in_bytes": 5755473,
+          "url": "https://api.github.com/repos/ArnavGoel03/simplegames/actions/artifacts/10518483887",
+          "archive_download_url": "https://api.github.com/repos/ArnavGoel03/simplegames/actions/artifacts/10518483887/zip",
+          "expired": false,
+          "digest": "sha256:e63390a40e4440a570ad6ea8cb96a0178646a0ec67ca2f18d9e63718fa5e46a6",
+          "created_at": "2026-09-17T20:54:11Z",
+          "updated_at": "2026-09-17T20:54:11Z",
+          "expires_at": "2026-09-24T20:54:10Z",
+          "workflow_run": {
+            "id": 35273378467,
+            "repository_id": 1330366938,
+            "head_repository_id": 1330366938,
+            "head_branch": "release/studio-stack-20260918",
+            "head_sha": "cfdf6a486095d9e939a29a9adba7e2e9e50f2ea4"
+          }
+        }
+      ]
+    },
+    "35273380596": {
+      "total_count": 2,
+      "artifacts": [
+        {
+          "id": 10519664019,
+          "node_id": "MDg6QXJ0aWZhY3QxMDUxOTY2NDAxOQ==",
+          "name": "candidate-evidence",
+          "size_in_bytes": 1311,
+          "url": "https://api.github.com/repos/ArnavGoel03/simplegames/actions/artifacts/10519664019",
+          "archive_download_url": "https://api.github.com/repos/ArnavGoel03/simplegames/actions/artifacts/10519664019/zip",
+          "expired": false,
+          "digest": "sha256:5710e5f46cc0d1a5ab9d0250cf95609883a6b192ab3e47e329022d4dd1e04e96",
+          "created_at": "2026-09-17T20:54:34Z",
+          "updated_at": "2026-09-17T20:54:34Z",
+          "expires_at": "2026-12-16T20:52:13Z",
+          "workflow_run": {
+            "id": 35273380596,
+            "repository_id": 1330366938,
+            "head_repository_id": 1330366938,
+            "head_branch": "release/studio-stack-20260918",
+            "head_sha": "cfdf6a486095d9e939a29a9adba7e2e9e50f2ea4"
+          }
+        },
+        {
+          "id": 10519149477,
+          "node_id": "MDg6QXJ0aWZhY3QxMDUxOTE0OTQ3Nw==",
+          "name": "visual-review",
+          "size_in_bytes": 5629965,
+          "url": "https://api.github.com/repos/ArnavGoel03/simplegames/actions/artifacts/10519149477",
+          "archive_download_url": "https://api.github.com/repos/ArnavGoel03/simplegames/actions/artifacts/10519149477/zip",
+          "expired": false,
+          "digest": "sha256:08bf4cba5f0685ed85bc830239d0716497982c82487c1e2297bb9354c828bbb4",
+          "created_at": "2026-09-17T20:54:33Z",
+          "updated_at": "2026-09-17T20:54:33Z",
+          "expires_at": "2026-09-24T20:54:31Z",
+          "workflow_run": {
+            "id": 35273380596,
+            "repository_id": 1330366938,
+            "head_repository_id": 1330366938,
+            "head_branch": "release/studio-stack-20260918",
+            "head_sha": "cfdf6a486095d9e939a29a9adba7e2e9e50f2ea4"
+          }
+        }
+      ]
+    }
+  },
+  "legal": {
+    "proposedPatchApplied": false,
+    "currentLegalSourceEqualsPriorProduction": true
+  },
+  "dispatchCorrection": {
+    "rejectedBeforeNavigation": [
+      35273077305,
+      35273079815
+    ],
+    "reason": "SITE_FILTER is baseline-only. Corrected dispatch omitted it; candidate receipt alone selects Studio."
+  },
+  "readOnlyHeldWeb": {
+    "fevicreate": {
+      "candidate": "8ad67ffd9d17d0b26e59ffdff59b9be5f1c92124",
+      "pr": 2,
+      "hostStatus": 503,
+      "hostError": "DEPLOYMENT_PAUSED",
+      "blockers": [
+        "Browser capture/offline/scroll acceptance",
+        "Hosting restoration",
+        "Publication and live verification"
+      ]
+    },
+    "pitcrew": {
+      "candidate": "54fec2a06d888c4b2b32ec3ea0998c977f1e2576",
+      "pr": 2,
+      "hostStatus": 503,
+      "hostError": "DEPLOYMENT_PAUSED",
+      "blockers": [
+        "1600x900 and 393x852 render, scroll/network, restored scroll, reduced motion and no-WebGL acceptance",
+        "Hosting restoration",
+        "Publication and live verification"
+      ]
+    },
+    "upkeep": {
+      "candidate": "db5897aeddde85966644d19b04164f605818db30",
+      "pr": 2,
+      "hostStatus": 503,
+      "fitoutHostStatus": 503,
+      "hostError": "DEPLOYMENT_PAUSED",
+      "blockers": [
+        "Rendered desktop/phone and keyboard acceptance",
+        "Remaining catalogue/manual/spec coverage is explicitly bounded",
+        "Hosting restoration",
+        "Publication and live verification"
+      ]
+    }
+  }
+}

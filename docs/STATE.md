@@ -1,5 +1,29 @@
 # Glass Table Games: state of play
 
+## Studio 0.5.3 live, 18 September 2026
+
+Production now serves source `cfdf6a4`, immutable Worker
+`a7e23fdd-b31c-4f73-bb38-0e8dba884f7a` at 100%, publishing the already merged
+stack upgrade and privacy runtime correction. No PR was merged in this release.
+Exact candidate Chromium/WebKit runs `35273378467`/`35273380596` passed every
+release check and the unchanged startup budget, with medians 385.2/634 ms.
+Games navigation measured 45.3/139 ms; decoded initial assets were 513,005 bytes.
+The release validator accepted all required evidence and historical baselines.
+
+Local gate/build, 144 candidate HTTP assertions and 144 public assertions pass.
+Public source/version, all ten startup assets and the service worker match the
+certified bytes. Public legacy diagnostic delivery returns empty 410/no-store.
+All 28 responsive/contrast captures plus phone detail sections were reviewed.
+The provider confirmed the production traffic split and retained rollback to
+`dfa1b3d7`. Temporary previews are restored to false/false with readback.
+
+Full receipts and remaining queue:
+`docs/STUDIO-STACK-RELEASE-2026-09-18.md` and
+`docs/quality/studio-stack-release-2026-09-18.json`.
+Legal wording matches previous production; `LEGAL-APPROVAL.diff` remains
+unapplied pending owner approval. Compression PR19 remains a separate draft
+candidate. Its previous timing failure was not overridden or promoted.
+
 ## Stable stack upgrade source merged, 18 September 2026
 
 PR20 merged as `48ad444f5579d11d5dc205c513de002b6f934e27`, verified source
