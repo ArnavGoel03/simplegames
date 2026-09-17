@@ -1,0 +1,133 @@
+{
+  "checkedAt": "2026-09-17T23:23:44.903952+00:00",
+  "priorReceiptCommit": "d53ac951e7258e571e9a9c53e4a0046d5ae55581",
+  "sourceHead": "cfdf6a486095d9e939a29a9adba7e2e9e50f2ea4",
+  "candidateVersion": "a7e23fdd-b31c-4f73-bb38-0e8dba884f7a",
+  "buildOutput": "32200b6ab90d71b0a8d6d5c9196f60800a5b54b3ca36c4c34806633f1b7ffff6",
+  "htmlSha256": "49c85bb0d062f86419cb7da5dfb4241446419c02e2390ba33fa4f0f34ae4dbcd",
+  "assets": [
+    {
+      "path": "/_next/static/chunks/0cz1d0mv5g_q7.js",
+      "sha256": "0973c1d64c88adc8e3c950410cb58b288f72118d5965b78049438deb8f2f9683",
+      "matchesCertifiedBytes": true
+    },
+    {
+      "path": "/_next/static/chunks/19mx3mg6lkumu.js",
+      "sha256": "170f3982866674a829571beec30cc23c69fcd36196739ff34b9d586b3ad73cd7",
+      "matchesCertifiedBytes": true
+    },
+    {
+      "path": "/_next/static/chunks/19uz82_42frvi.js",
+      "sha256": "fc65f1bbd2056c68da6eb95879de60d13e8612a9d93fb09e95cbdd55b3c6699d",
+      "matchesCertifiedBytes": true
+    },
+    {
+      "path": "/_next/static/chunks/2a1jwyyjjm6km.js",
+      "sha256": "f77e50c38ccd8c9a5fd9bb39bee11ef8fe1ee9ba1bacecd9af0135f0e1ca2c0a",
+      "matchesCertifiedBytes": true
+    },
+    {
+      "path": "/_next/static/chunks/3_kk1jv_49nf9.js",
+      "sha256": "b9c9783ba69be72698724be950c47db33f00b4d561f98d91137cc83b5312e785",
+      "matchesCertifiedBytes": true
+    },
+    {
+      "path": "/_next/static/chunks/3fntmmi971322.js",
+      "sha256": "34ed6abf4c6d0d1bb3dc56d3f133d2a5dbc3a3c89c791deab314e27143ac14ce",
+      "matchesCertifiedBytes": true
+    },
+    {
+      "path": "/_next/static/chunks/3g1x_ier6ps-s.css",
+      "sha256": "acb9ba56602301b7ce3bf924bd359914b51d8e4297b02312dc71e74ef85a93a1",
+      "matchesCertifiedBytes": true
+    },
+    {
+      "path": "/_next/static/chunks/3kmozkq6tgqnz.js",
+      "sha256": "5041f52530a4c19c096ff1fd24f890f17301ade46cf0b21a3a4f5b20d024eca4",
+      "matchesCertifiedBytes": true
+    },
+    {
+      "path": "/_next/static/chunks/3s6nzrbk-8mnv.js",
+      "sha256": "1d36f2e3f57740f75eb021aaec1208d7e938130e36c106a9f28678e4a98559b0",
+      "matchesCertifiedBytes": true
+    },
+    {
+      "path": "/_next/static/chunks/turbopack-0eqy1r-un1hsb.js",
+      "sha256": "d94fb89f02e5855a922fa94552c213e3e682d2971ff421c1ac789c467757fdc5",
+      "matchesCertifiedBytes": true
+    },
+    {
+      "path": "/sw.js",
+      "sha256": "2a5a97c6231b0e914c4ef8ce9b2652706f9f5bc335ad31ddabbd3ce399d5e001",
+      "matchesCertifiedBytes": true
+    }
+  ],
+  "ciArtifacts": [
+    {
+      "runId": 35273378467,
+      "artifactId": 10518763668,
+      "digest": "sha256:b606d5cec85eabc557ed2b6a757e8da58fa8aac3b8a6141bcd917ff004433850",
+      "reportsMatch": true
+    },
+    {
+      "runId": 35273380596,
+      "artifactId": 10519664019,
+      "digest": "sha256:5710e5f46cc0d1a5ab9d0250cf95609883a6b192ab3e47e329022d4dd1e04e96",
+      "reportsMatch": true
+    }
+  ],
+  "unusedCandidate": {
+    "schema": 1,
+    "kind": "candidate",
+    "site": "studio",
+    "worker": "glasstablegames",
+    "sourceHead": "c51dfd707cdbe72029c0fe4bf24b9e38a643aded",
+    "sourceFingerprint": "1c141a651dd2d2b9e27e0f13f81eec45be46014d00d86839c0135c748aa64b08",
+    "buildSource": "7f0f84d239fc7602b1932c45952d176c40da175d9dc4e28e74069ca272b95bbf",
+    "buildOutput": "682aef7d32152afa6170e2bfec7b7b37878258ffb38ab3edf4120c388b1df9c9",
+    "candidateVersion": "5bcdf95a-32d9-47fd-a6ad-1ed0a5e86b3c",
+    "origin": "https://5bcdf95a-glasstablegames.goelhome.workers.dev",
+    "recordedAt": "2026-09-17T23:19:41.685Z",
+    "upload": {
+      "command": [
+        "wrangler",
+        "versions",
+        "upload"
+      ],
+      "startedAt": "2026-09-17T23:19:26.758Z",
+      "durationMs": 14858,
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "logDigest": "97ae4c1765a4aacd66b61dce81ad7064ed67b3e896da8d09af200620c588ca04"
+    }
+  },
+  "previewRestoration": {
+    "settings": {
+      "enabled": false,
+      "previews_enabled": false
+    },
+    "at": "2026-09-17T23:22:11.270853+00:00"
+  },
+  "policyAndCandidateDigestsVerified": true,
+  "actualBuildOutputVerified": true,
+  "legalPatchRemainsUnapplied": true,
+  "productionUnchanged": {
+    "id": "56b15abd-d938-4d9e-a532-56cab0a2847f",
+    "source": "wrangler",
+    "strategy": "percentage",
+    "author_email": "a2goel@ucsd.edu",
+    "annotations": {
+      "workers/message": "",
+      "workers/triggered_by": "deployment"
+    },
+    "versions": [
+      {
+        "version_id": "a7e23fdd-b31c-4f73-bb38-0e8dba884f7a",
+        "percentage": 100
+      }
+    ],
+    "created_on": "2026-09-17T20:57:49.194209Z"
+  },
+  "completedAt": "2026-09-17T23:24:33.032199+00:00"
+}

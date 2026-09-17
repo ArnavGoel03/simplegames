@@ -1,5 +1,11 @@
 # Stable stack source verification, 18 September 2026
 
+This source-only receipt is superseded by the qualified, live Studio 0.5.3
+release in [STUDIO-STACK-RELEASE-2026-09-18.md](STUDIO-STACK-RELEASE-2026-09-18.md).
+Fresh provider/source/asset and authenticated CI artifact readback confirms that
+release. See STATE.md and `evidence/stack-upgrade-2026-09-18/reconciliation.json`.
+The proposed legal wording remains unapplied; it was not part of the release.
+
 Verified source `c51dfd707cdbe72029c0fe4bf24b9e38a643aded`, merged in PR20
 as `48ad444f5579d11d5dc205c513de002b6f934e27`.
 

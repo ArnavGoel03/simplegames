@@ -1,5 +1,29 @@
 # Glass Table Games: state of play
 
+## Fresh release reconciliation, 18 September 2026
+
+The Studio stack release below is already valid and live. Fresh provider readback
+still shows `a7e23fdd-b31c-4f73-bb38-0e8dba884f7a` at 100%, source `cfdf6a4`.
+Current public HTML, all ten startup JS/CSS assets and the service worker match
+the certified release bytes. Both authenticated candidate-evidence archives
+match their GitHub digests and retained reports; the unchanged 750ms/400ms/640KiB
+limits pass. The earlier source-only upgrade hold is superseded by this release.
+
+Canonical full release records were already pushed in `d53ac95` on
+`release/studio-stack-20260918`, with its retained build at
+`~/dev/gtg-studio-stack-release`. This worktree now includes those records.
+Read `STUDIO-STACK-RELEASE-2026-09-18.md` before scheduling another qualification.
+The proposed legal patch still awaits approval; existing legal source is unchanged
+from prior production. No proposed wording was applied during reconciliation.
+
+Before discovering the newer release checkout, one redundant unused version
+`5bcdf95a-32d9-47fd-a6ad-1ed0a5e86b3c` was uploaded from `c51dfd7` after its
+certified gate/build checks. It was not promoted. No new browser run or timing
+sample was dispatched. Only our temporary preview change was restored, with
+`enabled=false, previews_enabled=false` read back. Production traffic is unchanged.
+Fresh evidence: `docs/evidence/stack-upgrade-2026-09-18/reconciliation.json`.
+
+
 ## Studio 0.5.3 live, 18 September 2026
 
 Production now serves source `cfdf6a4`, immutable Worker
