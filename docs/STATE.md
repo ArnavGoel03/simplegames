@@ -1,5 +1,21 @@
 # Glass Table Games: state of play
 
+## 18 September 2026: existing startup captures inspected, no retry
+
+Offline diagnosis of all six cold samples found initial request-to-frame-commit
+intervals of 522/206/811 ms in Chromium and 111/368/573 ms in WebKit. These are
+harness arrival observations, not browser TTFB. App readiness also takes
+148-252 ms after DOM readiness in Chromium and 274-317 ms in WebKit. All static
+responses succeed; no recovery timeout lies on the observed readiness path.
+The existing traces lack provider, connection and CPU/frame attribution, so no
+actionable source defect or safe delivery fix was established. No code change,
+timing retry, CI dispatch, preview setting change or promotion followed.
+
+Evidence, limits and the remaining queue are in
+`docs/STUDIO-STARTUP-DIAGNOSIS-2026-09-18.md` and its companion JSON. Draft PR19
+and the unchanged 750 ms startup acceptance remain held; legal copy still needs
+owner approval. Existing compression and functional results below stand.
+
 ## 18 September 2026: compression mirror verified, promotion still held
 
 Draft PR19, source `a82c11f`, mirrors released Circuit's HTML policy byte for

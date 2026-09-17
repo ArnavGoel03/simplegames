@@ -1,0 +1,653 @@
+{
+  "candidateSource": "a82c11f07c0f34d8fab29ad64b3e22429703c53f",
+  "candidateVersion": "a444d357-3f5e-4b5d-bbf6-b09683bcd492",
+  "method": "Offline analysis of existing successful functional browser runs; no new navigation or timing run. Browser performance timestamps and harness wall-clock intervals remain separate.",
+  "startupLimitMs": 750,
+  "engines": {
+    "chromium": {
+      "run": 35265744862,
+      "artifactId": 10516208706,
+      "runUrl": "https://github.com/ArnavGoel03/simplegames/actions/runs/35265744862",
+      "archiveSha256": "719927b260f90b7aac20cefb7a19a98eb1e44f1c29b70214ee0a5aa817cdee5b",
+      "extractedFilesSha256": {
+        "performance.json": "d53b4a636f9613e17253a7e36e661bdb7eb8c22f1adf17e672cb762a2f1879d2",
+        "network-trace.json": "28d22aaa9118b4fac0938ff899a1757cf7d2d8ff9f8aaa5119084c63ab35fcc4",
+        "report.json": "634cc65cb63ee8c90b5006b5b807c5fecdd0074a1b5f864f9ca8dd09530d981d"
+      },
+      "samples": [
+        {
+          "index": 0,
+          "browser": {
+            "startupMs": 812.5,
+            "observedMs": 837.5,
+            "driverDelayMs": 25,
+            "domReadyMs": 616.1999999999971,
+            "appReadyMs": 796.1000000000058,
+            "lcpMs": 748,
+            "decodedJsBytes": 484438,
+            "decodedCssBytes": 27023,
+            "resources": 9,
+            "stylesReady": true
+          },
+          "browserDerived": {
+            "domToAppReadyMs": 179.9,
+            "appReadyToStartupMs": 16.4
+          },
+          "harness": {
+            "navigationRequestToFirstCommitMs": 522,
+            "staticResponseHeaders": [
+              {
+                "afterNavigationRequestMs": 592,
+                "asset": "03fc1b4a8d284b5e-s.p.0wiir8udbzjvx.woff2",
+                "status": 200,
+                "ray": "a3ca8f9f1e8ff497-SJC"
+              },
+              {
+                "afterNavigationRequestMs": 610,
+                "asset": "3g1x_ier6ps-s.css",
+                "status": 200,
+                "ray": "a3ca8f9f2eaff497-SJC"
+              },
+              {
+                "afterNavigationRequestMs": 636,
+                "asset": "99e609270109b47d-s.p.40sczeszzbjw1.woff2",
+                "status": 200,
+                "ray": "a3ca8f9f2ea2f497-SJC"
+              },
+              {
+                "afterNavigationRequestMs": 639,
+                "asset": "54fc36028e2bb174-s.p.20jfceqj9zyw9.woff2",
+                "status": 200,
+                "ray": "a3ca8f9f1e9df497-SJC"
+              },
+              {
+                "afterNavigationRequestMs": 674,
+                "asset": "3s6nzrbk-8mnv.js",
+                "status": 200,
+                "ray": "a3ca8f9f2ebaf497-SJC"
+              },
+              {
+                "afterNavigationRequestMs": 674,
+                "asset": "19mx3mg6lkumu.js",
+                "status": 200,
+                "ray": "a3ca8f9f2ebbf497-SJC"
+              },
+              {
+                "afterNavigationRequestMs": 675,
+                "asset": "4561u0v7ysn3r.js",
+                "status": 200,
+                "ray": "a3ca8f9f2ebff497-SJC"
+              },
+              {
+                "afterNavigationRequestMs": 705,
+                "asset": "turbopack-0tl7se3am2sxo.js",
+                "status": 200,
+                "ray": "a3ca8f9f2ec5f497-SJC"
+              },
+              {
+                "afterNavigationRequestMs": 706,
+                "asset": "2a1jwyyjjm6km.js",
+                "status": 200,
+                "ray": "a3ca8f9f3ee1f497-SJC"
+              },
+              {
+                "afterNavigationRequestMs": 706,
+                "asset": "3fntmmi971322.js",
+                "status": 200,
+                "ray": "a3ca8f9f3ee5f497-SJC"
+              },
+              {
+                "afterNavigationRequestMs": 706,
+                "asset": "19uz82_42frvi.js",
+                "status": 200,
+                "ray": "a3ca8f9f3ee4f497-SJC"
+              },
+              {
+                "afterNavigationRequestMs": 706,
+                "asset": "2p643dit48_iz.js",
+                "status": 200,
+                "ray": "a3ca8f9f2ec1f497-SJC"
+              }
+            ]
+          },
+          "errors": [],
+          "failed": [],
+          "verdict": {
+            "failures": [],
+            "classified": [],
+            "passed": true
+          }
+        },
+        {
+          "index": 1,
+          "browser": {
+            "startupMs": 520.3999999999942,
+            "observedMs": 543.5,
+            "driverDelayMs": 23.10000000000582,
+            "domReadyMs": 353.6999999999971,
+            "appReadyMs": 501.3999999999942,
+            "lcpMs": 468,
+            "decodedJsBytes": 484438,
+            "decodedCssBytes": 27023,
+            "resources": 9,
+            "stylesReady": true
+          },
+          "browserDerived": {
+            "domToAppReadyMs": 147.7,
+            "appReadyToStartupMs": 19.0
+          },
+          "harness": {
+            "navigationRequestToFirstCommitMs": 206,
+            "staticResponseHeaders": [
+              {
+                "afterNavigationRequestMs": 349,
+                "asset": "03fc1b4a8d284b5e-s.p.0wiir8udbzjvx.woff2",
+                "status": 200,
+                "ray": "a3ca8fa39b09679e-SJC"
+              },
+              {
+                "afterNavigationRequestMs": 351,
+                "asset": "3g1x_ier6ps-s.css",
+                "status": 200,
+                "ray": "a3ca8fa39b08679e-SJC"
+              },
+              {
+                "afterNavigationRequestMs": 366,
+                "asset": "3s6nzrbk-8mnv.js",
+                "status": 200,
+                "ray": "a3ca8fa3ab13679e-SJC"
+              },
+              {
+                "afterNavigationRequestMs": 408,
+                "asset": "99e609270109b47d-s.p.40sczeszzbjw1.woff2",
+                "status": 200,
+                "ray": "a3ca8fa39b0e679e-SJC"
+              },
+              {
+                "afterNavigationRequestMs": 409,
+                "asset": "54fc36028e2bb174-s.p.20jfceqj9zyw9.woff2",
+                "status": 200,
+                "ray": "a3ca8fa39b0c679e-SJC"
+              },
+              {
+                "afterNavigationRequestMs": 410,
+                "asset": "19uz82_42frvi.js",
+                "status": 200,
+                "ray": "a3ca8fa3bb41679e-SJC"
+              },
+              {
+                "afterNavigationRequestMs": 411,
+                "asset": "3fntmmi971322.js",
+                "status": 200,
+                "ray": "a3ca8fa3bb46679e-SJC"
+              },
+              {
+                "afterNavigationRequestMs": 412,
+                "asset": "4561u0v7ysn3r.js",
+                "status": 200,
+                "ray": "a3ca8fa3ab19679e-SJC"
+              },
+              {
+                "afterNavigationRequestMs": 412,
+                "asset": "19mx3mg6lkumu.js",
+                "status": 200,
+                "ray": "a3ca8fa3ab16679e-SJC"
+              },
+              {
+                "afterNavigationRequestMs": 412,
+                "asset": "2a1jwyyjjm6km.js",
+                "status": 200,
+                "ray": "a3ca8fa3ab1f679e-SJC"
+              },
+              {
+                "afterNavigationRequestMs": 413,
+                "asset": "turbopack-0tl7se3am2sxo.js",
+                "status": 200,
+                "ray": "a3ca8fa3ab1d679e-SJC"
+              },
+              {
+                "afterNavigationRequestMs": 413,
+                "asset": "2p643dit48_iz.js",
+                "status": 200,
+                "ray": "a3ca8fa3ab1a679e-SJC"
+              }
+            ]
+          },
+          "errors": [],
+          "failed": [],
+          "verdict": {
+            "failures": [],
+            "classified": [],
+            "passed": true
+          }
+        },
+        {
+          "index": 2,
+          "browser": {
+            "startupMs": 1370.1000000000058,
+            "observedMs": 1390.699999999997,
+            "driverDelayMs": 20.59999999999127,
+            "domReadyMs": 1087.699999999997,
+            "appReadyMs": 1339.4000000000087,
+            "lcpMs": 1248,
+            "decodedJsBytes": 484438,
+            "decodedCssBytes": 27023,
+            "resources": 9,
+            "stylesReady": true
+          },
+          "browserDerived": {
+            "domToAppReadyMs": 251.7,
+            "appReadyToStartupMs": 30.7
+          },
+          "harness": {
+            "navigationRequestToFirstCommitMs": 811,
+            "staticResponseHeaders": [
+              {
+                "afterNavigationRequestMs": 1083,
+                "asset": "3g1x_ier6ps-s.css",
+                "status": 200,
+                "ray": "a3ca8fac0b8f2ea9-LAX"
+              },
+              {
+                "afterNavigationRequestMs": 1131,
+                "asset": "19uz82_42frvi.js",
+                "status": 200,
+                "ray": "a3ca8fac1ba82ea9-LAX"
+              },
+              {
+                "afterNavigationRequestMs": 1152,
+                "asset": "3s6nzrbk-8mnv.js",
+                "status": 200,
+                "ray": "a3ca8fac0b9d2ea9-LAX"
+              },
+              {
+                "afterNavigationRequestMs": 1160,
+                "asset": "54fc36028e2bb174-s.p.20jfceqj9zyw9.woff2",
+                "status": 200,
+                "ray": "a3ca8fac0b982ea9-LAX"
+              },
+              {
+                "afterNavigationRequestMs": 1179,
+                "asset": "2p643dit48_iz.js",
+                "status": 200,
+                "ray": "a3ca8fac0ba02ea9-LAX"
+              },
+              {
+                "afterNavigationRequestMs": 1203,
+                "asset": "03fc1b4a8d284b5e-s.p.0wiir8udbzjvx.woff2",
+                "status": 200,
+                "ray": "a3ca8fac0b942ea9-LAX"
+              },
+              {
+                "afterNavigationRequestMs": 1224,
+                "asset": "99e609270109b47d-s.p.40sczeszzbjw1.woff2",
+                "status": 200,
+                "ray": "a3ca8fac0b9a2ea9-LAX"
+              },
+              {
+                "afterNavigationRequestMs": 1224,
+                "asset": "turbopack-0tl7se3am2sxo.js",
+                "status": 200,
+                "ray": "a3ca8fac0ba12ea9-LAX"
+              },
+              {
+                "afterNavigationRequestMs": 1224,
+                "asset": "3fntmmi971322.js",
+                "status": 200,
+                "ray": "a3ca8fac1baa2ea9-LAX"
+              },
+              {
+                "afterNavigationRequestMs": 1224,
+                "asset": "19mx3mg6lkumu.js",
+                "status": 200,
+                "ray": "a3ca8fac0b9e2ea9-LAX"
+              },
+              {
+                "afterNavigationRequestMs": 1224,
+                "asset": "4561u0v7ysn3r.js",
+                "status": 200,
+                "ray": "a3ca8fac0b9f2ea9-LAX"
+              },
+              {
+                "afterNavigationRequestMs": 1224,
+                "asset": "2a1jwyyjjm6km.js",
+                "status": 200,
+                "ray": "a3ca8fac1ba62ea9-LAX"
+              }
+            ]
+          },
+          "errors": [],
+          "failed": [],
+          "verdict": {
+            "failures": [],
+            "classified": [],
+            "passed": true
+          }
+        }
+      ]
+    },
+    "webkit": {
+      "run": 35265744554,
+      "artifactId": 10516078815,
+      "runUrl": "https://github.com/ArnavGoel03/simplegames/actions/runs/35265744554",
+      "archiveSha256": "d2c9dfff76e6815b7df002e7f15054dc9890b97be251e30701db8030dc4a0605",
+      "extractedFilesSha256": {
+        "performance.json": "e843325cb1838ec6f0f099b853f71f70ce807f0c363cc2bb63d220e0927b674f",
+        "network-trace.json": "76d039e97a5ce614fd7e16fc0847cb9faa6404fbbcafc6a329aaa6212b91db91",
+        "report.json": "634cc65cb63ee8c90b5006b5b807c5fecdd0074a1b5f864f9ca8dd09530d981d"
+      },
+      "samples": [
+        {
+          "index": 0,
+          "browser": {
+            "startupMs": 683,
+            "observedMs": 714,
+            "driverDelayMs": 31,
+            "domReadyMs": 209,
+            "appReadyMs": 501,
+            "lcpMs": 576.0000000000001,
+            "decodedJsBytes": 484438,
+            "decodedCssBytes": 27023,
+            "resources": 9,
+            "stylesReady": true
+          },
+          "browserDerived": {
+            "domToAppReadyMs": 292,
+            "appReadyToStartupMs": 182
+          },
+          "harness": {
+            "navigationRequestToFirstCommitMs": 111,
+            "staticResponseHeaders": [
+              {
+                "afterNavigationRequestMs": 187,
+                "asset": "03fc1b4a8d284b5e-s.p.0wiir8udbzjvx.woff2",
+                "status": 200,
+                "ray": "a3ca905e188224ca-IAD"
+              },
+              {
+                "afterNavigationRequestMs": 193,
+                "asset": "19uz82_42frvi.js",
+                "status": 200,
+                "ray": "a3ca905e28ac24ca-IAD"
+              },
+              {
+                "afterNavigationRequestMs": 198,
+                "asset": "turbopack-0tl7se3am2sxo.js",
+                "status": 200,
+                "ray": "a3ca905e28a524ca-IAD"
+              },
+              {
+                "afterNavigationRequestMs": 201,
+                "asset": "3g1x_ier6ps-s.css",
+                "status": 200,
+                "ray": "a3ca905e188824ca-IAD"
+              },
+              {
+                "afterNavigationRequestMs": 202,
+                "asset": "99e609270109b47d-s.p.40sczeszzbjw1.woff2",
+                "status": 200,
+                "ray": "a3ca905e188f24ca-IAD"
+              },
+              {
+                "afterNavigationRequestMs": 286,
+                "asset": "54fc36028e2bb174-s.p.20jfceqj9zyw9.woff2",
+                "status": 200,
+                "ray": "a3ca905e188b24ca-IAD"
+              },
+              {
+                "afterNavigationRequestMs": 293,
+                "asset": "3s6nzrbk-8mnv.js",
+                "status": 200,
+                "ray": "a3ca905e289324ca-IAD"
+              },
+              {
+                "afterNavigationRequestMs": 294,
+                "asset": "2p643dit48_iz.js",
+                "status": 200,
+                "ray": "a3ca905e28a424ca-IAD"
+              },
+              {
+                "afterNavigationRequestMs": 295,
+                "asset": "19mx3mg6lkumu.js",
+                "status": 200,
+                "ray": "a3ca905e289624ca-IAD"
+              },
+              {
+                "afterNavigationRequestMs": 296,
+                "asset": "3fntmmi971322.js",
+                "status": 200,
+                "ray": "a3ca905e28b124ca-IAD"
+              },
+              {
+                "afterNavigationRequestMs": 296,
+                "asset": "2a1jwyyjjm6km.js",
+                "status": 200,
+                "ray": "a3ca905e28a924ca-IAD"
+              },
+              {
+                "afterNavigationRequestMs": 298,
+                "asset": "4561u0v7ysn3r.js",
+                "status": 200,
+                "ray": "a3ca905e289f24ca-IAD"
+              }
+            ]
+          },
+          "errors": [],
+          "failed": [],
+          "verdict": {
+            "failures": [],
+            "classified": [],
+            "passed": true
+          }
+        },
+        {
+          "index": 1,
+          "browser": {
+            "startupMs": 934,
+            "observedMs": 961,
+            "driverDelayMs": 27,
+            "domReadyMs": 476,
+            "appReadyMs": 793,
+            "lcpMs": 868,
+            "decodedJsBytes": 484438,
+            "decodedCssBytes": 27023,
+            "resources": 9,
+            "stylesReady": true
+          },
+          "browserDerived": {
+            "domToAppReadyMs": 317,
+            "appReadyToStartupMs": 141
+          },
+          "harness": {
+            "navigationRequestToFirstCommitMs": 368,
+            "staticResponseHeaders": [
+              {
+                "afterNavigationRequestMs": 456,
+                "asset": "03fc1b4a8d284b5e-s.p.0wiir8udbzjvx.woff2",
+                "status": 200,
+                "ray": "a3ca906708a3e5c3-IAD"
+              },
+              {
+                "afterNavigationRequestMs": 461,
+                "asset": "3s6nzrbk-8mnv.js",
+                "status": 200,
+                "ray": "a3ca906708b8e5c3-IAD"
+              },
+              {
+                "afterNavigationRequestMs": 465,
+                "asset": "3g1x_ier6ps-s.css",
+                "status": 200,
+                "ray": "a3ca906708b1e5c3-IAD"
+              },
+              {
+                "afterNavigationRequestMs": 468,
+                "asset": "19uz82_42frvi.js",
+                "status": 200,
+                "ray": "a3ca906708d3e5c3-IAD"
+              },
+              {
+                "afterNavigationRequestMs": 469,
+                "asset": "3fntmmi971322.js",
+                "status": 200,
+                "ray": "a3ca906708d9e5c3-IAD"
+              },
+              {
+                "afterNavigationRequestMs": 575,
+                "asset": "2a1jwyyjjm6km.js",
+                "status": 200,
+                "ray": "a3ca906708cfe5c3-IAD"
+              },
+              {
+                "afterNavigationRequestMs": 576,
+                "asset": "99e609270109b47d-s.p.40sczeszzbjw1.woff2",
+                "status": 200,
+                "ray": "a3ca906708b5e5c3-IAD"
+              },
+              {
+                "afterNavigationRequestMs": 578,
+                "asset": "19mx3mg6lkumu.js",
+                "status": 200,
+                "ray": "a3ca906708bce5c3-IAD"
+              },
+              {
+                "afterNavigationRequestMs": 579,
+                "asset": "4561u0v7ysn3r.js",
+                "status": 200,
+                "ray": "a3ca906708c2e5c3-IAD"
+              },
+              {
+                "afterNavigationRequestMs": 580,
+                "asset": "2p643dit48_iz.js",
+                "status": 200,
+                "ray": "a3ca906708c8e5c3-IAD"
+              },
+              {
+                "afterNavigationRequestMs": 580,
+                "asset": "turbopack-0tl7se3am2sxo.js",
+                "status": 200,
+                "ray": "a3ca906708cce5c3-IAD"
+              },
+              {
+                "afterNavigationRequestMs": 583,
+                "asset": "54fc36028e2bb174-s.p.20jfceqj9zyw9.woff2",
+                "status": 200,
+                "ray": "a3ca906708a9e5c3-IAD"
+              }
+            ]
+          },
+          "errors": [],
+          "failed": [],
+          "verdict": {
+            "failures": [],
+            "classified": [],
+            "passed": true
+          }
+        },
+        {
+          "index": 2,
+          "browser": {
+            "startupMs": 1107,
+            "observedMs": 1172,
+            "driverDelayMs": 65,
+            "domReadyMs": 736,
+            "appReadyMs": 1010,
+            "lcpMs": 1104,
+            "decodedJsBytes": 484438,
+            "decodedCssBytes": 27023,
+            "resources": 9,
+            "stylesReady": true
+          },
+          "browserDerived": {
+            "domToAppReadyMs": 274,
+            "appReadyToStartupMs": 97
+          },
+          "harness": {
+            "navigationRequestToFirstCommitMs": 573,
+            "staticResponseHeaders": [
+              {
+                "afterNavigationRequestMs": 717,
+                "asset": "03fc1b4a8d284b5e-s.p.0wiir8udbzjvx.woff2",
+                "status": 200,
+                "ray": "a3ca90710f401fec-IAD"
+              },
+              {
+                "afterNavigationRequestMs": 719,
+                "asset": "3g1x_ier6ps-s.css",
+                "status": 200,
+                "ray": "a3ca90711f461fec-IAD"
+              },
+              {
+                "afterNavigationRequestMs": 723,
+                "asset": "54fc36028e2bb174-s.p.20jfceqj9zyw9.woff2",
+                "status": 200,
+                "ray": "a3ca90710f431fec-IAD"
+              },
+              {
+                "afterNavigationRequestMs": 724,
+                "asset": "3s6nzrbk-8mnv.js",
+                "status": 200,
+                "ray": "a3ca90711f4b1fec-IAD"
+              },
+              {
+                "afterNavigationRequestMs": 725,
+                "asset": "19uz82_42frvi.js",
+                "status": 200,
+                "ray": "a3ca90711f551fec-IAD"
+              },
+              {
+                "afterNavigationRequestMs": 834,
+                "asset": "99e609270109b47d-s.p.40sczeszzbjw1.woff2",
+                "status": 200,
+                "ray": "a3ca90711f481fec-IAD"
+              },
+              {
+                "afterNavigationRequestMs": 837,
+                "asset": "turbopack-0tl7se3am2sxo.js",
+                "status": 200,
+                "ray": "a3ca90711f531fec-IAD"
+              },
+              {
+                "afterNavigationRequestMs": 837,
+                "asset": "19mx3mg6lkumu.js",
+                "status": 200,
+                "ray": "a3ca90711f4c1fec-IAD"
+              },
+              {
+                "afterNavigationRequestMs": 837,
+                "asset": "3fntmmi971322.js",
+                "status": 200,
+                "ray": "a3ca90711f571fec-IAD"
+              },
+              {
+                "afterNavigationRequestMs": 838,
+                "asset": "2a1jwyyjjm6km.js",
+                "status": 200,
+                "ray": "a3ca90711f541fec-IAD"
+              },
+              {
+                "afterNavigationRequestMs": 839,
+                "asset": "2p643dit48_iz.js",
+                "status": 200,
+                "ray": "a3ca90711f521fec-IAD"
+              },
+              {
+                "afterNavigationRequestMs": 841,
+                "asset": "4561u0v7ysn3r.js",
+                "status": 200,
+                "ray": "a3ca90711f4f1fec-IAD"
+              }
+            ]
+          },
+          "errors": [],
+          "failed": [],
+          "verdict": {
+            "failures": [],
+            "classified": [],
+            "passed": true
+          }
+        }
+      ]
+    }
+  },
+  "conclusion": "Startup acceptance remains failed. Document-arrival variability is observed, but the captures do not establish its transport/provider cause or an actionable source defect. No application, delivery, budget, preview setting, or production changes."
+}
