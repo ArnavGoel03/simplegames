@@ -1,18 +1,36 @@
-## 17 September 2026: studio privacy audit repair in progress
-
-The deployed source `bdd9c16` was verified by live HTTP and contained automatic
-studio diagnostics. PR16 is now merged into main as `bef637a`. Candidate0.5.3
-removes studio reporting, retires the delivery endpoint, clears its legacy local
-queue, and restores the existing Prize Wheel CI probe. Shared recovery remains
-unchanged. No production promotion is claimed at this checkpoint.
-
-See [audit dispositions](AUDIT-REPAIRS-2026-09-17.md) and the exact pending
-[policy replacements](PROPOSED-COPY-2026-09-13.md#17-september-audit-corrections-for-approval).
-The policy changes require wording approval; false historical claims have not
-been restored. Full gates, current candidate browser receipts, build and live
-verification remain in progress. Existing untracked harness files were preserved.
-
 # Glass Table Games: state of play
+
+## 17 September 2026: privacy fix merged, deployment held by WebKit timing
+
+Production remains **0.5.2**, source `bdd9c16`, Worker
+`dfa1b3d7-5f8d-4d08-9d72-2aeca9eed578`. Live HTTP confirmed its automatic
+reporter. PR16 is merged as `bef637a`, resolving the live-only branch hazard.
+PR17 is merged as `091df71`; application candidate0.5.3 is source `63a9c5f`,
+Worker `143a7877-805b-479b-a8e9-e39392e0f896`.
+
+The candidate removes automatic studio diagnostics, rejects legacy POST delivery
+without reading or forwarding it, deletes the legacy local queue when accessible,
+and restores the existing Prize Wheel CI probe. Shared recovery is unchanged.
+All 167 application tests, 33 release tests, typecheck/lint/toolchain and the clean
+Cloudflare build passed. Both browsers passed functional checks. The candidate
+passed 144 HTTP assertions and eleven exact worker/startup-asset comparisons with
+calibrated mutation controls.
+
+**Not promoted:** WebKit startup medians were 1001 ms, then 840 ms, exceeding the
+unchanged 750 ms release limit. A fresh unchanged live baseline measured 754 ms.
+No regression-free performance claim or budget waiver was made. The release
+validator refused both receipts. Further paired performance diagnosis is needed;
+do not keep rerunning until a passing sample appears. Temporary preview access
+was restored to the original disabled settings, confirmed by provider readback.
+
+The complete unapplied [legal patch](LEGAL-APPROVAL.diff) covers Privacy, Cookies,
+Terms and their dates/summaries. Apply-check and proposed TSX syntax/lint checks
+pass. Public wording remains pending owner approval. See the detailed
+[audit dispositions and evidence](AUDIT-REPAIRS-2026-09-17.md).
+
+The existing `gtg-studio-design` worktree retains source63a9c5f and matching ignored
+build/gate/candidate receipts for follow-up; these documentation updates remain
+unstaged there. Unrelated untracked harness files were preserved.
 
 ## Shared glass material live, 15 September 2026
 

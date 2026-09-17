@@ -31,8 +31,59 @@ lifecycle/cache tests remain in place. Generated audit worktrees are excluded
 from compiler, lint and test discovery after an old nested checkout was found
 being executed as part of this release's tests.
 
-Local toolchain/typecheck/lint and 33 release-engine tests passed. The 12
-focused privacy and worker tests passed. Full gate, production build, candidate
-browser evidence and live promotion are still pending in this checkpoint.
+The complete certified gate at `63a9c5f` passed 167 application tests and 33
+release-engine tests, plus toolchain/typecheck/lint. The 900 ms typecheck budget
+was unchanged. The 12 focused privacy and worker tests are included. A prior
+contended run exceeded the idle limit and was not certified. Verbose test
+progress keeps the existing bounded integration fixtures observable. Production
+build, candidate browser evidence and live promotion are pending.
 No local browser result is claimed. CI browser receipts remain a required
 promotion gate.
+
+## Candidate browser checkpoint
+
+Candidate `143a7877-805b-479b-a8e9-e39392e0f896` is built from `63a9c5f`.
+The clean production build and all 144 preview HTTP checks passed. Ten startup
+assets and the service worker matched the certified bytes, with same-length
+mutation controls rejected. PR17 is merged as `091df71`.
+
+Chromium run35252436359 and WebKit run35252439698 passed functional checks,
+including responsive, startup recovery, network, offline and update checks.
+The release validator nevertheless refused promotion: WebKit startup samples
+1136/1001/964 ms exceeded the unchanged 750 ms median limit. A fresh unchanged
+live baseline at `bdd9c16` (run35253516416, artifact10512361474) measured
+1186/601/754 ms and also exceeded that limit. Chromium candidate median was
+563 ms. This is not a no-regression claim; an additional bounded unchanged
+WebKit candidate run is in progress, with failed measurements retained.
+
+Preview access was initially disabled by the prior release. The first candidate
+browser attempt therefore received Cloudflare1042/404 and was not usable
+evidence. Access was temporarily enabled for the studio Worker, retaining the
+disabled workers.dev base route. It must be restored after promotion or pause.
+
+## Final bounded result
+
+The further unchanged-candidate WebKit run passed functionally but measured
+789/1049/840 ms, still above the 750 ms median limit. Artifact10512237368 from
+run35252439698 is retained in local preview-check evidence. The release validator
+rejected promotion again. No further blind reruns or budget changes were made.
+Production remains0.5.2/bdd9c16. The privacy fix is merged, not live.
+
+Provider readback confirms temporary studio preview access restored to
+`enabled=false, previews_enabled=false`. Restoration receipt:
+`.audit/quality/preview-settings/studio-143a7877-restored.json`. The candidate is
+immutable and can be investigated after explicitly reopening its preview.
+
+Chromium PR run35251838079 passed twelve responsive captures and three startup
+controls; its 390px light and 1440px dark screenshots were directly inspected.
+The exact candidate's two-engine functional checks passed separately. Candidate
+screenshot archive downloads hit their bounded timeout, so no separate manual
+inspection of those latest image files is claimed.
+
+Remaining technical work: a controlled WebKit performance comparison and a
+passing unchanged-policy release receipt, then promotion and fresh live checks.
+The existing same-run `tools/probe-performance.mjs` needs its service-worker
+capability isolation brought into line with the canonical release harness before
+its old-live diagnostic-report side effect is used as a timing control. Remaining
+owner work: approve `LEGAL-APPROVAL.diff`; mailbox ownership and jurisdiction
+remain unverified, with no invented promises.

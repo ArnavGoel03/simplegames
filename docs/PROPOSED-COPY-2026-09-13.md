@@ -1,5 +1,13 @@
 # Proposed corrections to published studio claims
 
+For the current minimal Privacy/Cookies/Terms review, use the complete unapplied
+[LEGAL-APPROVAL.diff](LEGAL-APPROVAL.diff), including the canonical dates and
+summaries. It supersedes conflicting instructions below. The patch passes
+`git apply --check`; all three proposed TSX pages pass syntax and lint checks.
+Current game source was inspected at `chaupal-cards` commit `2aba75f` on
+17 September. No live account action, mailbox verification or retention promise
+is implied. The broader content/account-control proposals below remain separate.
+
 Draft for approval, not applied. Verified against the clean `main` source in
 `/Users/arnavgoel/dev/chaupal-cards` on 13 September 2026. Source proves these
 features exist; live configuration and account availability must also be checked

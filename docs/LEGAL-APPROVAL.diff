@@ -1,0 +1,332 @@
+--- a/src/components/legal/Privacy.tsx
++++ b/src/components/legal/Privacy.tsx
+@@ -1,26 +1,26 @@
+ import Link from "next/link";
+-import { STUDIO_NAME, studio } from "@/lib/brand";
++import { studio } from "@/lib/brand";
+ import { LEGAL_EMAIL, legalPath } from "@/lib/legal";
+ 
+ export function Privacy() {
+   return (
+     <>
+       <p className="lede">
+-        {STUDIO_NAME} collects nothing about you. Not an email address, not a name, not an
+-        analytics event, not a cookie. This page explains what that means, and is honest about the
+-        one thing that happens anyway because every website on the internet is hosted somewhere.
++        This studio site has no account form or analytics. The games can keep guest identities,
++        optional account details, game records and diagnostic reports. This page explains the
++        difference between the studio site and the games.
+       </p>
+ 
+       <h2>1. What this site collects</h2>
+-      <p>Nothing. Specifically, and in the order people usually ask:</p>
++      <p>The studio site itself has:</p>
+       <ul>
+         <li>
+           <strong>No analytics.</strong> There is no Google Analytics, no Vercel Analytics, no
+-          Plausible, no pixel, no beacon and no session recorder. Nothing counts your visit.
++          Plausible, no pixel, no beacon and no session recorder.
+         </li>
+         <li>
+-          <strong>No cookies.</strong> This site sets none at all. See the{" "}
+-          <Link href={legalPath("cookies")}>cookies page</Link>, which is short for that reason.
++          <strong>No cookies.</strong> This site sets none itself. Game session cookies can also be sent to this shared domain. See the{" "}
++          <Link href={legalPath("cookies")}>cookies page</Link>.
+         </li>
+         <li>
+           <strong>No third-party requests.</strong> The typefaces are served from this site rather
+@@ -39,36 +39,46 @@
+         mistake were made in the code.
+       </p>
+ 
++      <p>
++        The studio does not send automatic diagnostic reports. Earlier versions could send
++        failure reports with device information and a random session identifier. The current
++        version removes its local queue without sending it, and the retired studio endpoint no
++        longer accepts or forwards reports. This does not erase reports already stored by the
++        games&rsquo; diagnostic service.
++      </p>
++
+       <h2>2. What the hosting provider sees</h2>
+       <p>
+-        This site is hosted on Vercel, and the games are served the same way. Like every web host,
+-        Vercel handles the request your browser makes in order to answer it, and keeps operational
+-        logs that can include your IP address, the page you asked for, the time, and your browser
+-        and device type.
++        This site and the games are hosted on Cloudflare. The hosting provider processes requests
++        to serve them, including network information such as your IP address, requested page and
++        browser information. Hosting and operational logs are separate from the studio&rsquo;s absence
++        of analytics.
++      </p>
++
++      <h2>3. What the games can store</h2>
++      <p>
++        Games can create a guest player record and session before you register. Player records
++        include a display name, avatar identifier and activity timestamps. Optional signup adds
++        an email address and password hash. Google sign-in can supply an account identifier,
++        email address and display name.
+       </p>
+       <p>
+-        That is the hosting provider acting as an infrastructure operator, not {STUDIO_NAME}{" "}
+-        gathering data. It is not linked to a name, not used to build a profile, not sold, and not
+-        read by anyone here in the ordinary course of running the site. It is mentioned because a
+-        privacy policy that claimed no data existed anywhere would be false, and this one is meant
+-        to survive being checked.
+-      </p>
+-
+-      <h2>3. What a game room holds while you play</h2>
+-      <p>
+-        When you play with friends, the room holds what it needs to run the game and nothing more:
+-        the display name you typed, the position of the pieces or the state of the hands, and the
+-        fairness values that let the result be verified afterwards.
++        Multiplayer room state is stored on the server. In Charade, that can include drawings
++        and messages. Supported completed games can be archived and linked to player records.
++        Ending a room does not erase a player&rsquo;s identity or archived results. Account Casino
++        play can store play-money balances, ledger entries, round actions, results and fairness
++        proofs. Practice play runs in your browser.
+       </p>
+       <p>
+-        A display name is whatever you type. It is not verified, not required to be your real name,
+-        and there is no reason to make it one. Room state is transient. When a room ends, it goes.
++        Games can send diagnostic reports when failures occur. Reports can include a random
++        session identifier, error information, device information, recent game events and,
++        where supported, replay data. Reports can be queued in browser storage for delivery.
++        This studio&rsquo;s reporting change does not disable reporting in the games.
+       </p>
+ 
+       <h2>4. Children</h2>
+       <p>
+-        No personal information is knowingly collected from anyone, which includes children. There
+-        is no sign-up form to collect it with. Parents should read the{" "}
++        The collection described above can apply when a child plays too. Parents should read the{" "}
+         <Link href={legalPath("content")}>content and age page</Link>, which describes what is
+         actually in the
+         games and the one part worth knowing about: rooms are shared by link, so a child plays with
+@@ -78,29 +88,18 @@
+       <h2>5. Your rights</h2>
+       <p>
+         Data protection law gives you rights to see, correct, export and delete what an
+-        organisation holds about you. Those rights are honoured here, and honouring them is
+-        unusually simple: there is nothing held, so there is nothing to produce and nothing to
+-        erase.
++        organisation holds about you.
+       </p>
+       <p>
+-        If you believe that is wrong and something about you is held here, write to{" "}
+-        <a href={`mailto:${LEGAL_EMAIL}`}>{LEGAL_EMAIL}</a> and it will be looked into properly
+-        rather than answered with this paragraph.
++        For privacy questions and requests, write to{" "}
++        <a href={`mailto:${LEGAL_EMAIL}`}>{LEGAL_EMAIL}</a>.
+       </p>
+ 
+-      <h2>6. If this ever changes</h2>
++      <h2>6. Changes to this page</h2>
+       <p>
+-        Adding accounts, or analytics, or anything that stores something about you, would make most
+-        of this page false. If that day comes, this page is rewritten before the feature ships, not
+-        after, and the effective date at the top changes.
+-      </p>
+-      <p>
+-        There is no mailing list to announce it on, which is a direct consequence of collecting no
+-        email addresses.{" "}
+-        <a href={studio.github} rel="noreferrer">
+-          The repository
+-        </a>{" "}
+-        carries the full history of this page, so a quiet edit is not possible.
++        Changes to what the studio and games collect or store will be described here, with an
++        updated date. <a href={studio.github} rel="noreferrer">The repository</a> carries the
++        history of this page.
+       </p>
+ 
+       <h2>7. Contact</h2>
+--- a/src/components/legal/Cookies.tsx
++++ b/src/components/legal/Cookies.tsx
+@@ -1,13 +1,12 @@
+-import { STUDIO_NAME } from "@/lib/brand";
+ import { LEGAL_EMAIL } from "@/lib/legal";
+ 
+ export function Cookies() {
+   return (
+     <>
+       <p className="lede">
+-        This site sets no cookies. There is no banner asking you to accept any, because there are
+-        none to accept, and a banner that appears anyway is just a website apologising for
+-        something it did not need to do.
++        This studio site does not set cookies itself. The games use session cookies and browser
++        storage. A game cookie scoped to the shared domain can also be sent when you visit the
++        studio site.
+       </p>
+ 
+       <h2>1. What a cookie is, briefly</h2>
+@@ -17,45 +16,43 @@
+         advertising network recognises you on a site you have never visited before.
+       </p>
+ 
+-      <h2>2. What this site uses</h2>
+-      <p>None of it. To be specific, this site does not:</p>
+-      <ul>
+-        <li>set any cookie, of any kind, for any purpose;</li>
+-        <li>write to local storage or session storage;</li>
+-        <li>use an analytics or advertising service that would set one on its behalf;</li>
+-        <li>
+-          load any script, style, typeface, image or frame from another company, so no other
+-          company is in a position to set one either.
+-        </li>
+-      </ul>
++      <h2>2. What this studio site uses</h2>
+       <p>
+-        You can confirm this rather than take it on trust. Open your browser&rsquo;s storage
+-        inspector on any page of this site and the cookie list is empty.
++        The studio does not use an analytics or advertising service. Its pages, typefaces,
++        images and scripts are served from this site.
++      </p>
++      <p>
++        The studio caches pages and assets for offline use. If a required asset fails, it can
++        save a temporary recovery marker in session storage to avoid repeated reloads. This
++        marker is not an account identifier or an analytics record. Earlier studio versions
++        could queue diagnostic reports in local storage; the current version removes that
++        queue without sending its contents.
+       </p>
+ 
+-      <h2>3. Why there is no consent banner</h2>
++      <h2>3. Checking browser storage</h2>
+       <p>
+-        Consent rules exist so that people are asked before a site stores things on their device or
+-        tracks them across the web. Neither happens here, so there is nothing to ask about. The
+-        correct response to those rules, when you genuinely collect nothing, is silence rather than
+-        a dialog.
++        You can inspect cookies, session storage, local storage and cached assets in your
++        browser&rsquo;s storage inspector. Game cookies scoped to the shared domain may appear on
++        the studio site even though the studio does not set them.
+       </p>
+ 
+       <h2>4. The games</h2>
+       <p>
+-        A game may need to remember something strictly practical, such as which room you are in, so
+-        that a refresh mid-match does not throw you out. Where that is needed it is done with
+-        storage in your own browser that never leaves your device and is never read by{" "}
+-        {STUDIO_NAME}. It is not used to recognise you, and it is not shared.
++        Games use browser storage for practical features including saved games, preferences,
++        streaks and queued diagnostic reports. Some stored values are sent to the server to
++        reconnect a player or deliver a report.
+       </p>
+       <p>
+-        If a game ever needs a genuine cookie, it will be listed on this page by name, purpose and
+-        lifetime before it ships.
++        Games use <code>glasstable-session</code> to identify a guest or signed-in player, and{" "}
++        <code>glasstable-session-here</code> to tell the browser that a session exists. Both have
++        a maximum age of 180 days when issued and can be renewed. The{" "}
++        <code>glasstable-google</code> cookie is temporary state for Google sign-in, with a
++        maximum age of 10 minutes. Browser expiry does not by itself erase server records.
+       </p>
+ 
+       <h2>5. Contact</h2>
+       <p>
+-        If you find a cookie on this site, that is a bug and worth reporting. Write to{" "}
++        Cookie and browser-storage questions can be sent to{" "}
+         <a href={`mailto:${LEGAL_EMAIL}`}>{LEGAL_EMAIL}</a>.
+       </p>
+     </>
+--- a/src/components/legal/Terms.tsx
++++ b/src/components/legal/Terms.tsx
+@@ -1,5 +1,5 @@
+ import Link from "next/link";
+-import { GAMES, STUDIO_NAME, studio } from "@/lib/brand";
++import { GAMES, STUDIO_NAME } from "@/lib/brand";
+ import { JURISDICTION, LEGAL_EMAIL, legalPath } from "@/lib/legal";
+ 
+ export function Terms() {
+@@ -29,7 +29,10 @@
+       </p>
+       <ul>
+         <li>There is nothing to buy. No purchase, subscription, pass or upgrade exists.</li>
+-        <li>No real money</li>
++        <li>
++          Casino games use play money. Chips have no monetary value. There are no deposits,
++          chip purchases or cash-outs.
++        </li>
+         <li>
+           Nothing you can win in a game has value outside the game, and nothing can be cashed out,
+           traded, transferred or redeemed for anything at all.
+@@ -52,24 +55,17 @@
+ 
+       <h2>3. Accounts</h2>
+       <p>
+-        You do not need an account to play. A room asks for a display name so the other players can
+-        tell who is who; that name lives as long as the room does and is not an account.
+-      </p>
+-      <p>
+-        If accounts are introduced later, they will be introduced across {STUDIO_NAME} as a whole
+-        rather than per game, and you will be told what they store before you are asked to make
+-        one.
++        You do not need to register an account to play. Games can create a guest player record
++        and session cookie. You can optionally register or sign in to keep an account across
++        supported games. The <Link href={legalPath("privacy")}>privacy</Link> and{" "}
++        <Link href={legalPath("cookies")}>cookies</Link> pages explain what is stored.
+       </p>
+ 
+       <h2>4. What is promised, and what is not</h2>
+       <p>
+-        One thing is promised precisely. The number every roll and every deal is derived from is
+-        committed to before play and published after it, and the derivation is arithmetic anyone
+-        can repeat. That claim is testable, and{" "}
+-        <a href={studio.github} rel="noreferrer">
+-          the code that makes it
+-        </a>{" "}
+-        is published so it can be tested.
++        Supported games publish a fairness proof after play. The <Link href="/fair-play">Fair
++        play</Link> page explains what can be checked and what the proof does not cover. The
++        game repositories themselves are not open yet.
+       </p>
+       <p>
+         Nothing else is promised. The games are provided as they are. There is no guarantee that a
+@@ -100,9 +96,7 @@
+ 
+       <h2>7. Changes to these terms</h2>
+       <p>
+-        These terms may change. The effective date at the top of this page changes with them. There
+-        is no mailing list to notify, because no email addresses are collected, so the date is the
+-        notice.
++        These terms may change. The effective date at the top of this page changes with them. The updated date is the notice.
+       </p>
+ 
+       <h2>8. Governing law</h2>
+@@ -115,8 +109,7 @@
+         <p>
+           No governing law is stated yet, and naming one at random would be worse than naming none.
+           Your own local consumer law therefore applies to you in the ordinary way, and nothing here
+-          asks you to give it up. A jurisdiction will be named here before {STUDIO_NAME} takes any
+-          payment, opens any account, or offers the games to anyone beyond a circle of friends.
++          asks you to give it up.
+         </p>
+       )}
+ 
+--- a/src/lib/legal.ts
++++ b/src/lib/legal.ts
+@@ -52,21 +52,23 @@
+ export const LEGAL_DOCS = [
+   {
+     slug: "terms",
+-    updated: "2026-09-13",
++    updated: "2026-09-17",
+     title: "Terms of use",
+     summary:
+       "What you may do with the games, what is promised, and what is not. Free to play, nothing to buy, no money involved.",
+   },
+   {
+     slug: "privacy",
++    updated: "2026-09-17",
+     title: "Privacy",
+     summary:
+-      "What is collected about you, which is nothing, and what the hosting provider sees regardless.",
++      "What the studio site and games collect and store, and what their hosting provider sees.",
+   },
+   {
+     slug: "cookies",
++    updated: "2026-09-17",
+     title: "Cookies",
+-    summary: "This site sets none, and does not load anything that could set one on its behalf.",
++    summary: "The studio site, game session cookies and practical browser storage.",
+   },
+   {
+     slug: "rules-of-play",
