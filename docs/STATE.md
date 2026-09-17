@@ -1,5 +1,27 @@
 # Glass Table Games: state of play
 
+## 17 September 2026: corrected timer validated, preview TTFB blocks promotion
+
+Shared timing correction `69fa 6f 2` passed the complete remote gate (171 Vitest
+and 33 release tests) and twelve paired WebKit trials in run `35256413594`.
+Corrected full-mode startup medians were live 624 ms and candidate 1641 ms;
+timing-only medians were live 738 ms and candidate 667 ms. Full-mode candidate
+document TTFB was 1009/499/2077 ms, before application execution. This identifies
+first-byte waiting as a major blocker; the underlying transport/edge cause is
+not established. Timing-only passes cannot replace required full evidence.
+The 750 ms limit remains, production is unchanged and no promotion occurred.
+
+Both runs and their distinct measurement methods are retained in the candidate
+JSON. No application speedup or regression-free claim is supported. Next work
+should inspect immutable preview document delivery and its provider timings,
+not repeatedly run the same gate until a sample passes. Temporary preview
+access was restored to false/false at 18:07:36Z with provider readback.
+
+Local typecheck/lint passed;168/171 Vitest tests passed, with three existing CF
+fixture subprocesses hitting their five-second bounds. No local gate receipt
+was issued. The same source's full CI gate passed. No local browser was launched
+for this investigation. The exact legal patch still awaits owner approval.
+
 ## 17 September 2026: startup measurement correction in review
 
 Controlled WebKit run `35255381820` completed twelve alternating live/candidate
@@ -16,7 +38,7 @@ as `observedMs`, with `driverDelayMs` reported separately. Four calibrated tests
 cover withheld conditions, event ordering, delayed reads and font rejection;
 all30 browser-evidence tests and targeted lint pass. The750 ms limit, exact
 source verification and stylesheet checks are unchanged. This is a measurement
-correction, not an application speedup. Comparable browser evidence is pending.
+correction, not an application speedup. Comparable browser evidence is recorded above.
 
 ## 17 September 2026: controlled WebKit diagnosis
 
