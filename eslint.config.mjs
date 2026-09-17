@@ -7,6 +7,7 @@ const config = [
     // linting it reports dozens of problems in code nobody here wrote and none
     // of which can be fixed from this repository.
     ignores: [
+      ".audit/**",
       ".next/**",
       ".open-next/**",
       ".wrangler/**",

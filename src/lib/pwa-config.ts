@@ -13,6 +13,3 @@ export const STUDIO_WORKER_CONFIG = {
   offlineForeground: "#faf4ea",
   runtimeNote: "// Public studio pages and their complete offline dependencies.",
 } satisfies Omit<ServiceWorkerRoute, "appVersion" | "appCommit">;
-
-export const STUDIO_DIAGNOSTIC_OUTBOX = "studio:diagnostics:outbox";
-export const STUDIO_DIAGNOSTIC_SITE = "studio";

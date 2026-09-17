@@ -6,7 +6,7 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { STUDIO_NAME, STUDIO_TAGLINE, studio } from "@/lib/brand";
 import { studioNode } from "@/lib/structured-data";
-import { studioDiagnosticsSource } from "@/lib/pwa-diagnostics";
+import { studioPrivacyCleanupSource } from "@/lib/pwa-privacy";
 import { ASSET_RECOVERY_SCRIPT_PROPS, assetRecoverySource } from "@/lib/pwa/asset-recovery";
 import "./globals.css";
 
@@ -104,7 +104,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       lang={studio.lang}
       className={`${fraunces.variable} ${plexSans.variable} ${plexMono.variable}`}
     >
-      <head><script {...ASSET_RECOVERY_SCRIPT_PROPS} dangerouslySetInnerHTML={{ __html: assetRecoverySource(process.env.NEXT_PUBLIC_APP_COMMIT || process.env.NEXT_PUBLIC_APP_BUILT_AT || "local", studioDiagnosticsSource()) }} /></head>
+      <head><script {...ASSET_RECOVERY_SCRIPT_PROPS} dangerouslySetInnerHTML={{ __html: assetRecoverySource(process.env.NEXT_PUBLIC_APP_COMMIT || process.env.NEXT_PUBLIC_APP_BUILT_AT || "local", studioPrivacyCleanupSource()) }} /></head>
       <body>
         {/* Who publishes this, on every page rather than on the front page
             alone.

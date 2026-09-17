@@ -1,3 +1,17 @@
+## 17 September 2026: studio privacy audit repair in progress
+
+The deployed source `bdd9c16` was verified by live HTTP and contained automatic
+studio diagnostics. PR16 is now merged into main as `bef637a`. Candidate0.5.3
+removes studio reporting, retires the delivery endpoint, clears its legacy local
+queue, and restores the existing Prize Wheel CI probe. Shared recovery remains
+unchanged. No production promotion is claimed at this checkpoint.
+
+See [audit dispositions](AUDIT-REPAIRS-2026-09-17.md) and the exact pending
+[policy replacements](PROPOSED-COPY-2026-09-13.md#17-september-audit-corrections-for-approval).
+The policy changes require wording approval; false historical claims have not
+been restored. Full gates, current candidate browser receipts, build and live
+verification remain in progress. Existing untracked harness files were preserved.
+
 # Glass Table Games: state of play
 
 ## Shared glass material live, 15 September 2026

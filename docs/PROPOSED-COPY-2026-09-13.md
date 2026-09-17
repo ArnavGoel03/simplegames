@@ -87,7 +87,7 @@ Proof:
 
 ## Cookies
 
-Keep the studio's narrow no-cookie/no-localStorage/no-sessionStorage statements.
+Keep the studio's no-cookie statement. The no-localStorage/no-sessionStorage statement is inaccurate: recovery uses session storage, and the telemetry retirement removes its earlier local queue. Use the 17 September replacement below.
 Replace section 3's broad denial of device storage with:
 
 > This studio site stores cached pages and assets in your browser so previously
@@ -295,3 +295,65 @@ Evidence, relative to `gtg-teen-patti`:
   and live behavior must be verified before enabling the proposed controls.
 - `gtg-teen-patti/docs/SUPPORT-READINESS-2026-09-13.md` records the actual intake,
   protected triage, opportunistic retention and unverified mailbox/coverage gaps.
+
+## 17 September audit corrections for approval
+
+These replacements remain proposed, not published. The telemetry fix removes
+the studio reporter and its stored queue; it does not change game account or
+diagnostic behaviour. The live studio still served source `bdd9c16` on this
+audit's initial HTTP read. PR16 is now merged into main as `bef637a`.
+
+Replace Cookies section 2's storage bullet with:
+
+> use browser storage for advertising or tracking;
+
+After its list, add:
+
+> This studio caches pages and assets for offline use. If a required asset fails,
+> it can save a temporary recovery marker in session storage to avoid repeated
+> reloads. This marker is not an account identifier or an analytics record.
+> Earlier studio versions could queue automatic diagnostic reports in local
+> storage. The current version removes that queue without sending its contents.
+
+Replace Privacy section 2's two Vercel references with Cloudflare. In the
+opening, use the existing proposed studio/game distinction above, then add:
+
+> The studio does not send automatic diagnostic reports. Earlier versions could
+> send reports about failures, including device information and a random session
+> identifier. The retired studio endpoint no longer accepts or forwards them.
+> This change does not erase reports already stored by the games' diagnostic
+> service.
+
+Replace Terms section 2's stand-alone "No real money" item with the existing
+Casino addendum's exact wording:
+
+> Casino games use play money. Chips have no monetary value. There are no
+> deposits, chip purchases or cash-outs.
+
+Do not restore the old "no virtual currency, no chips, no tokens and no in-game
+economy" sentence: it conflicts with Casino's current functionality. The
+remaining account, retention, hosting and game-cookie corrections above must be
+reviewed as one set before publishing a policy that covers the games. Public
+source availability is already distinguished in the Fair play and About pages;
+the Terms claim that the server implementation is published also needs deletion.
+Replace that entire Terms section 4 opening paragraph with the following:
+
+> Supported games publish a fairness proof after play. The Fair play page
+> explains what can be checked and what the proof does not cover.
+
+This proposed sentence deliberately makes no new claim that every Casino or
+room protocol is identical. It requires the Fair play page to retain the
+distinction between room ceremonies and account Casino from the existing
+addendum.
+
+Evidence for these studio-specific corrections: `src/lib/pwa/asset-recovery.ts`
+uses `gtg-asset-recovery` in session storage for reload limits;
+`src/lib/pwa-privacy.ts` deletes only the legacy diagnostic queue;
+`src/app/api/diagnostics/route.ts` returns 410 without reading the request;
+`tools/generate-worker.mjs` no longer injects the reporter; `wrangler.jsonc`
+defines Cloudflare hosting. Existing game evidence and caveats remain above.
+
+No mailbox availability, jurisdiction, retention deadline or historical-data
+deletion has been verified or invented. Before publishing, confirm current game
+features and host configuration, apply the approved replacements together, and
+update each affected legal document's date.
