@@ -1,5 +1,19 @@
 # Glass Table Games: state of play
 
+## 18 September 2026: separate stack release is live, PR19 remains held
+
+The separate already merged stack source `cfdf6a4` passed all unchanged release
+gates and is now production 0.5.3, Worker
+`a7e23fdd-b31c-4f73-bb38-0e8dba884f7a` at 100%. This compression branch and PR19
+were not merged or promoted. Its failed candidate below remains historical
+evidence for this branch; it no longer describes current production.
+
+The released stack candidate measured startup medians 385.2/634 ms in
+Chromium/WebKit. Public HTTP, source and asset checks pass; preview flags are
+restored to false/false. Full release records are in the sibling
+`../gtg-studio-stack-release/docs/STUDIO-STACK-RELEASE-2026-09-18.md` worktree.
+Proposed legal wording remains unapplied and still needs owner approval.
+
 ## 18 September 2026: existing startup captures inspected, no retry
 
 Offline diagnosis of all six cold samples found initial request-to-frame-commit
