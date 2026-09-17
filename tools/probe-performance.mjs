@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { mkdir, writeFile } from "node:fs/promises";
 import { chromium, webkit } from "playwright";
-import { candidates, engine, instrument, output, startupMeasurement, timedFragmentClick } from "./browser-evidence.mjs";
+import { candidates, engine, instrument, omitServiceWorkerCapability, output, startupMeasurement, timedFragmentClick } from "./browser-evidence.mjs";
 
 // Diagnostic comparison only. No release evidence or performance policy changes.
 const candidate = candidates.find(item => item.site === "studio");
@@ -10,7 +10,7 @@ const targets = candidate ? [
   { id: "candidate", origin: candidate.origin, sourceHead: candidate.sourceHead },
 ] : [];
 const report = { schema: 1, purpose: "same-run studio performance comparison", engine, candidate,
-  definition: "Three alternating samples per target and instrumentation mode; canonical startupMeasurement and completed Games fragment scroll plus two stable frames; 390x844, reduced motion, service workers blocked, fresh context",
+  definition: "Three alternating samples per target and instrumentation mode; canonical startupMeasurement and completed Games fragment scroll plus two stable frames; 390x844, reduced motion, service-worker capability omitted as in the release harness, fresh context",
   modes: { full: "Current release network/stream and timing instrumentation", timing: "Same ready/click/two-frame timing, without fetch/stream wrappers or browser bindings" },
   samples: [] };
 let browser;
@@ -91,9 +91,11 @@ async function sourceOnPage(page) {
 
 async function trial(target, mode, sample) {
   const context = await browser.newContext({ viewport: { width: 390, height: 844 }, reducedMotion: "reduce", serviceWorkers: "block" });
+  await context.addInitScript(omitServiceWorkerCapability);
   const page = await context.newPage();
   page.setDefaultTimeout(10_000);
-  const result = { target: target.id, origin: target.origin, mode, sample, errors: [] };
+  const result = { target: target.id, origin: target.origin, mode, sample, errors: [], diagnosticRequests: 0 };
+  page.on("request", request => { if (new URL(request.url()).pathname === "/api/diagnostics") result.diagnosticRequests++; });
   report.samples.push(result);
   let probe;
   try {
@@ -145,6 +147,8 @@ async function trial(target, mode, sample) {
       assert.equal(result.page.hash, "#games", "Games click did not navigate to the fragment");
       assert(Math.abs(result.page.galleryTop) < 200, "Games click did not scroll to its target");
     }
+    assert.equal(await page.evaluate(() => "serviceWorker" in navigator), false, "Performance context retains a blocked registration shim");
+    assert.equal(result.diagnosticRequests, 0, "Performance control generated diagnostic traffic");
     result.completed = true;
   } catch (error) {
     result.failure = String(error.stack ?? error);
@@ -157,7 +161,11 @@ async function trial(target, mode, sample) {
     await context.close();
     await writeFile(new URL(`performance-probe-${engine}.json`, output), JSON.stringify(report, null, 2));
     console.log(JSON.stringify({ target: result.target, mode, sample, source: result.sourceHead,
-      startupMs: result.startup?.startupMs, gamesNavigationMs: result.gamesNavigationMs, earlyInteractionMs: result.earlyInteractionMs,
+      startupMs: result.startup?.startupMs, appReadyMs: result.startup?.appReadyMs, domReadyMs: result.startup?.domReadyMs,
+      navigation: result.page?.navigation, diagnosticRequests: result.diagnosticRequests,
+      startupResources: result.page?.resources.filter(entry => entry.responseEnd <= result.startup.startupMs).sort((a, b) => (b.responseEnd ?? 0) - (a.responseEnd ?? 0)).slice(0, 5),
+      blankFrameGaps: result.blankFrames?.slice(1).map((frame, index) => frame.timestamp - result.blankFrames[index].timestamp),
+      gamesNavigationMs: result.gamesNavigationMs, earlyInteractionMs: result.earlyInteractionMs,
       selector: result.selector, failure: result.failure }));
   }
 }

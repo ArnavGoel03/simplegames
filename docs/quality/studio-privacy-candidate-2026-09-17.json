@@ -1,0 +1,230 @@
+{
+  "candidate": {
+    "schema": 1,
+    "kind": "candidate",
+    "site": "studio",
+    "worker": "glasstablegames",
+    "sourceHead": "63a9c5ff3be9d2d9848eb12527fb667b47280c4f",
+    "sourceFingerprint": "18db658204ebcb7fa7305aa304f96580b0934a5886776d3997873667f5c63f4c",
+    "buildSource": "ba19fa2342044658a81a7652ec7bcbf13479e02ed5b2df8bd8aa56fcb80af7b0",
+    "buildOutput": "cb0135dd50698a5f268c3bb3627360ba155874756895ae420cdc9b46e943feee",
+    "candidateVersion": "143a7877-805b-479b-a8e9-e39392e0f896",
+    "origin": "https://143a7877-glasstablegames.goelhome.workers.dev",
+    "recordedAt": "2026-09-17T17:23:15.206Z",
+    "upload": {
+      "command": [
+        "wrangler",
+        "versions",
+        "upload"
+      ],
+      "startedAt": "2026-09-17T17:22:52.508Z",
+      "durationMs": 20375,
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "logDigest": "e44e896c2a7d4e6dafc51a4bc47cc83a0b948f10b27ef9831bb342cfe4882c78"
+    }
+  },
+  "gate": {
+    "schema": 1,
+    "kind": "gate",
+    "sourceHead": "63a9c5ff3be9d2d9848eb12527fb667b47280c4f",
+    "sourceFingerprint": "18db658204ebcb7fa7305aa304f96580b0934a5886776d3997873667f5c63f4c",
+    "outcome": {
+      "command": [
+        "npm",
+        "run",
+        "gate"
+      ],
+      "startedAt": "2026-09-17T17:15:22.599Z",
+      "durationMs": 37321,
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "logDigest": "933b757f46ae57802a6fe06268705729e4ac25758165e19c265912f766c09411"
+    },
+    "measurements": [
+      {
+        "id": "verify:toolchain",
+        "unit": "ms",
+        "samples": [
+          1262
+        ]
+      },
+      {
+        "id": "typecheck",
+        "unit": "ms",
+        "samples": [
+          891
+        ]
+      },
+      {
+        "id": "lint",
+        "unit": "ms",
+        "samples": [
+          6095
+        ]
+      },
+      {
+        "id": "pretest",
+        "unit": "ms",
+        "samples": [
+          211
+        ]
+      },
+      {
+        "id": "test",
+        "unit": "ms",
+        "samples": [
+          28085
+        ]
+      },
+      {
+        "id": "test:release",
+        "unit": "ms",
+        "samples": [
+          398
+        ]
+      }
+    ],
+    "log": "gate.log",
+    "verifiedMetrics": [
+      {
+        "id": "typecheck",
+        "actual": 891,
+        "limit": 900,
+        "baselineDigest": "dc2a17e4203dc1d5452a267a412a7e85569ab776363dd7ae8771705549c61d56"
+      }
+    ]
+  },
+  "webkitLastFunctionalEvidence": {
+    "schema": 1,
+    "reports": [
+      {
+        "schema": 1,
+        "kind": "candidate",
+        "site": "studio",
+        "worker": "glasstablegames",
+        "sourceHead": "63a9c5ff3be9d2d9848eb12527fb667b47280c4f",
+        "sourceFingerprint": "18db658204ebcb7fa7305aa304f96580b0934a5886776d3997873667f5c63f4c",
+        "buildSource": "ba19fa2342044658a81a7652ec7bcbf13479e02ed5b2df8bd8aa56fcb80af7b0",
+        "buildOutput": "cb0135dd50698a5f268c3bb3627360ba155874756895ae420cdc9b46e943feee",
+        "candidateVersion": "143a7877-805b-479b-a8e9-e39392e0f896",
+        "origin": "https://143a7877-glasstablegames.goelhome.workers.dev",
+        "recordedAt": "2026-09-17T17:23:15.206Z",
+        "upload": {
+          "command": [
+            "wrangler",
+            "versions",
+            "upload"
+          ],
+          "startedAt": "2026-09-17T17:22:52.508Z",
+          "durationMs": 20375,
+          "exitCode": 0,
+          "signal": null,
+          "error": null,
+          "logDigest": "e44e896c2a7d4e6dafc51a4bc47cc83a0b948f10b27ef9831bb342cfe4882c78"
+        },
+        "browsers": [
+          {
+            "engine": "webkit",
+            "observedSourceHead": "63a9c5ff3be9d2d9848eb12527fb667b47280c4f",
+            "checks": [
+              {
+                "id": "responsive",
+                "status": "passed"
+              },
+              {
+                "id": "entry",
+                "status": "passed"
+              },
+              {
+                "id": "startup",
+                "status": "passed"
+              },
+              {
+                "id": "network",
+                "status": "passed"
+              },
+              {
+                "id": "failed-css",
+                "status": "passed"
+              },
+              {
+                "id": "offline",
+                "status": "passed",
+                "mechanism": "Exact candidate worker runtime with acknowledged navigator.onLine=false test environment; actual fixture HTTP origin stopped; uncached request failure calibrated",
+                "limitation": "Controlled worker-branch verification, not WebKit native offline-toggle or physical-device certification; candidate online source/styles checked separately",
+                "workerSha256": "d59691ae586e457c1309a57da7c648bc41954347f81c321a3ae8232ffbb83b68",
+                "environmentSha256": "a4f54054b832075dd1f791bbe61da511e35b8e9b6b043b9239e5ab26fe5f176a",
+                "transportControl": {
+                  "upstreamStopped": true,
+                  "uncachedFetchFailed": true,
+                  "workerOnline": false
+                }
+              },
+              {
+                "id": "update",
+                "status": "passed"
+              }
+            ],
+            "measurements": [
+              {
+                "id": "startup",
+                "unit": "ms",
+                "samples": [
+                  789,
+                  1049,
+                  840
+                ]
+              },
+              {
+                "id": "games-navigation",
+                "unit": "ms",
+                "samples": [
+                  145,
+                  91,
+                  145
+                ]
+              },
+              {
+                "id": "initial-assets",
+                "unit": "bytes",
+                "samples": [
+                  511461,
+                  511461,
+                  511461
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "timingInvestigation": {
+    "recordedAt": "2026-09-17T17:38:54.546186+00:00",
+    "candidateVersion": "143a7877-805b-479b-a8e9-e39392e0f896",
+    "candidateSource": "63a9c5ff3be9d2d9848eb12527fb667b47280c4f",
+    "candidateRun": 35252439698,
+    "candidateAttempt": 2,
+    "candidateArtifact": 10512335536,
+    "candidateStartupMs": [
+      1136,
+      1001,
+      964
+    ],
+    "liveSource": "bdd9c1695de829c6c3f6942075628fde83475f35",
+    "liveRun": 35253516416,
+    "liveArtifact": 10512361474,
+    "liveStartupMs": [
+      1186,
+      601,
+      754
+    ],
+    "unchangedLimitMs": 750,
+    "decision": "No promotion on failed timing receipt; one further unchanged-candidate WebKit run after current live baseline showed variable timing. No budget change."
+  },
+  "previewAccess": "disabled after prior bounded checks; reopen temporarily for same-run comparison",
+  "scope": "Candidate source63a9c5f is immutable and distinct from live bdd9c16. These receipts document a refused release, not a promotion."
+}

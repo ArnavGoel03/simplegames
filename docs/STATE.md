@@ -1,5 +1,16 @@
 # Glass Table Games: state of play
 
+## 17 September 2026: controlled WebKit diagnosis
+
+A separate `fix/studio-performance-comparison` branch corrects the diagnostic
+probe's missing service-worker capability isolation. The canonical release
+harness already uses that control. It compares unchanged live bdd9c16 with
+immutable candidate63a9c5f on the same runner, preserving the 750 ms gate and
+recording waterfall/frame observations. No public code or legal copy changes.
+Preview access is reopened temporarily for this bounded comparison and must be
+restored afterward. Candidate identity and refused-release evidence are retained
+in `docs/quality/studio-privacy-candidate-2026-09-17.json`.
+
 ## 17 September 2026: privacy fix merged, deployment held by WebKit timing
 
 Production remains **0.5.2**, source `bdd9c16`, Worker
