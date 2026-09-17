@@ -118,6 +118,11 @@ jobs:
           else
             node tools/probe-network.mjs
           fi
+      - name: Inspect Prize Wheel rendering
+        if: ${{ !inputs.controls_only && !inputs.network_probe_only && inputs.release_candidates_json && !cancelled() }}
+        env:
+          BROWSER_ENGINE: ${{ inputs.browser || 'chromium' }}
+        run: node tools/probe-wheel.mjs
       - name: Compare live and candidate performance
         if: ${{ !inputs.controls_only && inputs.network_probe_only && !inputs.skip_performance_probe && !cancelled() }}
         env:

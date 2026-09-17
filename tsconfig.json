@@ -38,6 +38,7 @@
     ".next/dev/types/**/*.ts"
   ],
   "exclude": [
+    ".audit",
     "node_modules"
   ]
 }

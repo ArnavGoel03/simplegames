@@ -1,6 +1,6 @@
 # Glass Table Games
 
-The studio site. Eleven content pages, no independent database and no analytics. Essential failure reports pass through a capped same-origin endpoint to the shared Circuit diagnostic store. Live at [glasstablegames.com](https://glasstablegames.com), and installable: it ships a manifest, the icons every platform asks for, and a service worker.
+The studio site. Eleven content pages, no independent database and no analytics. Recovery stays in the browser; the studio does not send automatic diagnostic reports. The retired diagnostics endpoint returns HTTP 410 without reading or forwarding old clients' reports. Live at [glasstablegames.com](https://glasstablegames.com), and installable: it ships a manifest, the icons every platform asks for, and a service worker.
 
 - `/` says what the studio does and demonstrates it: a real commit, roll and reveal ceremony run in the reader's own browser.
 - `/fair-play` explains the derivation, and is honest about what it does not cover.

@@ -3,8 +3,7 @@ import vm from "node:vm";
 import { webcrypto } from "node:crypto";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { serviceWorkerSource } from "../src/lib/pwa/service-worker";
-import { earlyDiagnosticsSource } from "../src/lib/pwa/early-source";
-import { STUDIO_WORKER_CONFIG, STUDIO_DIAGNOSTIC_OUTBOX, STUDIO_DIAGNOSTIC_SITE } from "../src/lib/pwa-config";
+import { STUDIO_WORKER_CONFIG } from "../src/lib/pwa-config";
 import { buildInfo } from "./build-info.mjs";
 
 const effect = vi.hoisted(() => ({ run: null, ready: false }));
@@ -50,8 +49,7 @@ afterEach(() => { vi.unstubAllGlobals(); effect.ready = false; });
 describe("the studio's generated service worker", () => {
   it("is exactly the canonical source plus studio-only configuration", () => {
     const info = buildInfo();
-    const faultSource = earlyDiagnosticsSource({ app: { version: info.NEXT_PUBLIC_APP_VERSION, commit: info.NEXT_PUBLIC_APP_COMMIT || null, environment: info.NEXT_PUBLIC_APP_ENVIRONMENT }, outboxKey: STUDIO_DIAGNOSTIC_OUTBOX, site: STUDIO_DIAGNOSTIC_SITE, worker: true });
-    expect(readFileSync(new URL("../public/sw.js", import.meta.url), "utf8")).toBe(serviceWorkerSource({ ...STUDIO_WORKER_CONFIG, faultSource, appVersion: info.NEXT_PUBLIC_APP_VERSION, appCommit: info.NEXT_PUBLIC_APP_COMMIT || null }));
+    expect(readFileSync(new URL("../public/sw.js", import.meta.url), "utf8")).toBe(serviceWorkerSource({ ...STUDIO_WORKER_CONFIG, appVersion: info.NEXT_PUBLIC_APP_VERSION, appCommit: info.NEXT_PUBLIC_APP_COMMIT || null }));
   });
   it("leaves stable artwork to the network so replacement artwork cannot be frozen", () => {
     const sw = worker(); expect(sw.request("/art/chaupal-ludo.webp")).toBeUndefined(); expect(sw.fetch).not.toHaveBeenCalled();
