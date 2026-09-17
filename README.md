@@ -37,7 +37,12 @@ Safari icon refresh remains OS-controlled.
 
 The game catalogue publishes each game's icon URL. Studio shortcuts consume it
 directly. `npm run sync:catalogue` updates the catalogue and checked PWA/runtime
-mirrors from Circuit; `npm run verify:live` checks for drift after release.
+mirrors from Circuit; it also mirrors `/glass-source.css` byte for byte into
+`src/app/glass.css`, separately from the PWA bundle. This source shares material
+mechanics with the games while the studio keeps its own palette. Glass source
+fetches are capped at 20,000 bytes and 15 seconds, reject redirects and external
+imports, and validate the canonical variables before writing.
+`npm run verify:live` checks for drift after release.
 Artwork provenance, screenshot evidence and remaining browser-validation limits
 are recorded in `docs/STUDIO-DESIGN-2026-09-13.md`.
 
@@ -56,6 +61,7 @@ Current glass-experience work is tracked in `docs/GLASS-EXPERIENCE-2026-09-13.md
 | `src/lib/brand.ts` | Every string that names the studio, the route list, the games. Nothing here is repeated anywhere else. |
 | `src/lib/fairness.ts` | The roll derivation, mirrored from `packages/fairness/src/rng.ts` in the games monorepo so the home page demonstrates the real algorithm. |
 | `src/lib/palette.json` | Canonical color tokens, including the light/dark glass and pastel surfaces. |
+| `src/app/glass.css` | Exact mirror of the games' canonical glass mechanics. Updated by `sync:catalogue`. |
 | `src/app/globals.css` | Sizes, material treatment and component classes using the generated palette. |
 
 ## Two things to keep true
