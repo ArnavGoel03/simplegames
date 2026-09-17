@@ -1,5 +1,20 @@
 # Glass Table Games: state of play
 
+## 18 September 2026: canonical compression mirror candidate
+
+The isolated `perf/studio-public-html-compression` branch mirrors the released
+Circuit HTML policy byte for byte through `npm run sync:catalogue`. Only
+completed cached public prerenders may use negotiated gzip; open HTML streams,
+private/cookie/authenticated responses and explicit gzip refusal retain their
+existing delivery. The previous privacy correction remains included.
+
+Source/build/browser acceptance and publication are in progress. Production
+remains 0.5.2/bdd9c16. The Studio 750 ms startup limit is unchanged. This new
+compression candidate is not a repeated run of the previous source, and it does
+not establish a cause or cure for the previous immutable-preview TTFB delay.
+Legal wording still awaits owner approval. No public wording is changed.
+
+
 ## 17 September 2026: timing correction merged, production unchanged
 
 PR18 merged as `1010336979bd7169988961f9fc58280c3eb6f1fe`. Its exact head

@@ -83,7 +83,8 @@ presentation; the games own names, destinations and Deal's ordered game list.
 the fifth studio entry, while Rummy is the ninth game within Deal.
 
 The sync command also mirrors Circuit's released `runtime-policy.mjs` byte for
-byte into `tools/html-policy.mjs`. Both repositories build the same HTML wrapper;
+byte into `tools/html-policy.mjs`. Both repositories build the same HTML wrapper; completed cached public
+prerenders negotiate gzip while live streams and private responses bypass it;
 live verification rejects a changed catalogue or helper. The wrapper preserves
 cache policy while preventing Cloudflare from injecting analytics scripts.
 
