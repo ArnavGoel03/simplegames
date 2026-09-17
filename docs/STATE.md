@@ -1,5 +1,49 @@
 # Glass Table Games: state of play
 
+## 18 September 2026: existing startup captures inspected, no retry
+
+Offline diagnosis of all six cold samples found initial request-to-frame-commit
+intervals of 522/206/811 ms in Chromium and 111/368/573 ms in WebKit. These are
+harness arrival observations, not browser TTFB. App readiness also takes
+148-252 ms after DOM readiness in Chromium and 274-317 ms in WebKit. All static
+responses succeed; no recovery timeout lies on the observed readiness path.
+The existing traces lack provider, connection and CPU/frame attribution, so no
+actionable source defect or safe delivery fix was established. No code change,
+timing retry, CI dispatch, preview setting change or promotion followed.
+
+Evidence, limits and the remaining queue are in
+`docs/STUDIO-STARTUP-DIAGNOSIS-2026-09-18.md` and its companion JSON. Draft PR19
+and the unchanged 750 ms startup acceptance remain held; legal copy still needs
+owner approval. Existing compression and functional results below stand.
+
+## 18 September 2026: compression mirror verified, promotion still held
+
+Draft PR19, source `a82c11f`, mirrors released Circuit's HTML policy byte for
+byte. Its immutable Worker is `a444d357-3f5e-4b5d-bbf6-b09683bcd492`.
+The complete local gate passes 171 application tests, 33 release tests,
+toolchain/typecheck and zero-warning lint; the Cloudflare production build and
+144 candidate HTTP checks pass. The prior privacy correction remains included;
+public legal wording is unchanged.
+
+Chromium run `35265744862` and WebKit run `35265744554` pass all functional
+candidate checks. Promotion is still refused: startup medians are 812.5 ms and
+934 ms, above the unchanged 750 ms limit. Browser-captured navigation medians
+are 44.5 ms and 165 ms; initial decoded JS/CSS is 511,461 bytes. This is a new
+compression candidate, not an unchanged-source timing retry. No further run or
+budget change followed the refusal.
+
+Actual negotiated document bodies are 75,275 identity bytes and 14,623 gzip
+bytes, with identical decoded content. That proves an 80.6% body reduction,
+not a startup-latency win. The previously observed preview first-byte cause
+remains unproven. Candidate source, raw samples and restoration evidence are
+in `docs/quality/studio-compression-candidate-2026-09-18.json`.
+
+Production remains 0.5.2/bdd9c16. No promotion occurred. Temporary preview access
+is restored to `enabled=false, previews_enabled=false`, confirmed by provider
+readback. Remaining: establish acceptable startup delivery under the unchanged
+measurement/budget, then publish and verify live. Legal wording still awaits
+owner approval. No local browser was launched.
+
 ## 17 September 2026: timing correction merged, production unchanged
 
 PR18 merged as `1010336979bd7169988961f9fc58280c3eb6f1fe`. Its exact head
