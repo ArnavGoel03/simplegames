@@ -1,17 +1,23 @@
 # Glass Table Games: state of play
 
-## Stable stack upgrade candidate, 18 September 2026
+## Stable stack upgrade source merged, 18 September 2026
 
-Isolated branch `chore/stable-stack-20260918` upgrades Next16.3.5, React19.3.0,
-OpenNext1.20.6, Wrangler4.134.0 and Vitest5.0.1. The existing stable TS7 compiler
-and isolated TS6 ESLint API remain; the matching Next lint config is upgraded.
-The compatible js-yaml patch closes the install audit finding; npm audit is zero.
+PR20 merged as `48ad444f5579d11d5dc205c513de002b6f934e27`, verified source
+`c51dfd7`. Next16.3.5, React19.3.0, OpenNext1.20.6, Wrangler4.134.0 and
+Vitest5.0.1 are upgraded. Native TS7 and the isolated TS6 ESLint API remain.
+The matching Next lint config is upgraded and npm audit reports zero findings.
 
 Native compiler positive/negative calibration, typecheck, zero-warning lint,
-171 Vitest tests,33 release-policy Node tests and production build pass.
-Cloudflare adapter build and hosted browser acceptance remain pending.
-No release or deployment claim. Existing startup-budget/legal holds remain.
-Original untracked instruction and pnpm-lock files were not touched.
+171 Vitest tests,33 release-policy Node tests, production build and certified
+Cloudflare adapter build pass. Hosted Chromium run35270371530 and WebKit
+run35271556088 pass. All28 responsive/contrast captures were inspected,
+including readable phone sections; no overflow, clipped stamp or runtime errors.
+Evidence: [STACK-UPGRADE-2026-09-18.md](STACK-UPGRADE-2026-09-18.md).
+
+These browser checks exercise runner-local production builds. They do not
+certify an immutable Cloudflare candidate or clear the existing750ms edge startup
+and legal release holds. Production remains unchanged. Original untracked
+instruction and pnpm-lock files were not touched.
 
 ## 17 September 2026: timing correction merged, production unchanged
 

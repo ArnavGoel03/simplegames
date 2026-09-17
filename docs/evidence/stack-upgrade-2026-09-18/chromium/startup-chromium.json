@@ -1,0 +1,23 @@
+[
+  {
+    "engine": "chromium",
+    "site": "fixture",
+    "scenario": "classic",
+    "heads": 0,
+    "passed": true
+  },
+  {
+    "engine": "chromium",
+    "site": "fixture",
+    "scenario": "retired",
+    "heads": 1,
+    "passed": true
+  },
+  {
+    "engine": "chromium",
+    "site": "fixture",
+    "scenario": "healthy",
+    "heads": 1,
+    "passed": true
+  }
+]
