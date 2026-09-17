@@ -2,7 +2,7 @@
 
 ## 17 September 2026: corrected timer validated, preview TTFB blocks promotion
 
-Shared timing correction `69fa 6f 2` passed the complete remote gate (171 Vitest
+Shared timing correction `69fa6f2` passed the complete remote gate (171 Vitest
 and 33 release tests) and twelve paired WebKit trials in run `35256413594`.
 Corrected full-mode startup medians were live 624 ms and candidate 1641 ms;
 timing-only medians were live 738 ms and candidate 667 ms. Full-mode candidate
@@ -12,12 +12,13 @@ not established. Timing-only passes cannot replace required full evidence.
 The 750 ms limit remains, production is unchanged and no promotion occurred.
 
 Both runs and their distinct measurement methods are retained in the candidate
-JSON. No application speedup or regression-free claim is supported. Next work
+JSON. PR18 contains the timing correction and evidence. No application speedup or
+regression-free claim is supported. Next work
 should inspect immutable preview document delivery and its provider timings,
 not repeatedly run the same gate until a sample passes. Temporary preview
 access was restored to false/false at 18:07:36Z with provider readback.
 
-Local typecheck/lint passed;168/171 Vitest tests passed, with three existing CF
+Local typecheck/lint passed; 168/171 Vitest tests passed, with three existing CF
 fixture subprocesses hitting their five-second bounds. No local gate receipt
 was issued. The same source's full CI gate passed. No local browser was launched
 for this investigation. The exact legal patch still awaits owner approval.
