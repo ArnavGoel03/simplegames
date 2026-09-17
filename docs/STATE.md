@@ -1,5 +1,18 @@
 # Glass Table Games: state of play
 
+## 17 September 2026: timing correction merged, production unchanged
+
+PR18 merged as `1010336979bd7169988961f9fc58280c3eb6f1fe`. Its exact head
+`d7a3216a9d7922046e9cd879973c742dd5d2458c` passed run `35257084861`:
+toolchain/typecheck/lint/tests, production build, responsive capture and startup
+recovery controls. Canonical main is synchronized. This merged verification
+code and evidence; no Cloudflare production promotion was performed.
+
+The corrected preview performance result below still blocks the privacy-fix
+release. Its underlying first-byte delivery cause remains unproven; no further
+performance retries were run after the bounded comparison. Preview access
+remains restored to false/false. Legal wording remains pending owner approval.
+
 ## 17 September 2026: corrected timer validated, preview TTFB blocks promotion
 
 Shared timing correction `69fa6f2` passed the complete remote gate (171 Vitest
