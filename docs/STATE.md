@@ -1,5 +1,23 @@
 # Glass Table Games: state of play
 
+## 17 September 2026: startup measurement correction in review
+
+Controlled WebKit run `35255381820` completed twelve alternating live/candidate
+samples without diagnostic requests. Full-mode startup medians were live838 ms
+and candidate875 ms; timing-only medians were live895 ms and candidate676 ms.
+These samples do not establish a consistent application regression. They exposed
+126-184 ms of delay after app readiness in eleven trials and774 ms in one,
+although fonts/CSS were already loaded and frame cadence was16 ms.
+
+The shared timer now captures DOM/app readiness, font readiness and two frames
+inside the browser, independently of driver/source-verification delay. Both
+instrumentation modes use that timer. The original final-read time is retained
+as `observedMs`, with `driverDelayMs` reported separately. Four calibrated tests
+cover withheld conditions, event ordering, delayed reads and font rejection;
+all30 browser-evidence tests and targeted lint pass. The750 ms limit, exact
+source verification and stylesheet checks are unchanged. This is a measurement
+correction, not an application speedup. Comparable browser evidence is pending.
+
 ## 17 September 2026: controlled WebKit diagnosis
 
 A separate `fix/studio-performance-comparison` branch corrects the diagnostic

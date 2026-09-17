@@ -1,7 +1,84 @@
 import { describe, expect, it, vi } from "vitest";
 import { runInNewContext } from "node:vm";
-import { networkVerdict, observeFetchSignals, observeFragmentNavigation, observeResponseStreams, omitServiceWorkerCapability, parseCandidates, predecessorWorkerVersion, siteKey } from "./browser-evidence.mjs";
+import { networkVerdict, observePerformanceTiming, startupMeasurement, observeFetchSignals, observeFragmentNavigation, observeResponseStreams, omitServiceWorkerCapability, parseCandidates, predecessorWorkerVersion, siteKey } from "./browser-evidence.mjs";
 import { startWorkerClient } from "../src/lib/pwa/worker-client.ts";
+
+describe("browser-side startup capture", () => {
+  function fixture(readyState = "loading") {
+    const window = new EventTarget();
+    const document = Object.assign(new EventTarget(), { readyState,
+      querySelectorAll: () => [{ sheet: {} }] });
+    let finishFonts;
+    let failFonts;
+    const fonts = new Promise((resolve, reject) => { finishFonts = resolve; failFonts = reject; });
+    let fontReads = 0;
+    document.fonts = { get ready() { fontReads++; return fonts; } };
+    const frames = [];
+    let now = 0;
+    const context = { window, document, performance: { now: () => now,
+      getEntriesByType: type => type === "navigation" ? [{ domContentLoadedEventEnd: 20 }] : [] },
+      PerformanceObserver: { supportedEntryTypes: [] }, requestAnimationFrame: callback => frames.push(callback) };
+    runInNewContext(`(${observePerformanceTiming.toString()})()`, context);
+    return { window, document, context, frames, finishFonts, failFonts, fontReads: () => fontReads,
+      now: value => { now = value; }, flush: () => new Promise(setImmediate),
+      frame(value) { now = value; frames.shift()(value); } };
+  }
+
+  for (const first of ["dom", "app"]) it(`waits for both readiness signals when ${first} arrives first, then fonts and two frames`, async () => {
+    const f = fixture();
+    const dom = () => f.document.dispatchEvent(new Event("DOMContentLoaded"));
+    const app = () => f.window.dispatchEvent(new Event("gtg:app-ready"));
+    f.now(10);
+    (first === "dom" ? dom : app)();
+    await f.flush();
+    expect(f.fontReads()).toBe(0);
+    expect(f.window.gtgPerformance.startupMs).toBeNull();
+    f.now(20);
+    (first === "dom" ? app : dom)();
+    await f.flush();
+    expect(f.fontReads()).toBe(1);
+    expect(f.frames).toHaveLength(0);
+    f.finishFonts();
+    await f.flush();
+    expect(f.frames).toHaveLength(1);
+    f.frame(36);
+    await f.flush();
+    expect(f.window.gtgPerformance.startupMs).toBeNull();
+    f.frame(52);
+    await f.flush();
+    expect(f.window.gtgPerformance.startupMs).toBe(52);
+    f.now(900);
+    f.window.dispatchEvent(new Event("gtg:app-ready"));
+    expect(f.window.gtgPerformance.startupMs).toBe(52);
+    const page = {
+      waitForFunction: async predicate => expect(runInNewContext(`(${predicate.toString()})()`, f.context)).toBe(true),
+      evaluate: async callback => runInNewContext(`(${callback.toString()})()`, f.context),
+    };
+    expect(await startupMeasurement(page)).toMatchObject({ startupMs: 52, observedMs: 900, driverDelayMs: 848, stylesReady: true });
+  });
+
+  it("supports an already parsed document without skipping app readiness or fonts", async () => {
+    const f = fixture("interactive");
+    await f.flush();
+    expect(f.fontReads()).toBe(0);
+    f.window.dispatchEvent(new Event("gtg:app-ready"));
+    await f.flush();
+    expect(f.fontReads()).toBe(1);
+    expect(f.window.gtgPerformance.startupMs).toBeNull();
+  });
+
+  it("surfaces rejected font readiness instead of passing or waiting forever", async () => {
+    const f = fixture("complete");
+    f.window.dispatchEvent(new Event("gtg:app-ready"));
+    await f.flush();
+    f.failFonts(new Error("font readiness failed"));
+    await f.flush();
+    expect(f.window.gtgPerformance.startupMs).toBeNull();
+    expect(f.window.gtgPerformance.startupError).toContain("font readiness failed");
+    const page = { waitForFunction: async () => {}, evaluate: async callback => runInNewContext(`(${callback.toString()})()`, f.context) };
+    await expect(startupMeasurement(page)).rejects.toThrow("font readiness failed");
+  });
+});
 
 describe("cold performance capability isolation", () => {
   async function client(omit, register = async () => undefined) {

@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { mkdir, writeFile } from "node:fs/promises";
 import { chromium, webkit } from "playwright";
-import { candidates, engine, instrument, omitServiceWorkerCapability, output, startupMeasurement, timedFragmentClick } from "./browser-evidence.mjs";
+import { candidates, engine, instrument, observePerformanceTiming, omitServiceWorkerCapability, output, startupMeasurement, timedFragmentClick } from "./browser-evidence.mjs";
 
 // Diagnostic comparison only. No release evidence or performance policy changes.
 const candidate = candidates.find(item => item.site === "studio");
@@ -15,21 +15,6 @@ const report = { schema: 1, purpose: "same-run studio performance comparison", e
   samples: [] };
 let browser;
 let deadline;
-
-// Timing-only control uses the same event and two-frame definition as instrument.
-// It deliberately omits network wrappers and browser-to-Node observation calls.
-function timingOnly() {
-  window.gtgPerformance = { lcpMs: null, interactions: [], readyMs: null };
-  window.addEventListener("gtg:app-ready", () => { window.gtgPerformance.readyMs = performance.now(); }, { once: true });
-  if (PerformanceObserver.supportedEntryTypes.includes("largest-contentful-paint")) {
-    new PerformanceObserver(list => { window.gtgPerformance.lcpMs = list.getEntries().at(-1).startTime; })
-      .observe({ type: "largest-contentful-paint", buffered: true });
-  }
-  window.addEventListener("click", () => {
-    const start = performance.now();
-    requestAnimationFrame(() => requestAnimationFrame(() => window.gtgPerformance.interactions.push(performance.now() - start)));
-  }, true);
-}
 
 // Local-only observations are identical in both modes. No protocol calls or
 // geometry reads happen during the measured click and its animation frames.
@@ -101,7 +86,7 @@ async function trial(target, mode, sample) {
   try {
     result.blankFrames = await frames(page);
     if (mode === "full") probe = await instrument(page);
-    else await page.addInitScript(timingOnly);
+    else await page.addInitScript(observePerformanceTiming);
     await page.addInitScript(diagnosticTiming);
     page.on("pageerror", error => result.errors.push(error.message));
     const response = await page.goto(target.origin, { waitUntil: "domcontentloaded", timeout: 20_000 });

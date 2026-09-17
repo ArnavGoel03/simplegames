@@ -263,7 +263,7 @@ try {
     }
     const interactionMetric = site.id === "studio" ? "games-navigation" : "interaction";
     performanceResults.push({ site: site.id, engine, observedSourceHead, samples, interactionMs: interactions, interactionMetric,
-      definition: `startup: navigation to loaded styles/fonts and two animation frames; ${interactionMetric}: trusted existing-control click to ${site.id === "studio" ? "completed fragment scroll and two further stable frames" : "two animation frames"}; fresh browser context per sample` });
+      definition: `startup: navigation to DOM and app readiness, loaded fonts, then two animation frames, timestamped inside the browser; loaded styles validated separately; ${interactionMetric}: trusted existing-control click to ${site.id === "studio" ? "completed fragment scroll and two further stable frames" : "two animation frames"}; fresh browser context per sample` });
     await recordEvidence(site.id, observedSourceHead, [{ id: "startup", status: "passed" }], [
       { id: "startup", unit: "ms", samples: samples.map(item => item.startupMs) },
       { id: interactionMetric, unit: "ms", samples: interactions },
