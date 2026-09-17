@@ -1,5 +1,57 @@
 # Glass Table Games: state of play
 
+## 17 September 2026: corrected timer validated, preview TTFB blocks promotion
+
+Shared timing correction `69fa6f2` passed the complete remote gate (171 Vitest
+and 33 release tests) and twelve paired WebKit trials in run `35256413594`.
+Corrected full-mode startup medians were live 624 ms and candidate 1641 ms;
+timing-only medians were live 738 ms and candidate 667 ms. Full-mode candidate
+document TTFB was 1009/499/2077 ms, before application execution. This identifies
+first-byte waiting as a major blocker; the underlying transport/edge cause is
+not established. Timing-only passes cannot replace required full evidence.
+The 750 ms limit remains, production is unchanged and no promotion occurred.
+
+Both runs and their distinct measurement methods are retained in the candidate
+JSON. PR18 contains the timing correction and evidence. No application speedup or
+regression-free claim is supported. Next work
+should inspect immutable preview document delivery and its provider timings,
+not repeatedly run the same gate until a sample passes. Temporary preview
+access was restored to false/false at 18:07:36Z with provider readback.
+
+Local typecheck/lint passed; 168/171 Vitest tests passed, with three existing CF
+fixture subprocesses hitting their five-second bounds. No local gate receipt
+was issued. The same source's full CI gate passed. No local browser was launched
+for this investigation. The exact legal patch still awaits owner approval.
+
+## 17 September 2026: startup measurement correction in review
+
+Controlled WebKit run `35255381820` completed twelve alternating live/candidate
+samples without diagnostic requests. Full-mode startup medians were live838 ms
+and candidate875 ms; timing-only medians were live895 ms and candidate676 ms.
+These samples do not establish a consistent application regression. They exposed
+126-184 ms of delay after app readiness in eleven trials and774 ms in one,
+although fonts/CSS were already loaded and frame cadence was16 ms.
+
+The shared timer now captures DOM/app readiness, font readiness and two frames
+inside the browser, independently of driver/source-verification delay. Both
+instrumentation modes use that timer. The original final-read time is retained
+as `observedMs`, with `driverDelayMs` reported separately. Four calibrated tests
+cover withheld conditions, event ordering, delayed reads and font rejection;
+all30 browser-evidence tests and targeted lint pass. The750 ms limit, exact
+source verification and stylesheet checks are unchanged. This is a measurement
+correction, not an application speedup. Comparable browser evidence is recorded above.
+
+## 17 September 2026: controlled WebKit diagnosis
+
+A separate `fix/studio-performance-comparison` branch corrects the diagnostic
+probe's missing service-worker capability isolation. The canonical release
+harness already uses that control. It compares unchanged live bdd9c16 with
+immutable candidate63a9c5f on the same runner, preserving the 750 ms gate and
+recording waterfall/frame observations. No public code or legal copy changes.
+Preview access is reopened temporarily for this bounded comparison and must be
+restored afterward. Candidate identity and refused-release evidence are retained
+in `docs/quality/studio-privacy-candidate-2026-09-17.json`.
+
 ## 17 September 2026: privacy fix merged, deployment held by WebKit timing
 
 Production remains **0.5.2**, source `bdd9c16`, Worker

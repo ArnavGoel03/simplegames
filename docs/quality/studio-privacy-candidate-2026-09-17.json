@@ -1,0 +1,621 @@
+{
+  "candidate": {
+    "schema": 1,
+    "kind": "candidate",
+    "site": "studio",
+    "worker": "glasstablegames",
+    "sourceHead": "63a9c5ff3be9d2d9848eb12527fb667b47280c4f",
+    "sourceFingerprint": "18db658204ebcb7fa7305aa304f96580b0934a5886776d3997873667f5c63f4c",
+    "buildSource": "ba19fa2342044658a81a7652ec7bcbf13479e02ed5b2df8bd8aa56fcb80af7b0",
+    "buildOutput": "cb0135dd50698a5f268c3bb3627360ba155874756895ae420cdc9b46e943feee",
+    "candidateVersion": "143a7877-805b-479b-a8e9-e39392e0f896",
+    "origin": "https://143a7877-glasstablegames.goelhome.workers.dev",
+    "recordedAt": "2026-09-17T17:23:15.206Z",
+    "upload": {
+      "command": [
+        "wrangler",
+        "versions",
+        "upload"
+      ],
+      "startedAt": "2026-09-17T17:22:52.508Z",
+      "durationMs": 20375,
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "logDigest": "e44e896c2a7d4e6dafc51a4bc47cc83a0b948f10b27ef9831bb342cfe4882c78"
+    }
+  },
+  "gate": {
+    "schema": 1,
+    "kind": "gate",
+    "sourceHead": "63a9c5ff3be9d2d9848eb12527fb667b47280c4f",
+    "sourceFingerprint": "18db658204ebcb7fa7305aa304f96580b0934a5886776d3997873667f5c63f4c",
+    "outcome": {
+      "command": [
+        "npm",
+        "run",
+        "gate"
+      ],
+      "startedAt": "2026-09-17T17:15:22.599Z",
+      "durationMs": 37321,
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "logDigest": "933b757f46ae57802a6fe06268705729e4ac25758165e19c265912f766c09411"
+    },
+    "measurements": [
+      {
+        "id": "verify:toolchain",
+        "unit": "ms",
+        "samples": [
+          1262
+        ]
+      },
+      {
+        "id": "typecheck",
+        "unit": "ms",
+        "samples": [
+          891
+        ]
+      },
+      {
+        "id": "lint",
+        "unit": "ms",
+        "samples": [
+          6095
+        ]
+      },
+      {
+        "id": "pretest",
+        "unit": "ms",
+        "samples": [
+          211
+        ]
+      },
+      {
+        "id": "test",
+        "unit": "ms",
+        "samples": [
+          28085
+        ]
+      },
+      {
+        "id": "test:release",
+        "unit": "ms",
+        "samples": [
+          398
+        ]
+      }
+    ],
+    "log": "gate.log",
+    "verifiedMetrics": [
+      {
+        "id": "typecheck",
+        "actual": 891,
+        "limit": 900,
+        "baselineDigest": "dc2a17e4203dc1d5452a267a412a7e85569ab776363dd7ae8771705549c61d56"
+      }
+    ]
+  },
+  "webkitLastFunctionalEvidence": {
+    "schema": 1,
+    "reports": [
+      {
+        "schema": 1,
+        "kind": "candidate",
+        "site": "studio",
+        "worker": "glasstablegames",
+        "sourceHead": "63a9c5ff3be9d2d9848eb12527fb667b47280c4f",
+        "sourceFingerprint": "18db658204ebcb7fa7305aa304f96580b0934a5886776d3997873667f5c63f4c",
+        "buildSource": "ba19fa2342044658a81a7652ec7bcbf13479e02ed5b2df8bd8aa56fcb80af7b0",
+        "buildOutput": "cb0135dd50698a5f268c3bb3627360ba155874756895ae420cdc9b46e943feee",
+        "candidateVersion": "143a7877-805b-479b-a8e9-e39392e0f896",
+        "origin": "https://143a7877-glasstablegames.goelhome.workers.dev",
+        "recordedAt": "2026-09-17T17:23:15.206Z",
+        "upload": {
+          "command": [
+            "wrangler",
+            "versions",
+            "upload"
+          ],
+          "startedAt": "2026-09-17T17:22:52.508Z",
+          "durationMs": 20375,
+          "exitCode": 0,
+          "signal": null,
+          "error": null,
+          "logDigest": "e44e896c2a7d4e6dafc51a4bc47cc83a0b948f10b27ef9831bb342cfe4882c78"
+        },
+        "browsers": [
+          {
+            "engine": "webkit",
+            "observedSourceHead": "63a9c5ff3be9d2d9848eb12527fb667b47280c4f",
+            "checks": [
+              {
+                "id": "responsive",
+                "status": "passed"
+              },
+              {
+                "id": "entry",
+                "status": "passed"
+              },
+              {
+                "id": "startup",
+                "status": "passed"
+              },
+              {
+                "id": "network",
+                "status": "passed"
+              },
+              {
+                "id": "failed-css",
+                "status": "passed"
+              },
+              {
+                "id": "offline",
+                "status": "passed",
+                "mechanism": "Exact candidate worker runtime with acknowledged navigator.onLine=false test environment; actual fixture HTTP origin stopped; uncached request failure calibrated",
+                "limitation": "Controlled worker-branch verification, not WebKit native offline-toggle or physical-device certification; candidate online source/styles checked separately",
+                "workerSha256": "d59691ae586e457c1309a57da7c648bc41954347f81c321a3ae8232ffbb83b68",
+                "environmentSha256": "a4f54054b832075dd1f791bbe61da511e35b8e9b6b043b9239e5ab26fe5f176a",
+                "transportControl": {
+                  "upstreamStopped": true,
+                  "uncachedFetchFailed": true,
+                  "workerOnline": false
+                }
+              },
+              {
+                "id": "update",
+                "status": "passed"
+              }
+            ],
+            "measurements": [
+              {
+                "id": "startup",
+                "unit": "ms",
+                "samples": [
+                  789,
+                  1049,
+                  840
+                ]
+              },
+              {
+                "id": "games-navigation",
+                "unit": "ms",
+                "samples": [
+                  145,
+                  91,
+                  145
+                ]
+              },
+              {
+                "id": "initial-assets",
+                "unit": "bytes",
+                "samples": [
+                  511461,
+                  511461,
+                  511461
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "timingInvestigation": {
+    "recordedAt": "2026-09-17T17:38:54.546186+00:00",
+    "candidateVersion": "143a7877-805b-479b-a8e9-e39392e0f896",
+    "candidateSource": "63a9c5ff3be9d2d9848eb12527fb667b47280c4f",
+    "candidateRun": 35252439698,
+    "candidateAttempt": 2,
+    "candidateArtifact": 10512335536,
+    "candidateStartupMs": [
+      1136,
+      1001,
+      964
+    ],
+    "liveSource": "bdd9c1695de829c6c3f6942075628fde83475f35",
+    "liveRun": 35253516416,
+    "liveArtifact": 10512361474,
+    "liveStartupMs": [
+      1186,
+      601,
+      754
+    ],
+    "unchangedLimitMs": 750,
+    "decision": "No promotion on failed timing receipt; one further unchanged-candidate WebKit run after current live baseline showed variable timing. No budget change."
+  },
+  "previewAccess": "disabled after prior bounded checks; reopen temporarily for same-run comparison",
+  "scope": "Candidate source63a9c5f is immutable and distinct from live bdd9c16. These receipts document a refused release, not a promotion.",
+  "controlledComparisons": [
+    {
+      "runId": 35255381820,
+      "artifactId": 10512214632,
+      "method": "driver-final-read",
+      "purpose": "diagnosis only, not release evidence",
+      "samples": [
+        {
+          "mode": "full",
+          "target": "live",
+          "sample": 0,
+          "sourceHead": "bdd9c1695de829c6c3f6942075628fde83475f35",
+          "startupMs": 1402,
+          "appReadyMs": 628,
+          "observedMs": null,
+          "driverDelayMs": null,
+          "documentTtfbMs": 277,
+          "documentResponseEndMs": 361,
+          "diagnosticRequests": 0,
+          "fontsEndMs": 398,
+          "cssEndMs": 398
+        },
+        {
+          "mode": "full",
+          "target": "candidate",
+          "sample": 0,
+          "sourceHead": "63a9c5ff3be9d2d9848eb12527fb667b47280c4f",
+          "startupMs": 951,
+          "appReadyMs": 767,
+          "observedMs": null,
+          "driverDelayMs": null,
+          "documentTtfbMs": 385,
+          "documentResponseEndMs": 432,
+          "diagnosticRequests": 0,
+          "fontsEndMs": 528,
+          "cssEndMs": 533
+        },
+        {
+          "mode": "timing",
+          "target": "candidate",
+          "sample": 0,
+          "sourceHead": "63a9c5ff3be9d2d9848eb12527fb667b47280c4f",
+          "startupMs": 974,
+          "appReadyMs": 808,
+          "observedMs": null,
+          "driverDelayMs": null,
+          "documentTtfbMs": 333,
+          "documentResponseEndMs": 426,
+          "diagnosticRequests": 0,
+          "fontsEndMs": 549,
+          "cssEndMs": 509
+        },
+        {
+          "mode": "timing",
+          "target": "live",
+          "sample": 0,
+          "sourceHead": "bdd9c1695de829c6c3f6942075628fde83475f35",
+          "startupMs": 895,
+          "appReadyMs": 763,
+          "observedMs": null,
+          "driverDelayMs": null,
+          "documentTtfbMs": 455,
+          "documentResponseEndMs": 497,
+          "diagnosticRequests": 0,
+          "fontsEndMs": 537,
+          "cssEndMs": 531
+        },
+        {
+          "mode": "full",
+          "target": "candidate",
+          "sample": 1,
+          "sourceHead": "63a9c5ff3be9d2d9848eb12527fb667b47280c4f",
+          "startupMs": 875,
+          "appReadyMs": 722,
+          "observedMs": null,
+          "driverDelayMs": null,
+          "documentTtfbMs": 177,
+          "documentResponseEndMs": 261,
+          "diagnosticRequests": 0,
+          "fontsEndMs": 428,
+          "cssEndMs": 401
+        },
+        {
+          "mode": "full",
+          "target": "live",
+          "sample": 1,
+          "sourceHead": "bdd9c1695de829c6c3f6942075628fde83475f35",
+          "startupMs": 468,
+          "appReadyMs": 322,
+          "observedMs": null,
+          "driverDelayMs": null,
+          "documentTtfbMs": 24,
+          "documentResponseEndMs": 58,
+          "diagnosticRequests": 0,
+          "fontsEndMs": 93,
+          "cssEndMs": 89
+        },
+        {
+          "mode": "timing",
+          "target": "live",
+          "sample": 1,
+          "sourceHead": "bdd9c1695de829c6c3f6942075628fde83475f35",
+          "startupMs": 969,
+          "appReadyMs": 843,
+          "observedMs": null,
+          "driverDelayMs": null,
+          "documentTtfbMs": 467,
+          "documentResponseEndMs": 533,
+          "diagnosticRequests": 0,
+          "fontsEndMs": 593,
+          "cssEndMs": 597
+        },
+        {
+          "mode": "timing",
+          "target": "candidate",
+          "sample": 1,
+          "sourceHead": "63a9c5ff3be9d2d9848eb12527fb667b47280c4f",
+          "startupMs": 563,
+          "appReadyMs": 428,
+          "observedMs": null,
+          "driverDelayMs": null,
+          "documentTtfbMs": 66,
+          "documentResponseEndMs": 120,
+          "diagnosticRequests": 0,
+          "fontsEndMs": 198,
+          "cssEndMs": 200
+        },
+        {
+          "mode": "full",
+          "target": "live",
+          "sample": 2,
+          "sourceHead": "bdd9c1695de829c6c3f6942075628fde83475f35",
+          "startupMs": 838,
+          "appReadyMs": 666,
+          "observedMs": null,
+          "driverDelayMs": null,
+          "documentTtfbMs": 236,
+          "documentResponseEndMs": 287,
+          "diagnosticRequests": 0,
+          "fontsEndMs": 346,
+          "cssEndMs": 330
+        },
+        {
+          "mode": "full",
+          "target": "candidate",
+          "sample": 2,
+          "sourceHead": "63a9c5ff3be9d2d9848eb12527fb667b47280c4f",
+          "startupMs": 676,
+          "appReadyMs": 492,
+          "observedMs": null,
+          "driverDelayMs": null,
+          "documentTtfbMs": 42,
+          "documentResponseEndMs": 78,
+          "diagnosticRequests": 0,
+          "fontsEndMs": 158,
+          "cssEndMs": 147
+        },
+        {
+          "mode": "timing",
+          "target": "candidate",
+          "sample": 2,
+          "sourceHead": "63a9c5ff3be9d2d9848eb12527fb667b47280c4f",
+          "startupMs": 676,
+          "appReadyMs": 542,
+          "observedMs": null,
+          "driverDelayMs": null,
+          "documentTtfbMs": 81,
+          "documentResponseEndMs": 168,
+          "diagnosticRequests": 0,
+          "fontsEndMs": 299,
+          "cssEndMs": 294
+        },
+        {
+          "mode": "timing",
+          "target": "live",
+          "sample": 2,
+          "sourceHead": "bdd9c1695de829c6c3f6942075628fde83475f35",
+          "startupMs": 663,
+          "appReadyMs": 480,
+          "observedMs": null,
+          "driverDelayMs": null,
+          "documentTtfbMs": 47,
+          "documentResponseEndMs": 115,
+          "diagnosticRequests": 0,
+          "fontsEndMs": 175,
+          "cssEndMs": 147
+        }
+      ]
+    },
+    {
+      "runId": 35256413594,
+      "artifactId": 10512861234,
+      "method": "browser-readiness-capture",
+      "purpose": "diagnosis only, not release evidence",
+      "samples": [
+        {
+          "mode": "full",
+          "target": "live",
+          "sample": 0,
+          "sourceHead": "bdd9c1695de829c6c3f6942075628fde83475f35",
+          "startupMs": 1042,
+          "appReadyMs": 654,
+          "observedMs": 1110,
+          "driverDelayMs": 68,
+          "documentTtfbMs": 306,
+          "documentResponseEndMs": 445,
+          "diagnosticRequests": 0,
+          "fontsEndMs": 513,
+          "cssEndMs": 491
+        },
+        {
+          "mode": "full",
+          "target": "candidate",
+          "sample": 0,
+          "sourceHead": "63a9c5ff3be9d2d9848eb12527fb667b47280c4f",
+          "startupMs": 1641,
+          "appReadyMs": 1530,
+          "observedMs": 1660,
+          "driverDelayMs": 19,
+          "documentTtfbMs": 1009,
+          "documentResponseEndMs": 1192,
+          "diagnosticRequests": 0,
+          "fontsEndMs": 1441,
+          "cssEndMs": 1334
+        },
+        {
+          "mode": "timing",
+          "target": "candidate",
+          "sample": 0,
+          "sourceHead": "63a9c5ff3be9d2d9848eb12527fb667b47280c4f",
+          "startupMs": 844,
+          "appReadyMs": 760,
+          "observedMs": 859,
+          "driverDelayMs": 15,
+          "documentTtfbMs": 382,
+          "documentResponseEndMs": 505,
+          "diagnosticRequests": 0,
+          "fontsEndMs": 636,
+          "cssEndMs": 604
+        },
+        {
+          "mode": "timing",
+          "target": "live",
+          "sample": 0,
+          "sourceHead": "bdd9c1695de829c6c3f6942075628fde83475f35",
+          "startupMs": 764,
+          "appReadyMs": 679,
+          "observedMs": 780,
+          "driverDelayMs": 16,
+          "documentTtfbMs": 360,
+          "documentResponseEndMs": 486,
+          "diagnosticRequests": 0,
+          "fontsEndMs": 557,
+          "cssEndMs": 558
+        },
+        {
+          "mode": "full",
+          "target": "candidate",
+          "sample": 1,
+          "sourceHead": "63a9c5ff3be9d2d9848eb12527fb667b47280c4f",
+          "startupMs": 1200,
+          "appReadyMs": 1137,
+          "observedMs": 1216,
+          "driverDelayMs": 16,
+          "documentTtfbMs": 499,
+          "documentResponseEndMs": 576,
+          "diagnosticRequests": 0,
+          "fontsEndMs": 968,
+          "cssEndMs": 963
+        },
+        {
+          "mode": "full",
+          "target": "live",
+          "sample": 1,
+          "sourceHead": "bdd9c1695de829c6c3f6942075628fde83475f35",
+          "startupMs": 624,
+          "appReadyMs": 565,
+          "observedMs": 646,
+          "driverDelayMs": 22,
+          "documentTtfbMs": 286,
+          "documentResponseEndMs": 356,
+          "diagnosticRequests": 0,
+          "fontsEndMs": 413,
+          "cssEndMs": 389
+        },
+        {
+          "mode": "timing",
+          "target": "live",
+          "sample": 1,
+          "sourceHead": "bdd9c1695de829c6c3f6942075628fde83475f35",
+          "startupMs": 738,
+          "appReadyMs": 667,
+          "observedMs": 754,
+          "driverDelayMs": 16,
+          "documentTtfbMs": 398,
+          "documentResponseEndMs": 480,
+          "diagnosticRequests": 0,
+          "fontsEndMs": 533,
+          "cssEndMs": 533
+        },
+        {
+          "mode": "timing",
+          "target": "candidate",
+          "sample": 1,
+          "sourceHead": "63a9c5ff3be9d2d9848eb12527fb667b47280c4f",
+          "startupMs": 469,
+          "appReadyMs": 409,
+          "observedMs": 485,
+          "driverDelayMs": 16,
+          "documentTtfbMs": 62,
+          "documentResponseEndMs": 131,
+          "diagnosticRequests": 0,
+          "fontsEndMs": 241,
+          "cssEndMs": 236
+        },
+        {
+          "mode": "full",
+          "target": "live",
+          "sample": 2,
+          "sourceHead": "bdd9c1695de829c6c3f6942075628fde83475f35",
+          "startupMs": 366,
+          "appReadyMs": 298,
+          "observedMs": 381,
+          "driverDelayMs": 15,
+          "documentTtfbMs": 47,
+          "documentResponseEndMs": 114,
+          "diagnosticRequests": 0,
+          "fontsEndMs": 167,
+          "cssEndMs": 168
+        },
+        {
+          "mode": "full",
+          "target": "candidate",
+          "sample": 2,
+          "sourceHead": "63a9c5ff3be9d2d9848eb12527fb667b47280c4f",
+          "startupMs": 2508,
+          "appReadyMs": 2429,
+          "observedMs": 2528,
+          "driverDelayMs": 20,
+          "documentTtfbMs": 2077,
+          "documentResponseEndMs": 2160,
+          "diagnosticRequests": 0,
+          "fontsEndMs": 2276,
+          "cssEndMs": 2239
+        },
+        {
+          "mode": "timing",
+          "target": "candidate",
+          "sample": 2,
+          "sourceHead": "63a9c5ff3be9d2d9848eb12527fb667b47280c4f",
+          "startupMs": 667,
+          "appReadyMs": 597,
+          "observedMs": 697,
+          "driverDelayMs": 30,
+          "documentTtfbMs": 123,
+          "documentResponseEndMs": 296,
+          "diagnosticRequests": 0,
+          "fontsEndMs": 477,
+          "cssEndMs": 423
+        },
+        {
+          "mode": "timing",
+          "target": "live",
+          "sample": 2,
+          "sourceHead": "bdd9c1695de829c6c3f6942075628fde83475f35",
+          "startupMs": 551,
+          "appReadyMs": 493,
+          "observedMs": 589,
+          "driverDelayMs": 38,
+          "documentTtfbMs": 83,
+          "documentResponseEndMs": 207,
+          "diagnosticRequests": 0,
+          "fontsEndMs": 315,
+          "cssEndMs": 281
+        }
+      ]
+    }
+  ],
+  "measurementCorrection": {
+    "sourceHead": "69fa6f2357ebf6de89ff956c269a158c4d3827dd",
+    "unchangedStartupBudgetMs": 750,
+    "calibratedBrowserEvidenceTests": 30,
+    "remoteGate": "passed all171 Vitest and33 release tests",
+    "localGate": "typecheck and lint passed;168/171 Vitest passed, three existing CF fixture subprocesses timed out; no successful receipt",
+    "outcome": "No promotion. Corrected full-mode candidate startup median1641ms exceeds750ms. Candidate document TTFB1009/499/2077ms precedes app execution; underlying transport/edge cause remains unproven. Timing-only candidate median667ms is diagnostic only and cannot replace full release measurement.",
+    "previewSettingsRestoredAt": "2026-09-17T18:07:36.205Z",
+    "previewSettingsObserved": {
+      "enabled": false,
+      "previews_enabled": false
+    }
+  }
+}

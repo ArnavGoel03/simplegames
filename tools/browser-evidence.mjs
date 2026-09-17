@@ -317,18 +317,10 @@ export async function instrument(page) {
   });
   await page.addInitScript(observeFetchSignals);
   await page.addInitScript(observeResponseStreams);
+  await page.addInitScript(observePerformanceTiming);
   await page.addInitScript(() => {
-    window.gtgPerformance = { lcpMs: null, interactions: [], readyMs: null };
     for (const event of ["pagehide", "beforeunload"]) window.addEventListener(event, () => { void window.recordLifecycle(event); });
     navigator.serviceWorker?.addEventListener("controllerchange", () => { void window.recordLifecycle("service-worker-controllerchange"); });
-    window.addEventListener("gtg:app-ready", () => { window.gtgPerformance.readyMs = performance.now(); }, { once: true });
-    if (PerformanceObserver.supportedEntryTypes.includes("largest-contentful-paint")) {
-      new PerformanceObserver(list => { window.gtgPerformance.lcpMs = list.getEntries().at(-1).startTime; }).observe({ type: "largest-contentful-paint", buffered: true });
-    }
-    window.addEventListener("click", () => {
-      const start = performance.now();
-      requestAnimationFrame(() => requestAnimationFrame(() => window.gtgPerformance.interactions.push(performance.now() - start)));
-    }, true);
   });
   if (engine === "chromium") await observeChromiumRequests(page, event => add({ ...event, kind: `native-${event.kind}` }));
   return { trace, errors, failed, counts, mark: event => add({ kind: "harness", event }) };
@@ -347,17 +339,43 @@ export function omitServiceWorkerCapability() {
   if ("serviceWorker" in navigator) throw new Error("Cannot isolate service worker capability");
 }
 
+// Capture readiness in the page clock, independently of source-verification and
+// driver round trips. Both full instrumentation and timing controls use this.
+export function observePerformanceTiming() {
+  const state = window.gtgPerformance = { lcpMs: null, interactions: [], readyMs: null, startupMs: null, startupError: null };
+  const domReady = document.readyState === "loading"
+    ? new Promise(resolve => document.addEventListener("DOMContentLoaded", resolve, { once: true }))
+    : Promise.resolve();
+  const appReady = new Promise(resolve => window.addEventListener("gtg:app-ready", () => {
+    state.readyMs = performance.now();
+    resolve();
+  }, { once: true }));
+  Promise.all([domReady, appReady])
+    .then(() => document.fonts.ready)
+    .then(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))))
+    .then(() => { state.startupMs = performance.now(); })
+    .catch(error => { state.startupError = String(error); });
+  if (PerformanceObserver.supportedEntryTypes.includes("largest-contentful-paint")) {
+    new PerformanceObserver(list => { state.lcpMs = list.getEntries().at(-1).startTime; }).observe({ type: "largest-contentful-paint", buffered: true });
+  }
+  window.addEventListener("click", () => {
+    const start = performance.now();
+    requestAnimationFrame(() => requestAnimationFrame(() => state.interactions.push(performance.now() - start)));
+  }, true);
+}
+
 export async function startupMeasurement(page) {
-  await page.waitForFunction(() => window.gtgPerformance.readyMs !== null, undefined, { timeout: 15_000 });
-  await page.evaluate(() => document.fonts.ready);
-  await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+  await page.waitForFunction(() => window.gtgPerformance.startupMs !== null || window.gtgPerformance.startupError !== null, undefined, { timeout: 15_000 });
   return page.evaluate(() => {
+    if (window.gtgPerformance.startupError !== null) throw new Error(window.gtgPerformance.startupError);
     const navigation = performance.getEntriesByType("navigation")[0];
     const assets = performance.getEntriesByType("resource").filter(entry => /\/_next\/static\/.*\.(?:js|css)(?:\?|$)/.test(entry.name));
     const js = assets.filter(entry => /\.js(?:\?|$)/.test(entry.name));
     const css = assets.filter(entry => /\.css(?:\?|$)/.test(entry.name));
     const loadedStyles = [...document.querySelectorAll('link[rel="stylesheet"]')];
-    return { startupMs: performance.now(), domReadyMs: navigation.domContentLoadedEventEnd,
+    const observedMs = performance.now();
+    return { startupMs: window.gtgPerformance.startupMs, observedMs,
+      driverDelayMs: observedMs - window.gtgPerformance.startupMs, domReadyMs: navigation.domContentLoadedEventEnd,
       appReadyMs: window.gtgPerformance.readyMs, lcpMs: window.gtgPerformance.lcpMs,
       decodedJsBytes: js.reduce((sum, entry) => sum + entry.decodedBodySize, 0),
       decodedCssBytes: css.reduce((sum, entry) => sum + entry.decodedBodySize, 0),
