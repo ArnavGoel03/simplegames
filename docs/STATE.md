@@ -1,5 +1,18 @@
 # Glass Table Games: state of play
 
+## Stable stack upgrade candidate, 18 September 2026
+
+Isolated branch `chore/stable-stack-20260918` upgrades Next16.3.5, React19.3.0,
+OpenNext1.20.6, Wrangler4.134.0 and Vitest5.0.1. The existing stable TS7 compiler
+and isolated TS6 ESLint API remain; the matching Next lint config is upgraded.
+The compatible js-yaml patch closes the install audit finding; npm audit is zero.
+
+Native compiler positive/negative calibration, typecheck, zero-warning lint,
+171 Vitest tests,33 release-policy Node tests and production build pass.
+Cloudflare adapter build and hosted browser acceptance remain pending.
+No release or deployment claim. Existing startup-budget/legal holds remain.
+Original untracked instruction and pnpm-lock files were not touched.
+
 ## 17 September 2026: timing correction merged, production unchanged
 
 PR18 merged as `1010336979bd7169988961f9fc58280c3eb6f1fe`. Its exact head
