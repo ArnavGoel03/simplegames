@@ -43,18 +43,27 @@ async function observeScenarioPage(page, label) {
   networkProbes.push({ label, trace: probe.trace, errors: probe.errors, failed: probe.failed, counts: probe.counts });
 }
 function mark(page, event) { pageProbes.get(page)?.mark(event); }
+async function drainBeforeNavigation(page) {
+  if (page.url() === "about:blank") return;
+  mark(page, "navigation-idle-start");
+  try { await page.waitForLoadState("networkidle", { timeout: 15_000 }); }
+  finally { mark(page, "navigation-idle-end"); }
+}
 async function goto(page, url, options) {
+  await drainBeforeNavigation(page);
   const path = new URL(url).pathname;
   mark(page, `goto-start:${path}`);
   try { return await page.goto(url, options); }
   finally { mark(page, `goto-end:${path}`); }
 }
 async function reload(page) {
+  await drainBeforeNavigation(page);
   mark(page, "reload-start");
   try { return await page.reload({ waitUntil: "domcontentloaded" }); }
   finally { mark(page, "reload-end"); }
 }
 async function handoff(page, click, pattern) {
+  await drainBeforeNavigation(page);
   mark(page, "room-handoff-start");
   try { await click(); await page.waitForURL(pattern); }
   finally { mark(page, "room-handoff-end"); }
@@ -118,8 +127,8 @@ async function visit(page, candidate, path) {
   assert(response?.ok());
   assert.equal(new URL(page.url()).origin, candidate.origin);
   assert.equal(new URL(page.url()).pathname, path);
+  await waitForReady(page);
   if (solo) {
-    await waitForReady(page);
     if (!seen.has(path)) { await dismissFirstGuide(page); seen.add(path); }
     assert.equal(await page.locator(".play-sheet:visible").count(), 0, "The actual game must be visible after onboarding");
   }
@@ -229,6 +238,7 @@ try {
       Object.defineProperty(navigator, "clipboard", { configurable: true, value: { writeText: async text => { window.__copied.push(text); } } });
     });
     await visit(page, board, "/account");
+    await recordFor(page, state.players[0]).waitFor();
     const shell = await page.evaluate(() => ({ htmlClass: document.documentElement.className,
       styles: [...document.head.querySelectorAll('style,link[rel="stylesheet"]')].map(element => element.outerHTML).join("") }));
     const component = await readFile(new URL("engagement-component.js", directory));

@@ -205,3 +205,25 @@ filter or error suppression. Existing fatal assertions and certification guards
 remain unchanged. Scoped lint, syntax validation,30 browser-evidence tests and8
 related fixture/workflow/readiness tests pass. A Linux WebKit diagnostic rerun
 remains required; no Studio deployment or games-source change was made.
+
+## Await settled work before scripted navigation
+
+Diagnostic35515722919 identifies the failure window. Seven account errors follow
+a reload's beforeunload by5to7ms;23 follow a room handoff's beforeunload by3to21ms.
+All occur before pagehide. Twenty-two failing prefetches start after beforeunload;
+eight start just before it. None has a response for that same latest request.
+Earlier identical URLs completed200, which is not evidence for a later request.
+The recap identity error occurs9ms after beforeunload while leaving the account
+page before its provider has settled.
+
+The installed Next scheduler frees bandwidth when a connection closes and pings
+its microtask queue, with an explicit outstanding navigation guard TODO. That
+matches the observed cascade during document departure. The harness now waits
+for actual app readiness on reading pages too, verified identity before leaving
+the recap's account shell, and native networkidle (15-second bound) before
+scripted goto/reload/room handoff. Initial about:blank and intentional account
+focus races are unchanged. Trace markers bracket the drain, and timeout or page
+errors remain fatal. No arbitrary sleep, response filtering, prefetch disabling
+or product patch was added. Syntax, scoped lint and the same38 related tests pass.
+Replacement WebKit execution must verify the corrected transition sequencing;
+these checks do not claim that rapid-navigation framework errors are impossible.
