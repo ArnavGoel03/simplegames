@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "sourceHead": "1eaf6c07aca650fe2b019c78ea6e72f1a0bebdff",
+  "sourceFingerprint": "970eab9b39d9eee06a31d8d252897bd1920c585ff01a036d8f340e481af5445f",
+  "synthetic": true,
+  "rendering": "Static SSR of actual PlayerHistory and AccountPanel; account context mocked; no hydration or server authentication coverage",
+  "fixtures": [
+    {
+      "name": "history",
+      "rows": 20,
+      "next": "/player/fixture-rook?cursor=00000000-0000-4000-8001-000000000020#games",
+      "sha256": "159aa467e8766644a8411965d19c87a07ae48946f412b824991bea141b004148"
+    },
+    {
+      "name": "comparison",
+      "rows": 4,
+      "next": null,
+      "sha256": "ffee5573dd8427193f253d24ab42e2793b48ce67887821a9bf550d54599b86c8"
+    },
+    {
+      "name": "empty",
+      "rows": 0,
+      "next": null,
+      "sha256": "c73163dc61d1907a80cc68da7a9d7846ba2eebf2c4d303675527c7e673d6edbb"
+    },
+    {
+      "name": "account",
+      "rows": 0,
+      "next": null,
+      "sha256": "66e8983d3056f623f9a9a2c40706829326434f27e6a4524875505e5ad1be368f"
+    },
+    {
+      "name": "account-switching",
+      "rows": 0,
+      "next": null,
+      "sha256": "323bf4f8ed0b6deacc3dfcb123ac3b83132499d87de56e50256bd06724b5d264"
+    }
+  ]
+}
