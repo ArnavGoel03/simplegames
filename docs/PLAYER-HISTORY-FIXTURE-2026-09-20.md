@@ -1,6 +1,6 @@
 # Player-history rendering fixture
 
-Verification branch only. No Studio or game deployment, private accounts,
+Maintained verification tools only. No Studio or game deployment, private accounts,
 credentials, new dependencies or duplicated product components are included.
 
 `tools/fixtures/player-history/` is generated from actual PlayerHistory and
@@ -23,7 +23,8 @@ The optional step runs through existing `visual.yml` candidate verification.
 Use the normal Chromium and WebKit candidate dispatch inputs. Images and
 `player-history-<engine>.json` join the existing `visual-review` artifact.
 Fixtures without the matching candidate source are refused before launching a
-browser. Remove the fixture files when this branch is no longer needed.
+browser. Retain the regression tools and regenerate the fixtures before
+verifying a later games candidate.
 
 The 30 captures establish static rendered component layout only.
 `verify-account-session.mjs` separately opens the actual hydrated candidate
@@ -38,7 +39,7 @@ a delayed old response after sign-out, and confirm a retained hint cannot undo
 local sign-out on later focus. Native fetch settlement is observed before the
 stale-response assertion, with successful replacement serving as its positive
 delivery control. Screenshots and `account-session-<engine>.json` join the same
-artifact. Both browser engines remain pending until the manual workflow runs.
+artifact. Both browser engines passed final-source runs35506744810/35506746098.
 This does not certify server authentication, database reads or live pagination
 requests; those retain their independent games checks.
 
@@ -49,15 +50,27 @@ lines. This was a real layout defect despite zero document overflow. The
 games source now wraps mobile actions below the title. Stronger fixtures add
 rated rows and replay links alongside verification. The browser checks each
 `data-game-title` for clipping, a120px minimum width and a two-line maximum,
-calibrated by temporarily constraining a real title to16px. Final corrected
-candidate execution and image inspection remain pending. The earlier green
-run does not certify the corrected source.
+calibrated by temporarily constraining a real title to16px. Final games source
+`1eaf6c07aca650fe2b019c78ea6e72f1a0bebdff` passed Chromium run35506744810
+and WebKit run35506746098. Chromium captures were reviewed; WebKit image review
+is recorded separately. The earlier green runs do not certify this source.
 
 Local verification: toolchain, typecheck, zero-warning lint and33 release tests
 passed. Negative controls prove stale HEAD and tree fingerprints are rejected
 before any browser launch. Application tests passed167/171; four unchanged `tools/cf.test.mjs`
 cases exceeded5000ms: successful build/upload, static cache/two uploads, and
-the two output-change cases. Full Linux gate, remote rendering, image review
-and any release remain pending. Dependency installation also reported existing
+the two output-change cases. Both final browser runs passed the full Linux
+gate before remote rendering. This harness performs no Studio deployment. Dependency installation also reported existing
 node-domexception/glob deprecations and npm install-script approval notices;
 the lockfile was preserved.
+
+## Integration with current main
+
+The final harness was integrated with main's existing Next16.3.5, React19.3.0,
+OpenNext1.20.6, Vitest5.0.1 and Wrangler4.134.0 dependency stack. The complete
+local `npm run gate` passes: native compiler calibration, typecheck,
+zero-warning lint,171 application tests and33 release-policy tests. The four
+earlier local subprocess timeouts do not recur. Fixture bytes, source binding
+and browser verification tools are unchanged from the two successful final
+candidate runs. Studio remains the separately verified0.5.3 production release;
+merging these maintained checks performs no deployment.

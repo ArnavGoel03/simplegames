@@ -1,0 +1,52 @@
+[
+  {
+    "site": "studio",
+    "engine": "webkit",
+    "observedSourceHead": "cfdf6a486095d9e939a29a9adba7e2e9e50f2ea4",
+    "samples": [
+      {
+        "startupMs": 634,
+        "observedMs": 657,
+        "driverDelayMs": 23,
+        "domReadyMs": 315,
+        "appReadyMs": 506,
+        "lcpMs": 632,
+        "decodedJsBytes": 485982,
+        "decodedCssBytes": 27023,
+        "resources": 9,
+        "stylesReady": true
+      },
+      {
+        "startupMs": 785,
+        "observedMs": 805,
+        "driverDelayMs": 20,
+        "domReadyMs": 534,
+        "appReadyMs": 707,
+        "lcpMs": 784,
+        "decodedJsBytes": 485982,
+        "decodedCssBytes": 27023,
+        "resources": 9,
+        "stylesReady": true
+      },
+      {
+        "startupMs": 620,
+        "observedMs": 677,
+        "driverDelayMs": 57,
+        "domReadyMs": 300,
+        "appReadyMs": 535,
+        "lcpMs": 620,
+        "decodedJsBytes": 485982,
+        "decodedCssBytes": 27023,
+        "resources": 9,
+        "stylesReady": true
+      }
+    ],
+    "interactionMs": [
+      139,
+      143,
+      134
+    ],
+    "interactionMetric": "games-navigation",
+    "definition": "startup: navigation to DOM and app readiness, loaded fonts, then two animation frames, timestamped inside the browser; loaded styles validated separately; games-navigation: trusted existing-control click to completed fragment scroll and two further stable frames; fresh browser context per sample"
+  }
+]
