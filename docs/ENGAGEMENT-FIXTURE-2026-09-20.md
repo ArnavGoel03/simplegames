@@ -1,229 +1,116 @@
 # Engagement candidate verification
 
-Verification-only branch `test/player-engagement-fixtures`. Studio product code
-and deployment remain unchanged.
+Verification-only branch `test/player-engagement-fixtures`. Both full browser
+engines pass against games source `7c2f330`. Studio product code and deployment
+remain unchanged.
 
-`tools/verify-engagement.mjs` runs after the existing history fixture in the
-manual candidate workflow. It opens the actual immutable account, Daily and
-three Solitaire pages. All account APIs are intercepted with synthetic values.
-The room handoff stops at intercepted navigation before opening any socket.
-That check does not replace the games project's real-room gate.
+## Final evidence
 
-The recap page uses a generated bundle of the actual GameArchive, MatchRecap
-and AccountProvider components, compiled from the same games source. No product
-route is added. Candidate CSS and a source/fingerprint-bound SHA256 constrain
-that fixture. Cancelling its real Share button must not write the clipboard.
-Its native dialog must expose the real rival actions and close correctly.
+| Verification | Harness | Result |
+| --- | --- | --- |
+| [Full Chromium run 35514749358](https://github.com/ArnavGoel03/simplegames/actions/runs/35514749358) | `c4091c2` | Success: 14 checks, 7 scenarios, zero errors |
+| [Full WebKit run 35516155968](https://github.com/ArnavGoel03/simplegames/actions/runs/35516155968) | `2b534e2` | Success: 14 checks, 7 scenarios, zero errors |
+| [Strict Daily Chromium run 35515425064](https://github.com/ArnavGoel03/simplegames/actions/runs/35515425064) | `8569447` | Success: actual rendered board reviewed |
 
-The account checks cover career and saved-game continuations, owner-scoped local
-rooms, friendship actions, invitation refusal/decline/cancel/accept, and account
-switching. Solo checks cover canonical engine-generated saves, Daily continuation,
-all three Solitaire restores, FreeCell conflict choice and retained recovery,
-account switching, background identity checks, and exclusive tab ownership.
+All five canonical games release certificates pass. Candidate preview pointers
+were restored after verification. Neither the games candidate nor Studio was
+promoted: Neon migration 0013 authentication and public-copy approval remain
+held, and the real-room gate was skipped. Intercepted navigation is not evidence
+that a real multiplayer room works.
+
+Local verification includes the complete toolchain/typecheck/zero-warning lint
+gate, 171 Vitest tests and 44 release tests. The final navigation adjustment also
+passes 30 browser-evidence tests and 8 fixture/workflow/readiness tests, scoped
+lint, syntax validation and diff checks.
+
+## Maintained coverage
+
+`tools/verify-engagement.mjs` follows the existing history fixture in the manual
+candidate workflow. It opens the actual immutable account, Daily and three
+Solitaire pages. All account APIs are intercepted with synthetic values. Room
+handoffs stop at intercepted navigation before opening any socket, with no real
+account, invitation, room or database mutation.
+
+Account checks cover career milestones, cloud continuations, owner-scoped local
+rooms, friendship actions, invitation refusal/decline/cancel/accept and account
+switching. Solo checks cover engine-generated saves, Daily continuation, all
+three Solitaire restores, FreeCell conflict choice with retained recovery,
+background identity checks, account changes and exclusive tab ownership.
+
+The recap fixture bundles the actual GameArchive, MatchRecap and AccountProvider
+components from the same games source. It uses candidate CSS and a
+source/fingerprint-bound SHA256. Cancelling the real Share button must not write
+the clipboard; the native rematch dialog must expose rival actions and close.
+No product route is added.
 
 The offline scenario refuses only solo API transport while keeping identity,
-documents and assets available. It establishes local-save recovery during a
-cloud outage, not physical-device offline certification or service-worker
-transport behavior. The existing exact-candidate offline checks remain separate.
+documents and assets available. It verifies local-save recovery during a cloud
+outage, not physical-device offline or service-worker behavior. The existing
+exact-candidate offline checks remain separate.
 
-## Generate after the final games commit
+## Source and rendering guards
+
+The generator imports the real engines, save validators, storage keys and
+labels, checks the workspace fingerprint before and after generation, and
+requires canonical in-progress saves to roundtrip exactly. That positive control
+caught the initial product defect that rejected Daily's intentional one-seat
+Ludo board. Corrected source `7c2f330` preserves it. Achievement-fill checks
+compare accessible progressbars with the canonical theme token and include a
+wrong-color control.
+
+Solitaire provenance comes from the build stamp on the same immutable candidate
+homepage, plus exact game-path/origin and Next-script-origin checks. Autosave
+validation permits elapsed-time banking but rejects changed attempts, deals or
+restored move prefixes. Solo captures dismiss the actual onboarding guide.
+
+Daily rendering requires visible SVG/canvas content with positive dimensions and
+stable geometry across two subsequent animation frames. The waiter is synchronous
+because the installed Playwright poller treats an async predicate's Promise as
+truthy. Calibrated controls reject absent, empty, hidden, zero-sized and unstable
+renderers. Strict Chromium evidence and image review confirm actual board pixels.
+
+## WebKit navigation finding and correction
+
+Diagnostic 35515722919 placed all 30 account page errors and its recap identity
+error strictly between beforeunload and pagehide. Twenty-two failing prefetches
+started during departure; eight began just before it. Earlier identical URLs
+completed 200, but none supplied a response for the latest failing request.
+The installed Next scheduler requeues work as connections close and has an
+outstanding navigation guard TODO, matching the observed cascade.
+
+Scripted goto/reload/room handoff now waits for native networkidle with a 15-second
+cap. Reading pages require actual app readiness, and recap waits for verified
+identity before leaving its account shell. Intentional focus/account-switch races
+remain unchanged. This condition-based sequencing resolved the departing-document
+errors in the passing full WebKit run without arbitrary sleeps or exemptions.
+All errors and timeouts remain fatal. No response filtering, prefetch disabling
+or product patch was added. This does not claim rapid-navigation framework errors
+are impossible.
+
+Reports retain labelled canonical network traces and markers around navigation,
+reload, focus, room handoff and close. Request query values retain the existing
+hash/path handling. Instrumentation observes original fetch promises and native
+readers. Independent failures aggregate and still fail the final assertion.
+
+## Generate and run
 
 Run the games repository's existing fixture test with
 `PLAYER_HISTORY_FIXTURE_DIR` pointing at this branch's
-`tools/fixtures/player-history` directory. Then, from this worktree:
+`tools/fixtures/player-history` directory. Then run:
 
 ```
 node tools/capture-session-fixture.mjs /absolute/path/to/games
 node tools/capture-engagement-fixture.mjs /absolute/path/to/games
 ```
 
-The engagement generator imports the real engines, save validators, account
-storage keys and labels. It recomputes the games workspace fingerprint before
-and after generation and compares it with the static fixture manifest. It
-never reads user cookies, browser storage or credentials. `--check` validates
-canonical saves and component bundling without changing bound artifacts.
-
-With the exact candidate receipt array in `RELEASE_CANDIDATES_JSON`, run
+Generation never reads user cookies, browser storage or credentials. `--check`
+validates canonical saves and component bundling without changing bound artifacts.
+With exact candidate receipts in `RELEASE_CANDIDATES_JSON`, run
 `BROWSER_ENGINE=chromium node tools/verify-engagement.mjs` or select `webkit`.
-The manual `visual.yml` workflow does this automatically and retains
-`.audit/visual/engagement-<engine>.json` plus screenshots. Reports include source
-identity, intercepted request paths, synthetic writes, assertions and errors.
+The manual `visual.yml` workflow retains JSON reports and screenshots.
 
-## Current verification
-
-Canonical save generation and bundling pass locally. Four calibrated synthetic
-transport tests pass, covering stale revisions, owner rejection, explicit branch
-resolution and refusing unknown APIs. Focused script lint and syntax checks pass.
-Initial fixtures bound to games source `2e072b3` and its complete workspace
-fingerprint. The local gate passes: toolchain, typecheck, zero-warning lint,
-171 Vitest tests and 37 release tests. The first run hit an inherited
-CF-wrapper timeout (5,370 ms against its unchanged 5,000 ms limit); after an
-isolated dependency install, its focused regression passed in 1,074 ms and
-the complete gate passed. Remote browser execution and rendered-image review
-remain pending. No rendered success is claimed from these script checks.
-
-## First remote candidate result
-
-Chromium run35512702596 and WebKit run35512704497 passed the preceding
-checks, then failed the Daily resume assertion. The canonical eight-roll
-Daily board is rejected by the product record validator because its invariant
-check treats Daily's one-seat Ludo board as ordinary two-to-four-seat Ludo.
-The adapter preserves the record but drops its progress. The generator now
-requires an exact round trip of the in-progress board, calibrated red against
-source `2e072b3`. Product correction and replacement candidate captures remain
-pending; neither failed run certifies engagement.
-
-## Diagnostic-only engagement mode
-
-Manual `visual.yml` accepts `engagement_only=true` with exact candidate inputs
-and the selected browser. It keeps dependency installation and the local gate,
-then runs only engagement interactions. Other browser suites and performance
-probes are skipped. Its separate concurrency group cannot cancel a full release
-run. Conflicting baseline, controls, network, live or Casino modes are refused.
-
-The job summary, result JSON and `engagement-diagnostic-only` artifact explicitly
-label the limited scope. A final guard refuses a release-evidence file, and both
-certification artifact uploads exclude this mode. A calibrated static check
-rejects removal of the publication guard. This mode cannot certify promotion;
-final Chromium and WebKit runs must both pass the complete workflow.
-
-## Corrected candidate bindings
-
-Fixtures now bind to games source `7c2f330`, which corrects Daily progress
-validation and replaces browser-native achievement progress styling. Canonical
-Daily progress now survives the generator's exact round-trip assertion. The
-account verifier checks accessible progressbar fills against resolved
-`--play-fg`, with a deliberately wrong-color control.
-
-Solitaire banks elapsed time on visibility/pagehide, so restored-save checks
-inspect every observed write for the same attempt, deal, and unmodified restored
-move prefix instead of treating legitimate clock banking as data loss. The
-calibrated detector rejects empty, fresh, shortened and replaced saves.
-The complete local gate passes again: toolchain, typecheck, zero-warning lint,
-171 Vitest tests and 39 release tests. Replacement browser execution and
-rendered review remain pending.
-
-## Account-switch diagnostic synchronization
-
-Diagnostic run35513794845 stopped in the account-switch fixture before Daily.
-Its request trace contained only the four mount identity reads for four account
-navigations, with no new focus read. The harness switched synthetic identity
-while the final mount read was pending; the provider correctly deduplicated
-the concurrent focus. Later data responses then belonged to the new synthetic
-owner and were correctly rejected by the old owner guard.
-
-The fixture now waits for A's verified record link and saved continuation
-before switching, requires a newly observed identity response for B, and checks
-B's specific Your record link instead of any rival link to B. Solitaire switches
-also require a fresh identity response after their restored A board is visible.
-The existing session verifier already waits for ownership and holds an observed
-refresh before changing its synthetic response. Product bindings remain
-`7c2f330`; replacement browser execution remains pending.
-
-## Solitaire route provenance and visible gameplay
-
-Diagnostic run35514048094 passed account switching and Daily restoration, then
-waited for a build stamp that Solitaire's compact game route does not render.
-The verifier now reuses the maintained gameplay suite's provenance strategy:
-read the actual stamp on the same immutable candidate homepage, require the
-requested Solitaire path and origin after navigation, and require Next script
-URLs on that same origin. Service workers remain disabled. The report records
-this homepage provenance explicitly; it does not claim a visible game-page stamp.
-
-Fresh solo contexts now use the existing real first-game guide dismissal after
-application readiness and assert the sheet is closed before capturing gameplay.
-The earlier Daily capture showed onboarding above its correctly resumed board.
-Independent scenario failures are labelled and retained while later scenarios
-continue, with the unchanged final error assertion failing the job. A known
-failure control confirms continuation cannot turn the overall result green.
-Replacement diagnostic and full browser runs remain pending.
-
-The updated full local gate passes: 171 Vitest tests, 40 release tests,
-toolchain, typecheck and zero-warning lint. Product bindings remain `7c2f330`.
-
-## Readiness observer prerequisite
-
-Diagnostic run35514341372 reached every independent scenario and exposed a
-harness prerequisite: waitForReady consumes the canonical performance observer,
-which the engagement context had not installed. The context now installs that
-observer before creating any page, so navigation, reloads and second tabs all
-record the actual app-ready event. Readiness predicates and timeouts are unchanged.
-A regression runs the real observer and predicate in fresh document contexts;
-removing the observer remains unready even after the application event.
-Aggregated errors now retain full stacks with scenario labels.
-
-Focused script lint, 41 release tests and the four existing startup-observer
-tests pass. The prior full local gate passed; the remote workflow will run its
-full gate again. Corrected browser execution remains pending.
-
-## Supplemental Daily board capture
-
-Visual review of successful diagnostic run35514642306 found a missing Daily
-board in the capture, despite the restored roll count. Application readiness is
-emitted by the service-worker component before BoardSurface's dynamic 3D import
-necessarily settles. The supplemental check requires a visible SVG or canvas
-inside `.play-board-fit`, nonzero dimensions, and stable bounds across two
-frames before proceeding and again after offline reload. The normal 15-second
-timeout and failed-scenario capture remain. Renderer geometry is recorded.
-
-The calibrated detector rejects missing, empty, hidden, zero-sized and moving
-renderers. Actual board pixels still require screenshot review. This supplemental
-check is separate from the full runs already using harness `c4091c2`. Product
-source remains `7c2f330`. All 42 release tests and scoped zero-warning lint pass;
-supplemental browser capture and actual pixel review remain pending.
-
-## Correcting the board-wait false positive
-
-Supplemental run35515048530 returned null renderer geometry and repeated the
-missing-board image. The first waiter supplied an async predicate to Playwright's
-poller, whose installed implementation treats the Promise itself as truthy and
-stops polling. The waiter now uses a synchronous predicate on animation frames,
-requires two subsequent matching geometry samples, and validates the returned
-renderer and positive dimensions before recording. A null handle cannot pass.
-
-Integration tests call the actual board waiter for delayed, absent, hidden, empty,
-zero-sized and unstable renderers. Another calibration executes the polling
-closure extracted from the installed Playwright bundle, reproducing the async
-null false positive and successful synchronous polling. All 44 release
-tests and scoped zero-warning lint pass. Replacement rendered evidence remains
-pending; the prior supplemental run does not establish board visibility.
-
-## WebKit RSC lifecycle diagnostics
-
-Full WebKit run35514751245 completed every engagement action but reported32
-fatal page errors for account/Daily RSC prefetches. The prior report held only
-error strings, so it cannot distinguish failed delivery from navigation-time
-cancellation. Exact public candidate probes returned200 RSC responses for
-/account and /ludo; that alone does not prove browser delivery succeeded.
-
-The engagement report now includes labelled networkProbes from the existing
-instrument(page) helper, including the second ownership tab. Harness markers
-bracket goto, reload, focus, synthetic room handoff, page close and context close.
-Request query values retain the canonical hash/path handling. Instrumentation
-observes original fetch promises and native response readers; it adds no network
-filter or error suppression. Existing fatal assertions and certification guards
-remain unchanged. Scoped lint, syntax validation,30 browser-evidence tests and8
-related fixture/workflow/readiness tests pass. A Linux WebKit diagnostic rerun
-remains required; no Studio deployment or games-source change was made.
-
-## Await settled work before scripted navigation
-
-Diagnostic35515722919 identifies the failure window. Seven account errors follow
-a reload's beforeunload by5to7ms;23 follow a room handoff's beforeunload by3to21ms.
-All occur before pagehide. Twenty-two failing prefetches start after beforeunload;
-eight start just before it. None has a response for that same latest request.
-Earlier identical URLs completed200, which is not evidence for a later request.
-The recap identity error occurs9ms after beforeunload while leaving the account
-page before its provider has settled.
-
-The installed Next scheduler frees bandwidth when a connection closes and pings
-its microtask queue, with an explicit outstanding navigation guard TODO. That
-matches the observed cascade during document departure. The harness now waits
-for actual app readiness on reading pages too, verified identity before leaving
-the recap's account shell, and native networkidle (15-second bound) before
-scripted goto/reload/room handoff. Initial about:blank and intentional account
-focus races are unchanged. Trace markers bracket the drain, and timeout or page
-errors remain fatal. No arbitrary sleep, response filtering, prefetch disabling
-or product patch was added. Syntax, scoped lint and the same38 related tests pass.
-Replacement WebKit execution must verify the corrected transition sequencing;
-these checks do not claim that rapid-navigation framework errors are impossible.
+Optional `engagement_only=true` runs the gate and engagement checks while skipping
+other browser/performance suites. Its separate concurrency group cannot cancel
+full release runs. Diagnostic outputs are labelled and cannot emit release
+certification artifacts. A calibrated publication-guard check enforces this
+boundary; both engines must pass the full workflow to certify candidates.

@@ -1,41 +1,33 @@
 # Glass Table Games: state of play
 
-## 20 September 2026: engagement candidate verification prepared
+## 20 September 2026: engagement candidate verification complete
 
-Branch `test/player-engagement-fixtures` extends the maintained candidate
-workflow with actual account and solo-game interaction checks and a generated
-bundle of the games source's real recap component. Synthetic API responses
-exercise rematch acceptance/refusal/cancellation, account-scoped continuations,
-cloud restoration, offline API failure, conflicting saves and tab ownership.
-No real account, invitation, room or database mutation occurs.
+Branch `test/player-engagement-fixtures` maintains actual account, Daily and
+three Solitaire interaction checks plus a generated bundle of the games source's
+real recap component. Synthetic APIs exercise rival actions, rematches,
+account-scoped continuations, cloud restoration, offline recovery, save conflicts
+and exclusive tab ownership. No real account, invitation, room or database
+mutation occurs.
 
-Fixtures must match both the games commit and workspace fingerprint. The
-component bundle is generated from that exact tree, hash-checked on use, and
-styled from the immutable candidate. Static history and prior hydrated identity
-checks remain. Fixtures bind to corrected games source `7c2f330`. The complete local gate
-passes (171 Vitest and 40 release tests). First Chromium/WebKit candidate
-runs failed Daily cloud restoration because the product validator drops its
-one-seat board. The corrected source now passes exact Daily fixture round-trip
-validation; replacement captures remain pending. Diagnostic-only engagement
-mode is isolated from release certification. Its first run exposed a harness
-mount/focus timing race; the switch now waits for verified ownership and a fresh
-identity response. The next diagnostic passed account and Daily checks;
-Solitaire now uses established immutable-homepage provenance and actual
-script-origin checks, and solo captures dismiss the real onboarding guide.
-Independent failures aggregate without certifying success. The next diagnostic
-exposed a missing readiness-observer installation, now fixed for the whole
-context with a calibrated regression. Replacement browser execution is pending. Detailed local check results are recorded in ENGAGEMENT-FIXTURE-2026-09-20.md. This branch
-does not change or deploy the Studio product. Production remains as below.
+Fixtures bind to games source `7c2f330` and its workspace fingerprint. Full
+Chromium run 35514749358 (harness `c4091c2`) and full WebKit run 35516155968
+(harness `2b534e2`) pass. Each engine completes 14 checks across 7 scenarios with
+zero errors. Strict Daily Chromium run 35515425064 (harness `8569447`) also passes;
+the actual rendered board was reviewed. All five canonical games release
+certificates pass, and candidate preview pointers have been restored.
 
-Full Chromium run35514749358 passes. Full WebKit run35514751245 completed
-all engagement actions but failed its fatal page-error guard on same-origin RSC
-prefetch errors during account/Daily scenarios. Trace-only diagnostics now use
-the existing browser instrumentation and mark navigation, reload, focus,
-room handoff and close boundaries. Diagnostic35515722919 places every account/recap page error between
-beforeunload and pagehide. Scripted transitions now require hydrated readiness
-and bounded network idle; recap also waits for verified identity. No errors are
-exempted. Replacement WebKit diagnostics remain pending. Product source remains
-`7c2f330`.
+WebKit diagnostics located queued prefetch errors between beforeunload and
+pagehide during scripted departures. Hydrated readiness, verified recap identity
+and native networkidle with a 15-second cap resolved those errors. All errors
+remain fatal; no exemption, response filtering or prefetch disabling was added.
+Local checks include the full toolchain/typecheck/lint gate, 171 Vitest tests and
+44 release tests; the final navigation change also passes 38 related tests.
+See [the verification record](ENGAGEMENT-FIXTURE-2026-09-20.md).
+
+Neither the games candidate nor Studio was promoted. Neon migration 0013 still
+requires authentication, public-copy approval remains held, and the real-room
+gate was skipped. Synthetic room handoffs do not substitute for that gate.
+Studio production remains the existing 0.5.3 release below.
 
 ## 20 September 2026: game-history browser regression harness verified
 
