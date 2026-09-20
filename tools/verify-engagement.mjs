@@ -6,7 +6,7 @@ import { chromium, webkit } from "playwright";
 import { candidates, engine, observeSource, omitServiceWorkerCapability, output } from "./browser-evidence.mjs";
 import { syntheticState, fixtureId, assertRestoredWrites, attemptScenario } from "./engagement-fixture.mjs";
 
-import { prepareGameplayContext, waitForReady, dismissFirstGuide } from "./gameplay-controls.mjs";
+import { prepareGameplayContext, waitForReady, dismissFirstGuide, waitForRenderedBoard } from "./gameplay-controls.mjs";
 
 const directory = new URL("./fixtures/player-history/", import.meta.url);
 if (!existsSync(new URL("engagement.json", directory))) {
@@ -26,7 +26,7 @@ await mkdir(output, { recursive: true });
 const browser = await ({ chromium, webkit })[engine].launch();
 const diagnosticOnly = process.env.ENGAGEMENT_DIAGNOSTIC_ONLY === "true";
 if (diagnosticOnly) console.log("Diagnostic only: this engagement run cannot certify release candidates");
-const checks = [], errors = [], requests = [], writes = [], sourceObservations = [], scenarioResults = [];
+const checks = [], errors = [], requests = [], writes = [], sourceObservations = [], scenarioResults = [], boardRenders = [];
 const visits = new WeakMap();
 let captureNumber = 0;
 const settle = page => page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
@@ -230,8 +230,10 @@ try {
       const match = /Roll (\d+) of/.exec(node.textContent ?? ""); return match && Number(match[1]) >= 8;
     }));
     await resumed();
+    boardRenders.push({ phase: "daily-cloud-resume", ...await waitForRenderedBoard(page) });
     state.soloOffline = true;
     await page.reload({ waitUntil: "domcontentloaded" }); await resumed();
+    boardRenders.push({ phase: "daily-offline-reload", ...await waitForRenderedBoard(page) });
     await capture(page, "daily-cloud-offline-resume");
     checks.push("Daily resumes a canonical eight-roll cloud board and preserves it across a solo-API-offline reload");
   });
@@ -294,7 +296,7 @@ try {
   assert.deepEqual(errors, []);
 } finally {
   await writeFile(new URL(`engagement-${engine}.json`, output), JSON.stringify({ sourceHead: fixture.sourceHead, sourceFingerprint: fixture.sourceFingerprint,
-    componentSha256: fixture.componentSha256, diagnosticOnly, standaloneCertification: false, checks, requests, writes, errors, scenarioResults, sourceObservations,
+    componentSha256: fixture.componentSha256, diagnosticOnly, standaloneCertification: false, checks, requests, writes, errors, scenarioResults, sourceObservations, boardRenders,
     scope: "Actual candidate account and solitaire pages plus actual source-bundled recap component. Synthetic intercepted APIs only; offline scenario isolates solo API failure while identity/document delivery remains available. Room handoff stops before sockets. No production account, invite, room or database mutation.",
   }, null, 2));
   await browser.close();

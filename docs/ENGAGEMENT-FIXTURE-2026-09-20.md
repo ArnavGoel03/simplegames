@@ -155,3 +155,19 @@ Aggregated errors now retain full stacks with scenario labels.
 Focused script lint, 41 release tests and the four existing startup-observer
 tests pass. The prior full local gate passed; the remote workflow will run its
 full gate again. Corrected browser execution remains pending.
+
+## Supplemental Daily board capture
+
+Visual review of successful diagnostic run35514642306 found a missing Daily
+board in the capture, despite the restored roll count. Application readiness is
+emitted by the service-worker component before BoardSurface's dynamic 3D import
+necessarily settles. The supplemental check requires a visible SVG or canvas
+inside `.play-board-fit`, nonzero dimensions, and stable bounds across two
+frames before proceeding and again after offline reload. The normal 15-second
+timeout and failed-scenario capture remain. Renderer geometry is recorded.
+
+The calibrated detector rejects missing, empty, hidden, zero-sized and moving
+renderers. Actual board pixels still require screenshot review. This supplemental
+check is separate from the full runs already using harness `c4091c2`. Product
+source remains `7c2f330`. All 42 release tests and scoped zero-warning lint pass;
+supplemental browser capture and actual pixel review remain pending.
