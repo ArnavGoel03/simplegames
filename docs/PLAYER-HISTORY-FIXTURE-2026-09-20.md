@@ -25,9 +25,22 @@ Use the normal Chromium and WebKit candidate dispatch inputs. Images and
 Fixtures without the matching candidate source are refused before launching a
 browser. Remove the fixture files when this branch is no longer needed.
 
-This establishes static rendered component layout only. It does not exercise
-React hydration, identity network races, server authentication, database reads,
-or live pagination requests. Those require their independent games tests.
+The 30 captures establish static rendered component layout only.
+`verify-account-session.mjs` separately opens the actual hydrated candidate
+account page in a fresh browser context. Identity reads, sign-out and friend
+requests are intercepted. The only supplied cookie is a synthetic presence hint;
+`capture-session-fixture.mjs <games-checkout>` imports its canonical name from
+the same source commit into `session.json`, without reading any credentials.
+
+The hydrated checks retain a known owner while pending and failed background
+checks hide the record link, update the owner/link after a focus refresh, release
+a delayed old response after sign-out, and confirm a retained hint cannot undo
+local sign-out on later focus. Native fetch settlement is observed before the
+stale-response assertion, with successful replacement serving as its positive
+delivery control. Screenshots and `account-session-<engine>.json` join the same
+artifact. Both browser engines remain pending until the manual workflow runs.
+This does not certify server authentication, database reads or live pagination
+requests; those retain their independent games checks.
 
 Local verification: toolchain, typecheck, zero-warning lint and33 release tests
 passed. Negative controls prove stale HEAD and tree fingerprints are rejected

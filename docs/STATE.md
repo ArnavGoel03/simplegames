@@ -8,6 +8,12 @@ actual React components. It changes verification only; Studio production is
 unchanged. The fixture manifest records the complete games source HEAD and
 source fingerprint. Browser execution and visual inspection remain pending.
 
+The same manual workflow also checks the actual hydrated candidate account
+provider with intercepted synthetic identity responses: owner retention during
+a background check, switching on focus, and stale reads after sign-out. Its
+hint-cookie name is imported from the bound games source, never a user session.
+No real identity or account API mutation reaches the service.
+
 Local toolchain, typecheck and zero-warning lint passed, with all33 release
 tests passing. The local application suite passed167/171; four existing
 Cloudflare fixture tests exceeded their unchanged5000ms timeout. This repeats

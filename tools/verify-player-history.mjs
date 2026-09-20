@@ -3,7 +3,8 @@ import { createHash } from "node:crypto";
 import { existsSync } from "node:fs";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { chromium, webkit } from "playwright";
-import { candidates, engine, observeSource, output } from "./browser-evidence.mjs";
+import { candidates, engine, observeSource, omitServiceWorkerCapability, output } from "./browser-evidence.mjs";
+import { verifyAccountSession } from "./verify-account-session.mjs";
 
 const directory = new URL("./fixtures/player-history/", import.meta.url);
 const manifestPath = new URL("manifest.json", directory);
@@ -25,6 +26,7 @@ const browser = await ({ chromium, webkit })[engine].launch();
 try {
   for (const colorScheme of ["dark", "light"]) {
     const context = await browser.newContext({ colorScheme, reducedMotion: "reduce", serviceWorkers: "block" });
+    await context.addInitScript(omitServiceWorkerCapability);
     const page = await context.newPage();
     const errors = [];
     page.on("pageerror", error => errors.push(error.message));
@@ -99,6 +101,7 @@ try {
     assert.deepEqual(errors, [], "Candidate or fixture emitted browser errors");
     await context.close();
   }
+  await verifyAccountSession(browser, candidate);
 } finally {
   await writeFile(new URL(`player-history-${engine}.json`, output), JSON.stringify({
     candidate, fixtureSource: manifest.sourceHead, rendering: manifest.rendering, results,
