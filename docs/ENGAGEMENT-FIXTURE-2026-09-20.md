@@ -102,3 +102,20 @@ calibrated detector rejects empty, fresh, shortened and replaced saves.
 The complete local gate passes again: toolchain, typecheck, zero-warning lint,
 171 Vitest tests and 39 release tests. Replacement browser execution and
 rendered review remain pending.
+
+## Account-switch diagnostic synchronization
+
+Diagnostic run35513794845 stopped in the account-switch fixture before Daily.
+Its request trace contained only the four mount identity reads for four account
+navigations, with no new focus read. The harness switched synthetic identity
+while the final mount read was pending; the provider correctly deduplicated
+the concurrent focus. Later data responses then belonged to the new synthetic
+owner and were correctly rejected by the old owner guard.
+
+The fixture now waits for A's verified record link and saved continuation
+before switching, requires a newly observed identity response for B, and checks
+B's specific Your record link instead of any rival link to B. Solitaire switches
+also require a fresh identity response after their restored A board is visible.
+The existing session verifier already waits for ownership and holds an observed
+refresh before changing its synthetic response. Product bindings remain
+`7c2f330`; replacement browser execution remains pending.

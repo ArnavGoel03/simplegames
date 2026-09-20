@@ -17,7 +17,9 @@ passes (171 Vitest and 39 release tests). First Chromium/WebKit candidate
 runs failed Daily cloud restoration because the product validator drops its
 one-seat board. The corrected source now passes exact Daily fixture round-trip
 validation; replacement captures remain pending. Diagnostic-only engagement
-mode is isolated from release certification. Detailed local check results are recorded in ENGAGEMENT-FIXTURE-2026-09-20.md. This branch
+mode is isolated from release certification. Its first run exposed a harness
+mount/focus timing race; the switch now waits for verified ownership and a fresh
+identity response. Replacement browser execution is pending. Detailed local check results are recorded in ENGAGEMENT-FIXTURE-2026-09-20.md. This branch
 does not change or deploy the Studio product. Production remains as below.
 
 ## 20 September 2026: game-history browser regression harness verified

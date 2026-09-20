@@ -71,6 +71,15 @@ async function bounded(promise, label) {
   finally { clearTimeout(timer); }
 }
 const focus = page => page.evaluate(() => window.dispatchEvent(new Event("focus")));
+const recordFor = (page, player) => page.getByRole("link", { name: "Your record", exact: true }).and(page.locator(`a[href="/player/${player.handle}"]`));
+async function refreshAs(page, state, player) {
+  const response = page.waitForResponse(reply => new URL(reply.url()).pathname === "/api/identity/me" && reply.request().method() === "GET");
+  state.current = player;
+  await focus(page);
+  const refreshed = await response;
+  assert(refreshed.ok());
+  assert.equal((await refreshed.json()).player.id, player.id, "Focus must perform a fresh read of the switched identity");
+}
 
 try {
   await scenario(board, async ({ context, page, state }) => {
@@ -132,8 +141,12 @@ try {
     await page.waitForURL("**/r/fixture-inbox-43?g=rummy");
     checks.push("An outgoing invitation can be cancelled and an incoming invitation explicitly accepted");
     await visit(page, board, "/account");
-    state.current = state.players[1]; await focus(page);
-    await page.waitForFunction(() => document.querySelector('a[href="/player/fixture-bishop"]') !== null);
+    // The build stamp is server-rendered. Wait for the mounted provider's A
+    // response before simulating a later cookie change and returning focus.
+    await recordFor(page, state.players[0]).waitFor();
+    await continuation.getByRole("link", { name: /FreeCell/ }).waitFor();
+    await refreshAs(page, state, state.players[1]);
+    await recordFor(page, state.players[1]).waitFor();
     await continuation.getByRole("link", { name: /Klondike/ }).waitFor();
     assert.equal(await continuation.getByRole("link", { name: /FreeCell/ }).count(), 0);
     await continuation.getByText("fixture-owner-2-42", { exact: true }).waitFor();
@@ -222,7 +235,7 @@ try {
     await page.waitForFunction(key => (JSON.parse(localStorage.getItem(key) ?? "null")?.recovery?.length ?? 0) > 0, fixture.soloKeys[owner][slot]);
     await capture(page, "freecell-cloud-chosen");
     checks.push("CAS conflict offers an explicit choice and choosing cloud retains displaced local recovery");
-    state.current = state.players[1]; await focus(page); await moves(2).waitFor();
+    await refreshAs(page, state, state.players[1]); await moves(2).waitFor();
     await capture(page, "freecell-second-owner");
     assertRestoredWrites(state.writes, fixture.owners[1], slot, fixture.saves[slot][1].save);
     checks.push("Changing account restores that owner's independent Solitaire board without cross-account writes");
