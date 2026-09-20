@@ -52,8 +52,8 @@ rated rows and replay links alongside verification. The browser checks each
 `data-game-title` for clipping, a120px minimum width and a two-line maximum,
 calibrated by temporarily constraining a real title to16px. Final games source
 `1eaf6c07aca650fe2b019c78ea6e72f1a0bebdff` passed Chromium run35506744810
-and WebKit run35506746098. Chromium captures were reviewed; WebKit image review
-is recorded separately. The earlier green runs do not certify this source.
+and WebKit run35506746098. Chromium and WebKit captures were reviewed; corrected phone titles and
+account-session states are readable in both engines. The earlier green runs do not certify this source.
 
 Local verification: toolchain, typecheck, zero-warning lint and33 release tests
 passed. Negative controls prove stale HEAD and tree fingerprints are rejected

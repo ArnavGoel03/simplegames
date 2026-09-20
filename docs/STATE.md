@@ -8,7 +8,8 @@ actual React components. It changes verification only; Studio production is
 unchanged. The fixture manifest records the complete games source HEAD and
 source fingerprint. Final games source `1eaf6c0` passed Chromium run35506744810
 and WebKit run35506746098, including the Linux gate and hydrated session checks.
-Chromium captures were reviewed; WebKit image review is recorded separately.
+Chromium and WebKit captures were reviewed; corrected phone titles and
+account-session states are readable in both engines.
 
 The same manual workflow also checks the actual hydrated candidate account
 provider with intercepted synthetic identity responses: owner retention during
