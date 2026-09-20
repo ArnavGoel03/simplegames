@@ -119,3 +119,24 @@ also require a fresh identity response after their restored A board is visible.
 The existing session verifier already waits for ownership and holds an observed
 refresh before changing its synthetic response. Product bindings remain
 `7c2f330`; replacement browser execution remains pending.
+
+## Solitaire route provenance and visible gameplay
+
+Diagnostic run35514048094 passed account switching and Daily restoration, then
+waited for a build stamp that Solitaire's compact game route does not render.
+The verifier now reuses the maintained gameplay suite's provenance strategy:
+read the actual stamp on the same immutable candidate homepage, require the
+requested Solitaire path and origin after navigation, and require Next script
+URLs on that same origin. Service workers remain disabled. The report records
+this homepage provenance explicitly; it does not claim a visible game-page stamp.
+
+Fresh solo contexts now use the existing real first-game guide dismissal after
+application readiness and assert the sheet is closed before capturing gameplay.
+The earlier Daily capture showed onboarding above its correctly resumed board.
+Independent scenario failures are labelled and retained while later scenarios
+continue, with the unchanged final error assertion failing the job. A known
+failure control confirms continuation cannot turn the overall result green.
+Replacement diagnostic and full browser runs remain pending.
+
+The updated full local gate passes: 171 Vitest tests, 40 release tests,
+toolchain, typecheck and zero-warning lint. Product bindings remain `7c2f330`.

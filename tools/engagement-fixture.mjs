@@ -82,3 +82,12 @@ export function assertRestoredWrites(writes, owner, slot, restored) {
     assert.deepEqual(save.steps.slice(0, restored.steps.length), restored.steps, "Autosave rewrote restored moves");
   }
 }
+
+export async function attemptScenario(label, run, onFailure, errors) {
+  try { await run(); return true; }
+  catch (error) {
+    errors.push(`${label}: ${String(error)}`);
+    await onFailure();
+    return false;
+  }
+}

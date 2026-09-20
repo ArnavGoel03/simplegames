@@ -13,13 +13,17 @@ Fixtures must match both the games commit and workspace fingerprint. The
 component bundle is generated from that exact tree, hash-checked on use, and
 styled from the immutable candidate. Static history and prior hydrated identity
 checks remain. Fixtures bind to corrected games source `7c2f330`. The complete local gate
-passes (171 Vitest and 39 release tests). First Chromium/WebKit candidate
+passes (171 Vitest and 40 release tests). First Chromium/WebKit candidate
 runs failed Daily cloud restoration because the product validator drops its
 one-seat board. The corrected source now passes exact Daily fixture round-trip
 validation; replacement captures remain pending. Diagnostic-only engagement
 mode is isolated from release certification. Its first run exposed a harness
 mount/focus timing race; the switch now waits for verified ownership and a fresh
-identity response. Replacement browser execution is pending. Detailed local check results are recorded in ENGAGEMENT-FIXTURE-2026-09-20.md. This branch
+identity response. The next diagnostic passed account and Daily checks;
+Solitaire now uses established immutable-homepage provenance and actual
+script-origin checks, and solo captures dismiss the real onboarding guide.
+Independent failures aggregate without certifying success. Replacement browser
+execution is pending. Detailed local check results are recorded in ENGAGEMENT-FIXTURE-2026-09-20.md. This branch
 does not change or deploy the Studio product. Production remains as below.
 
 ## 20 September 2026: game-history browser regression harness verified

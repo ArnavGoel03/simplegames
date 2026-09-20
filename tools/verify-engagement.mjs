@@ -4,7 +4,9 @@ import { existsSync } from "node:fs";
 import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { chromium, webkit } from "playwright";
 import { candidates, engine, observeSource, omitServiceWorkerCapability, output } from "./browser-evidence.mjs";
-import { syntheticState, fixtureId, assertRestoredWrites } from "./engagement-fixture.mjs";
+import { syntheticState, fixtureId, assertRestoredWrites, attemptScenario } from "./engagement-fixture.mjs";
+
+import { waitForReady, dismissFirstGuide } from "./gameplay-controls.mjs";
 
 const directory = new URL("./fixtures/player-history/", import.meta.url);
 if (!existsSync(new URL("engagement.json", directory))) {
@@ -24,7 +26,8 @@ await mkdir(output, { recursive: true });
 const browser = await ({ chromium, webkit })[engine].launch();
 const diagnosticOnly = process.env.ENGAGEMENT_DIAGNOSTIC_ONLY === "true";
 if (diagnosticOnly) console.log("Diagnostic only: this engagement run cannot certify release candidates");
-const checks = [], errors = [], requests = [], writes = [];
+const checks = [], errors = [], requests = [], writes = [], sourceObservations = [], scenarioResults = [];
+const visits = new WeakMap();
 let captureNumber = 0;
 const settle = page => page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
 async function capture(page, name) {
@@ -33,14 +36,14 @@ async function capture(page, name) {
   await page.screenshot({ path: new URL(`engagement-${engine}-${String(++captureNumber).padStart(2, "0")}-${name}.jpg`, output).pathname, fullPage: true, type: "jpeg", quality: 85 });
   assert.equal(overflow, false, `${name} horizontally overflows`);
 }
-async function scenario(candidate, run) {
+async function scenario(label, candidate, run) {
   const context = await browser.newContext({ viewport: { width: 390, height: 844 }, colorScheme: "dark", serviceWorkers: "block", reducedMotion: "reduce" });
   await context.addInitScript(omitServiceWorkerCapability);
   await context.addCookies([{ name: session.hintCookie, value: "1", url: candidate.origin, secure: true, sameSite: "Lax" }]);
   const state = syntheticState(fixture, candidates);
   const page = await context.newPage();
   page.setDefaultTimeout(15_000); page.setDefaultNavigationTimeout(20_000);
-  page.on("pageerror", error => errors.push(error.message));
+  page.on("pageerror", error => errors.push(`${label}: ${error.message}`));
   await context.route("**/api/**", async route => {
     const request = route.request(), url = new URL(request.url());
     if (url.pathname === fixture.soloPath && state.soloOffline) return route.abort("internetdisconnected");
@@ -56,14 +59,44 @@ async function scenario(candidate, run) {
   // A UI handoff stops here, before sockets or any room mutation can occur.
   await context.route("**/r/fixture-*", route => route.fulfill({ contentType: "text/html", body: "<!doctype html><title>Synthetic room handoff</title><p>Synthetic room handoff</p>" }));
   await page.routeWebSocket("**", socket => socket.close());
-  try { await run({ context, page, state }); }
-  catch (error) { errors.push(String(error)); await capture(page, "failure").catch(() => {}); throw error; }
+  const previousErrors = errors.length;
+  try {
+    const passed = await attemptScenario(label, () => run({ context, page, state }), () => capture(page, `${label}-failure`).catch(() => {}), errors);
+    scenarioResults.push({ label, passed: passed && errors.length === previousErrors });
+  }
   finally { requests.push(...state.requests); writes.push(...state.writes); await context.close(); }
 }
 async function visit(page, candidate, path) {
+  const context = page.context();
+  const seen = visits.get(context) ?? new Set(); visits.set(context, seen);
+  const solitaire = path.startsWith("/solitaire/");
+  const solo = solitaire || path === "/daily";
+  if (solitaire && !seen.has(candidate.origin)) {
+    // Solitaire intentionally has no reading-page footer. Match verify-play's
+    // existing provenance strategy on this exact immutable candidate origin.
+    const provenance = await context.newPage();
+    try {
+      const response = await provenance.goto(candidate.origin, { waitUntil: "domcontentloaded", timeout: 20_000 });
+      assert(response?.ok());
+      const sourceHead = await observeSource(provenance, candidate.site);
+      sourceObservations.push({ site: candidate.site, origin: candidate.origin, observedPath: "/", sourceHead });
+      seen.add(candidate.origin);
+    } finally { await provenance.close(); }
+  }
   const response = await page.goto(new URL(path, candidate.origin).href, { waitUntil: "domcontentloaded" });
   assert(response?.ok());
-  await observeSource(page, candidate.site);
+  assert.equal(new URL(page.url()).origin, candidate.origin);
+  assert.equal(new URL(page.url()).pathname, path);
+  if (solo) {
+    await waitForReady(page);
+    if (!seen.has(path)) { await dismissFirstGuide(page); seen.add(path); }
+    assert.equal(await page.locator(".play-sheet:visible").count(), 0, "The actual game must be visible after onboarding");
+  }
+  if (solitaire) {
+    const scripts = await page.locator('script[src*="/_next/"]').evaluateAll(nodes => nodes.map(node => node.src));
+    assert(scripts.length > 0 && scripts.every(url => new URL(url).origin === candidate.origin), "Solitaire scripts must load from the source-bound immutable origin");
+    sourceObservations.push({ site: candidate.site, origin: candidate.origin, requestedPath: path, provenancePath: "/", scriptUrls: scripts });
+  } else await observeSource(page, candidate.site);
 }
 async function bounded(promise, label) {
   let timer;
@@ -82,7 +115,7 @@ async function refreshAs(page, state, player) {
 }
 
 try {
-  await scenario(board, async ({ context, page, state }) => {
+  await scenario("account", board, async ({ context, page, state }) => {
     state.set(fixture.owners[0], "freecell", fixture.saves.freecell[0]);
     state.set(fixture.owners[0], "daily", fixture.daily.data);
     state.set(fixture.owners[1], "klondike", fixture.saves.klondike[1]);
@@ -155,7 +188,7 @@ try {
     checks.push("Account switching replaces continuation and room ownership without showing prior-owner saves");
   });
 
-  await scenario(board, async ({ context, page, state }) => {
+  await scenario("recap", board, async ({ context, page, state }) => {
     await context.addInitScript(() => {
       window.__shareCalls = []; window.__copied = [];
       Object.defineProperty(navigator, "share", { configurable: true, value: async data => { window.__shareCalls.push(data); throw new DOMException("cancelled", "AbortError"); } });
@@ -188,7 +221,7 @@ try {
     checks.push("Generated actual MatchRecap+AccountProvider bundle shares result/rating, respects Share cancellation and opens usable native rematch dialog");
   });
 
-  await scenario(board, async ({ page, state }) => {
+  await scenario("daily", board, async ({ page, state }) => {
     assert.equal(fixture.daily.day, new Date().toISOString().slice(0, 10), "Regenerate Daily fixture after a UTC day rollover");
     state.set(fixture.owners[0], "daily", fixture.daily.data);
     await visit(page, board, "/daily");
@@ -202,7 +235,7 @@ try {
     checks.push("Daily resumes a canonical eight-roll cloud board and preserves it across a solo-API-offline reload");
   });
 
-  for (const slot of ["freecell", "klondike", "spider"]) await scenario(cards, async ({ page, state }) => {
+  for (const slot of ["freecell", "klondike", "spider"]) await scenario(slot, cards, async ({ page, state }) => {
     const owner = fixture.owners[0];
     state.set(owner, slot, fixture.saves[slot][0]); state.set(fixture.owners[1], slot, fixture.saves[slot][1]);
     await visit(page, cards, `/solitaire/${slot}`);
@@ -240,12 +273,12 @@ try {
     assertRestoredWrites(state.writes, fixture.owners[1], slot, fixture.saves[slot][1].save);
     checks.push("Changing account restores that owner's independent Solitaire board without cross-account writes");
   });
-  await scenario(cards, async ({ context, page, state }) => {
+  await scenario("tab-ownership", cards, async ({ context, page, state }) => {
     state.set(fixture.owners[0], "freecell", fixture.saves.freecell[0]);
     await visit(page, cards, "/solitaire/freecell");
     await page.getByText("1 move", { exact: true }).first().waitFor();
     const second = await context.newPage(); second.setDefaultTimeout(15_000);
-    second.on("pageerror", error => errors.push(error.message));
+    second.on("pageerror", error => errors.push(`tab-ownership: ${error.message}`));
     await visit(second, cards, "/solitaire/freecell");
     await second.getByText(fixture.copy.pending, { exact: true }).waitFor();
     await capture(second, "freecell-second-tab-waits");
@@ -260,7 +293,7 @@ try {
   assert.deepEqual(errors, []);
 } finally {
   await writeFile(new URL(`engagement-${engine}.json`, output), JSON.stringify({ sourceHead: fixture.sourceHead, sourceFingerprint: fixture.sourceFingerprint,
-    componentSha256: fixture.componentSha256, diagnosticOnly, standaloneCertification: false, checks, requests, writes, errors,
+    componentSha256: fixture.componentSha256, diagnosticOnly, standaloneCertification: false, checks, requests, writes, errors, scenarioResults, sourceObservations,
     scope: "Actual candidate account and solitaire pages plus actual source-bundled recap component. Synthetic intercepted APIs only; offline scenario isolates solo API failure while identity/document delivery remains available. Room handoff stops before sockets. No production account, invite, room or database mutation.",
   }, null, 2));
   await browser.close();
