@@ -3,7 +3,7 @@ import { createHash } from "node:crypto";
 import { existsSync } from "node:fs";
 import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { chromium, webkit } from "playwright";
-import { candidates, engine, observeSource, omitServiceWorkerCapability, output } from "./browser-evidence.mjs";
+import { candidates, engine, observeSource, omitServiceWorkerCapability, output, instrument } from "./browser-evidence.mjs";
 import { syntheticState, fixtureId, assertRestoredWrites, attemptScenario } from "./engagement-fixture.mjs";
 
 import { prepareGameplayContext, waitForReady, dismissFirstGuide, waitForRenderedBoard } from "./gameplay-controls.mjs";
@@ -26,7 +26,8 @@ await mkdir(output, { recursive: true });
 const browser = await ({ chromium, webkit })[engine].launch();
 const diagnosticOnly = process.env.ENGAGEMENT_DIAGNOSTIC_ONLY === "true";
 if (diagnosticOnly) console.log("Diagnostic only: this engagement run cannot certify release candidates");
-const checks = [], errors = [], requests = [], writes = [], sourceObservations = [], scenarioResults = [], boardRenders = [];
+const checks = [], errors = [], requests = [], writes = [], sourceObservations = [], scenarioResults = [], boardRenders = [], networkProbes = [];
+const pageProbes = new WeakMap();
 const visits = new WeakMap();
 let captureNumber = 0;
 const settle = page => page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
@@ -36,6 +37,28 @@ async function capture(page, name) {
   await page.screenshot({ path: new URL(`engagement-${engine}-${String(++captureNumber).padStart(2, "0")}-${name}.jpg`, output).pathname, fullPage: true, type: "jpeg", quality: 85 });
   assert.equal(overflow, false, `${name} horizontally overflows`);
 }
+async function observeScenarioPage(page, label) {
+  const probe = await instrument(page);
+  pageProbes.set(page, probe);
+  networkProbes.push({ label, trace: probe.trace, errors: probe.errors, failed: probe.failed, counts: probe.counts });
+}
+function mark(page, event) { pageProbes.get(page)?.mark(event); }
+async function goto(page, url, options) {
+  const path = new URL(url).pathname;
+  mark(page, `goto-start:${path}`);
+  try { return await page.goto(url, options); }
+  finally { mark(page, `goto-end:${path}`); }
+}
+async function reload(page) {
+  mark(page, "reload-start");
+  try { return await page.reload({ waitUntil: "domcontentloaded" }); }
+  finally { mark(page, "reload-end"); }
+}
+async function handoff(page, click, pattern) {
+  mark(page, "room-handoff-start");
+  try { await click(); await page.waitForURL(pattern); }
+  finally { mark(page, "room-handoff-end"); }
+}
 async function scenario(label, candidate, run) {
   const context = await browser.newContext({ viewport: { width: 390, height: 844 }, colorScheme: "dark", serviceWorkers: "block", reducedMotion: "reduce" });
   await prepareGameplayContext(context);
@@ -43,6 +66,7 @@ async function scenario(label, candidate, run) {
   await context.addCookies([{ name: session.hintCookie, value: "1", url: candidate.origin, secure: true, sameSite: "Lax" }]);
   const state = syntheticState(fixture, candidates);
   const page = await context.newPage();
+  await observeScenarioPage(page, label);
   page.setDefaultTimeout(15_000); page.setDefaultNavigationTimeout(20_000);
   page.on("pageerror", error => errors.push(`${label}: ${error.stack ?? error.message}`));
   await context.route("**/api/**", async route => {
@@ -65,7 +89,13 @@ async function scenario(label, candidate, run) {
     const passed = await attemptScenario(label, () => run({ context, page, state }), () => capture(page, `${label}-failure`).catch(() => {}), errors);
     scenarioResults.push({ label, passed: passed && errors.length === previousErrors });
   }
-  finally { requests.push(...state.requests); writes.push(...state.writes); await context.close(); }
+  finally {
+    requests.push(...state.requests); writes.push(...state.writes);
+    const probes = context.pages().map(current => pageProbes.get(current)).filter(Boolean);
+    probes.forEach(probe => probe.mark("context-close-start"));
+    try { await context.close(); }
+    finally { probes.forEach(probe => probe.mark("context-close-end")); }
+  }
 }
 async function visit(page, candidate, path) {
   const context = page.context();
@@ -84,7 +114,7 @@ async function visit(page, candidate, path) {
       seen.add(candidate.origin);
     } finally { await provenance.close(); }
   }
-  const response = await page.goto(new URL(path, candidate.origin).href, { waitUntil: "domcontentloaded" });
+  const response = await goto(page, new URL(path, candidate.origin).href, { waitUntil: "domcontentloaded" });
   assert(response?.ok());
   assert.equal(new URL(page.url()).origin, candidate.origin);
   assert.equal(new URL(page.url()).pathname, path);
@@ -104,7 +134,11 @@ async function bounded(promise, label) {
   try { return await Promise.race([promise, new Promise((_, reject) => { timer = setTimeout(() => reject(new Error(label)), 15_000); })]); }
   finally { clearTimeout(timer); }
 }
-const focus = page => page.evaluate(() => window.dispatchEvent(new Event("focus")));
+const focus = async page => {
+  mark(page, "focus-start");
+  try { return await page.evaluate(() => window.dispatchEvent(new Event("focus"))); }
+  finally { mark(page, "focus-end"); }
+};
 const recordFor = (page, player) => page.getByRole("link", { name: "Your record", exact: true }).and(page.locator(`a[href="/player/${player.handle}"]`));
 async function refreshAs(page, state, player) {
   const response = page.waitForResponse(reply => new URL(reply.url()).pathname === "/api/identity/me" && reply.request().method() === "GET");
@@ -164,15 +198,14 @@ try {
     await rematch.click(); await page.getByText("no player goes by that name", { exact: true }).waitFor();
     assert.equal(new URL(page.url()).pathname, "/account");
     state.refuseCreate = false;
-    await rematch.click(); await page.waitForURL("**/r/fixture-rematch-42?g=rummy");
+    await handoff(page, () => rematch.click(), "**/r/fixture-rematch-42?g=rummy");
     checks.push("Rivals support explicit Add/Accept, decline, refused rematch and correct Rummy room handoff");
     await visit(page, board, "/account");
     await page.locator("#rivals").getByRole("button", { name: "Cancel", exact: true }).click();
     await page.waitForFunction(() => ![...document.querySelectorAll("#rivals button")].some(button => button.textContent === "Cancel"));
     state.offers.push({ ...state.offers[0], id: fixtureId(22), roomId: "fixture-inbox-43", status: "pending" });
-    await page.reload({ waitUntil: "domcontentloaded" });
-    await page.locator("#rivals").getByRole("button", { name: "Accept", exact: true }).click();
-    await page.waitForURL("**/r/fixture-inbox-43?g=rummy");
+    await reload(page);
+    await handoff(page, () => page.locator("#rivals").getByRole("button", { name: "Accept", exact: true }).click(), "**/r/fixture-inbox-43?g=rummy");
     checks.push("An outgoing invitation can be cancelled and an incoming invitation explicitly accepted");
     await visit(page, board, "/account");
     // The build stamp is server-rendered. Wait for the mounted provider's A
@@ -203,7 +236,7 @@ try {
     const url = new URL("/__engagement_fixture__", board.origin).href;
     await context.route(`${url}.js`, route => route.fulfill({ contentType: "text/javascript", body: component }));
     await context.route(url, route => route.fulfill({ contentType: "text/html", body: `<!doctype html><html class="${shell.htmlClass}"><head><meta name="viewport" content="width=device-width,initial-scale=1">${shell.styles}</head><body><main id="fixture" class="mx-auto max-w-3xl p-4"></main><script src="${url}.js"></script></body></html>` }));
-    await page.goto(url, { waitUntil: "load" });
+    await goto(page, url, { waitUntil: "load" });
     await page.getByRole("button", { name: "Rematch", exact: true }).waitFor();
     await page.getByRole("button", { name: "Share", exact: true }).click();
     await page.waitForFunction(() => window.__shareCalls.length === 1);
@@ -232,7 +265,7 @@ try {
     await resumed();
     boardRenders.push({ phase: "daily-cloud-resume", ...await waitForRenderedBoard(page) });
     state.soloOffline = true;
-    await page.reload({ waitUntil: "domcontentloaded" }); await resumed();
+    await reload(page); await resumed();
     boardRenders.push({ phase: "daily-offline-reload", ...await waitForRenderedBoard(page) });
     await capture(page, "daily-cloud-offline-resume");
     checks.push("Daily resumes a canonical eight-roll cloud board and preserves it across a solo-API-offline reload");
@@ -260,7 +293,7 @@ try {
     state.soloOffline = true; release(); state.identityGate = null;
     checks.push("Background account verification preserves the active board while pausing cloud writes");
     await page.waitForFunction(key => JSON.parse(localStorage.getItem(key) ?? "null")?.local?.save?.steps?.length === 0, fixture.soloKeys[owner][slot]);
-    await page.reload({ waitUntil: "domcontentloaded" }); await moves(0).waitFor();
+    await reload(page); await moves(0).waitFor();
     await capture(page, "freecell-offline-reload");
     checks.push("FreeCell Undo persists across reload while solo API transport is unavailable");
     state.set(owner, slot, fixture.saves[slot][2], 2); state.soloOffline = false;
@@ -281,6 +314,7 @@ try {
     await visit(page, cards, "/solitaire/freecell");
     await page.getByText("1 move", { exact: true }).first().waitFor();
     const second = await context.newPage(); second.setDefaultTimeout(15_000);
+    await observeScenarioPage(second, "tab-ownership:second");
     second.on("pageerror", error => errors.push(`tab-ownership: ${error.stack ?? error.message}`));
     await visit(second, cards, "/solitaire/freecell");
     await second.getByText(fixture.copy.pending, { exact: true }).waitFor();
@@ -288,7 +322,8 @@ try {
     await page.getByRole("button", { name: "Undo", exact: true }).click();
     await page.getByText("0 moves", { exact: true }).first().waitFor();
     await page.waitForFunction(key => JSON.parse(localStorage.getItem(key) ?? "null")?.local?.save?.steps?.length === 0, fixture.soloKeys[fixture.owners[0]].freecell);
-    await page.close();
+    mark(page, "page-close-start");
+    try { await page.close(); } finally { mark(page, "page-close-end"); }
     await second.getByText("0 moves", { exact: true }).first().waitFor();
     await capture(second, "freecell-second-tab-takes-over");
     checks.push("A second same-account tab waits for the writer lock and restores latest local state after takeover");
@@ -296,7 +331,7 @@ try {
   assert.deepEqual(errors, []);
 } finally {
   await writeFile(new URL(`engagement-${engine}.json`, output), JSON.stringify({ sourceHead: fixture.sourceHead, sourceFingerprint: fixture.sourceFingerprint,
-    componentSha256: fixture.componentSha256, diagnosticOnly, standaloneCertification: false, checks, requests, writes, errors, scenarioResults, sourceObservations, boardRenders,
+    componentSha256: fixture.componentSha256, diagnosticOnly, standaloneCertification: false, checks, requests, writes, errors, scenarioResults, sourceObservations, boardRenders, networkProbes,
     scope: "Actual candidate account and solitaire pages plus actual source-bundled recap component. Synthetic intercepted APIs only; offline scenario isolates solo API failure while identity/document delivery remains available. Room handoff stops before sockets. No production account, invite, room or database mutation.",
   }, null, 2));
   await browser.close();

@@ -187,3 +187,21 @@ closure extracted from the installed Playwright bundle, reproducing the async
 null false positive and successful synchronous polling. All 44 release
 tests and scoped zero-warning lint pass. Replacement rendered evidence remains
 pending; the prior supplemental run does not establish board visibility.
+
+## WebKit RSC lifecycle diagnostics
+
+Full WebKit run35514751245 completed every engagement action but reported32
+fatal page errors for account/Daily RSC prefetches. The prior report held only
+error strings, so it cannot distinguish failed delivery from navigation-time
+cancellation. Exact public candidate probes returned200 RSC responses for
+/account and /ludo; that alone does not prove browser delivery succeeded.
+
+The engagement report now includes labelled networkProbes from the existing
+instrument(page) helper, including the second ownership tab. Harness markers
+bracket goto, reload, focus, synthetic room handoff, page close and context close.
+Request query values retain the canonical hash/path handling. Instrumentation
+observes original fetch promises and native response readers; it adds no network
+filter or error suppression. Existing fatal assertions and certification guards
+remain unchanged. Scoped lint, syntax validation,30 browser-evidence tests and8
+related fixture/workflow/readiness tests pass. A Linux WebKit diagnostic rerun
+remains required; no Studio deployment or games-source change was made.

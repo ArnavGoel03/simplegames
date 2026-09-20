@@ -27,6 +27,13 @@ exposed a missing readiness-observer installation, now fixed for the whole
 context with a calibrated regression. Replacement browser execution is pending. Detailed local check results are recorded in ENGAGEMENT-FIXTURE-2026-09-20.md. This branch
 does not change or deploy the Studio product. Production remains as below.
 
+Full Chromium run35514749358 passes. Full WebKit run35514751245 completed
+all engagement actions but failed its fatal page-error guard on same-origin RSC
+prefetch errors during account/Daily scenarios. Trace-only diagnostics now use
+the existing browser instrumentation and mark navigation, reload, focus,
+room handoff and close boundaries. No errors are exempted; a diagnostic rerun
+must establish the request/lifecycle cause. Product source remains `7c2f330`.
+
 ## 20 September 2026: game-history browser regression harness verified
 
 Branch `test/player-history-fixture` adds optional candidate-bound rendering of
