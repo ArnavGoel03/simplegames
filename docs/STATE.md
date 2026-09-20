@@ -1,5 +1,22 @@
 # Glass Table Games: state of play
 
+## 20 September 2026: engagement candidate verification prepared
+
+Branch `test/player-engagement-fixtures` extends the maintained candidate
+workflow with actual account and solo-game interaction checks and a generated
+bundle of the games source's real recap component. Synthetic API responses
+exercise rematch acceptance/refusal/cancellation, account-scoped continuations,
+cloud restoration, offline API failure, conflicting saves and tab ownership.
+No real account, invitation, room or database mutation occurs.
+
+Fixtures must match both the games commit and workspace fingerprint. The
+component bundle is generated from that exact tree, hash-checked on use, and
+styled from the immutable candidate. Static history and prior hydrated identity
+checks remain. Fixtures bind to games source `2e072b3`. The complete local gate
+passes (171 Vitest and 37 release tests); browser execution and visual review
+remain pending. Detailed local check results are recorded in ENGAGEMENT-FIXTURE-2026-09-20.md. This branch
+does not change or deploy the Studio product. Production remains as below.
+
 ## 20 September 2026: game-history browser regression harness verified
 
 Branch `test/player-history-fixture` adds optional candidate-bound rendering of

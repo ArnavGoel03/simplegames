@@ -58,7 +58,7 @@ try {
         const stylesheets = [...document.querySelectorAll('link[rel="stylesheet"]')];
         return stylesheets.length > 0 && stylesheets.every(link => link.sheet && new URL(link.href).origin === location.origin);
       }), "Every candidate stylesheet must load from the immutable origin");
-      assert.equal(await page.locator("main li").count(), fixture.rows);
+      assert.equal(await page.locator("main li").filter({ has: page.locator("[data-game-title]") }).count(), fixture.rows);
       assert.equal(await page.locator('a[rel="next"]').count(), fixture.next ? 1 : 0);
       if (fixture.next) assert.equal(await page.locator('a[rel="next"]').getAttribute("href"), fixture.next);
       if (fixture.name === "account") assert.equal(await page.getByRole("link", { name: "Your record", exact: true }).getAttribute("href"), "/player/fixture-rook");

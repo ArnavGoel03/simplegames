@@ -133,6 +133,11 @@ jobs:
         env:
           BROWSER_ENGINE: ${{ inputs.browser || 'chromium' }}
         run: node tools/verify-player-history.mjs
+      - name: Verify synthetic engagement interactions
+        if: ${{ inputs.release_candidates_json && !inputs.controls_only && !inputs.network_probe_only && !cancelled() }}
+        env:
+          BROWSER_ENGINE: ${{ inputs.browser || 'chromium' }}
+        run: node tools/verify-engagement.mjs
       - uses: actions/upload-artifact@v7.0.1
         if: always()
         with:
