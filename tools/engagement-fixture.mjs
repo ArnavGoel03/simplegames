@@ -71,3 +71,14 @@ export function syntheticState(fixture, candidates) {
   };
   return state;
 }
+
+export function assertRestoredWrites(writes, owner, slot, restored) {
+  for (const write of writes.filter(row => row.owner === owner && row.body.slot === slot)) {
+    const save = write.body.data?.save;
+    assert(save, "A restored game must not be replaced by an empty save");
+    assert.equal(save.attemptId, restored.attemptId, "Autosave changed the restored attempt");
+    assert.deepEqual(save.deal, restored.deal, "Autosave replaced the restored deal");
+    assert(Array.isArray(save.steps) && save.steps.length >= restored.steps.length, "Autosave lost restored moves");
+    assert.deepEqual(save.steps.slice(0, restored.steps.length), restored.steps, "Autosave rewrote restored moves");
+  }
+}

@@ -35,3 +35,14 @@ test("unhandled synthetic APIs refuse access instead of reaching production", ()
   const { state } = fixture();
   assert.deepEqual(state.answer({ path: "/api/identity/sign-up", method: "POST" }), { status: 404, json: {} });
 });
+
+
+test("restored-save detector permits clock banking but rejects fresh or replaced boards", async () => {
+  const { assertRestoredWrites } = await import("../engagement-fixture.mjs");
+  const restored = { attemptId: "fixture-attempt", deal: { source: "numbered", number: 617 }, steps: [[{ move: 1 }]] };
+  const writes = save => [{ owner: "owner", body: { slot: "freecell", data: { save } } }];
+  assertRestoredWrites(writes({ ...restored, elapsed: 13000 }), "owner", "freecell", restored);
+  for (const save of [null, { ...restored, attemptId: "new" }, { ...restored, deal: { number: 1 } }, { ...restored, steps: [] }, { ...restored, steps: [[{ move: 2 }]] }]) {
+    assert.throws(() => assertRestoredWrites(writes(save), "owner", "freecell", restored));
+  }
+});

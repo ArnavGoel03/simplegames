@@ -12,9 +12,12 @@ No real account, invitation, room or database mutation occurs.
 Fixtures must match both the games commit and workspace fingerprint. The
 component bundle is generated from that exact tree, hash-checked on use, and
 styled from the immutable candidate. Static history and prior hydrated identity
-checks remain. Fixtures bind to games source `2e072b3`. The complete local gate
-passes (171 Vitest and 37 release tests); browser execution and visual review
-remain pending. Detailed local check results are recorded in ENGAGEMENT-FIXTURE-2026-09-20.md. This branch
+checks remain. Fixtures bind to corrected games source `7c2f330`. The complete local gate
+passes (171 Vitest and 39 release tests). First Chromium/WebKit candidate
+runs failed Daily cloud restoration because the product validator drops its
+one-seat board. The corrected source now passes exact Daily fixture round-trip
+validation; replacement captures remain pending. Diagnostic-only engagement
+mode is isolated from release certification. Detailed local check results are recorded in ENGAGEMENT-FIXTURE-2026-09-20.md. This branch
 does not change or deploy the Studio product. Production remains as below.
 
 ## 20 September 2026: game-history browser regression harness verified

@@ -44,6 +44,7 @@ console.log(JSON.stringify({owners,saves,roomsKey:StorageKey.Rooms,soloKeys:Obje
 `;
 const data = JSON.parse(execFileSync("pnpm", ["--filter", "judgement", "exec", "tsx", "-e", script], { cwd: root, encoding: "utf8", timeout: 20_000 }));
 const dailyScript = `
+import assert from "node:assert/strict";
 import { boardFor, houseMove, playRun } from '@play/daily';
 import { applyMove, applyRoll, getLegalMovesForState } from '@play/engine';
 import { EMPTY_RECORD } from './src/lib/daily/record';
@@ -57,7 +58,8 @@ import { dailyAdapter } from './src/lib/daily/store';
   if(engine.pendingRoll!==null && moves.length) engine=applyMove(engine,houseMove(engine,moves));
  }
  const record={...EMPTY_RECORD,progress:{day,engine,marks:playRun(board.rolls.slice(0,8),houseMove).marks}};
- const data=dailyAdapter.encode(record); if(!data || !dailyAdapter.decode(data)) throw new Error('invalid daily fixture');
+ const data=dailyAdapter.encode(record); if(!data) throw new Error('invalid daily fixture');
+ assert.deepEqual(dailyAdapter.decode(data)?.progress, record.progress, 'Daily adapter must preserve the generated in-progress board');
  console.log(JSON.stringify({day,data}));
 })();`;
 data.daily = JSON.parse(execFileSync("pnpm", ["--filter", "web", "exec", "tsx", "-e", dailyScript], { cwd: root, encoding: "utf8", timeout: 20_000 }));

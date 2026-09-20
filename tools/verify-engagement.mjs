@@ -4,7 +4,7 @@ import { existsSync } from "node:fs";
 import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { chromium, webkit } from "playwright";
 import { candidates, engine, observeSource, omitServiceWorkerCapability, output } from "./browser-evidence.mjs";
-import { syntheticState, fixtureId } from "./engagement-fixture.mjs";
+import { syntheticState, fixtureId, assertRestoredWrites } from "./engagement-fixture.mjs";
 
 const directory = new URL("./fixtures/player-history/", import.meta.url);
 if (!existsSync(new URL("engagement.json", directory))) {
@@ -22,6 +22,8 @@ const cards = candidates.find(row => row.site === "cards");
 assert(board && cards, "Engagement requires board and cards candidates");
 await mkdir(output, { recursive: true });
 const browser = await ({ chromium, webkit })[engine].launch();
+const diagnosticOnly = process.env.ENGAGEMENT_DIAGNOSTIC_ONLY === "true";
+if (diagnosticOnly) console.log("Diagnostic only: this engagement run cannot certify release candidates");
 const checks = [], errors = [], requests = [], writes = [];
 let captureNumber = 0;
 const settle = page => page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
@@ -86,6 +88,22 @@ try {
     await continuation.getByText("fixture-owner-1-42", { exact: true }).waitFor();
     assert.equal(await continuation.getByText("fixture-owner-2-42", { exact: true }).count(), 0);
     await page.getByRole("region", { name: "Cross-game achievements", exact: true }).waitFor();
+    const progressColors = await page.getByRole("progressbar").evaluateAll(bars => bars.map(bar => {
+      const fill = bar.firstElementChild;
+      if (!fill) return { named: bar.getAttribute("aria-label"), matched: false, calibrated: false };
+      const probe = document.createElement("span");
+      probe.style.backgroundColor = "var(--play-fg)"; bar.append(probe);
+      const expected = getComputedStyle(probe).backgroundColor;
+      const actual = getComputedStyle(fill).backgroundColor;
+      const saved = fill.getAttribute("style");
+      fill.style.backgroundColor = "transparent";
+      const calibrated = getComputedStyle(fill).backgroundColor !== expected;
+      if (saved === null) fill.removeAttribute("style"); else fill.setAttribute("style", saved);
+      probe.remove();
+      return { named: bar.getAttribute("aria-label"), matched: actual === expected, calibrated };
+    }));
+    assert(progressColors.length > 0 && progressColors.every(row => row.matched && row.calibrated), "Achievement fills must use the canonical foreground token");
+    checks.push("Accessible achievement progress uses the canonical theme fill, with a wrong-color detector control");
     for (const [width, height] of [[390, 844], [844, 390], [1440, 900]]) {
       await page.setViewportSize({ width, height }); await capture(page, `account-${width}x${height}`);
     }
@@ -177,9 +195,10 @@ try {
     await visit(page, cards, `/solitaire/${slot}`);
     const moves = number => page.getByText(`${number} ${number === 1 ? "move" : "moves"}`, { exact: true }).first();
     await moves(1).waitFor();
-    assert.equal(state.writes.length, 0, "Hydration must not overwrite the cloud board with a fresh game");
+    assertRestoredWrites(state.writes, owner, slot, fixture.saves[slot][0].save);
     await capture(page, `${slot}-cloud-resume`);
     if (slot !== "freecell") { checks.push(`${slot}: actual game resumes the canonical cloud move`); return; }
+    const writesBeforeVerification = state.writes.length;
     let release;
     state.identityGate = new Promise(resolve => { release = resolve; });
     const arrived = new Promise(resolve => { state.identitySeen = resolve; });
@@ -188,7 +207,7 @@ try {
     await moves(1).waitFor();
     await page.getByRole("button", { name: "Undo", exact: true }).click(); await moves(0).waitFor();
     await page.waitForTimeout(900);
-    assert.equal(state.writes.length, 0, "Background verification must preserve the board while pausing cloud writes");
+    assert.equal(state.writes.length, writesBeforeVerification, "Background verification must preserve the board while pausing cloud writes");
     state.soloOffline = true; release(); state.identityGate = null;
     checks.push("Background account verification preserves the active board while pausing cloud writes");
     await page.waitForFunction(key => JSON.parse(localStorage.getItem(key) ?? "null")?.local?.save?.steps?.length === 0, fixture.soloKeys[owner][slot]);
@@ -205,7 +224,7 @@ try {
     checks.push("CAS conflict offers an explicit choice and choosing cloud retains displaced local recovery");
     state.current = state.players[1]; await focus(page); await moves(2).waitFor();
     await capture(page, "freecell-second-owner");
-    assert.equal(state.writes.filter(write => write.owner === fixture.owners[1]).length, 0, "Switching account must not write the previous board to its new owner");
+    assertRestoredWrites(state.writes, fixture.owners[1], slot, fixture.saves[slot][1].save);
     checks.push("Changing account restores that owner's independent Solitaire board without cross-account writes");
   });
   await scenario(cards, async ({ context, page, state }) => {
@@ -228,7 +247,7 @@ try {
   assert.deepEqual(errors, []);
 } finally {
   await writeFile(new URL(`engagement-${engine}.json`, output), JSON.stringify({ sourceHead: fixture.sourceHead, sourceFingerprint: fixture.sourceFingerprint,
-    componentSha256: fixture.componentSha256, checks, requests, writes, errors,
+    componentSha256: fixture.componentSha256, diagnosticOnly, standaloneCertification: false, checks, requests, writes, errors,
     scope: "Actual candidate account and solitaire pages plus actual source-bundled recap component. Synthetic intercepted APIs only; offline scenario isolates solo API failure while identity/document delivery remains available. Room handoff stops before sockets. No production account, invite, room or database mutation.",
   }, null, 2));
   await browser.close();

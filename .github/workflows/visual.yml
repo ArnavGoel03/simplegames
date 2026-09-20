@@ -25,6 +25,10 @@ on:
       release_candidates_json:
         description: Exact candidate upload receipts to verify
         type: string
+      engagement_only:
+        description: Diagnostic only, run engagement checks without release certification
+        type: boolean
+        default: false
       controls_only:
         description: Run focused modal and Casino controls verification
         type: boolean
@@ -45,7 +49,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: visual-${{ github.ref }}-${{ inputs.browser || 'chromium' }}-${{ inputs.controls_only && 'controls' || inputs.network_probe_only && 'probe' || 'release' }}
+  group: visual-${{ github.ref }}-${{ inputs.browser || 'chromium' }}-${{ inputs.engagement_only && 'engagement-diagnostic' || inputs.controls_only && 'controls' || inputs.network_probe_only && 'probe' || 'release' }}
   cancel-in-progress: true
 
 jobs:
@@ -62,21 +66,29 @@ jobs:
         with:
           node-version: 26
           cache: npm
+      - name: Validate diagnostic engagement request
+        if: inputs.engagement_only
+        env:
+          CANDIDATES: ${{ inputs.release_candidates_json }}
+          CONFLICTING_MODE: ${{ inputs.baseline || inputs.controls_only || inputs.network_probe_only || inputs.live || (inputs.casino_preview != '') }}
+        run: |
+          test -n "$CANDIDATES" && test "$CONFLICTING_MODE" = "false"
+          echo "Diagnostic only: engagement results cannot certify or promote any candidate." >> "$GITHUB_STEP_SUMMARY"
       - run: npm ci --no-audit --no-fund
       - run: npm run gate
       - name: Install browser
         env:
           BROWSER_ENGINE: ${{ inputs.browser || 'chromium' }}
         run: npx playwright install --with-deps "$BROWSER_ENGINE"
-      - if: ${{ !inputs.controls_only && !inputs.live && !inputs.casino_preview && !inputs.baseline && !inputs.release_candidates_json }}
+      - if: ${{ !inputs.engagement_only && (!inputs.controls_only && !inputs.live && !inputs.casino_preview && !inputs.baseline && !inputs.release_candidates_json ) }}
         run: npm run build
       - name: Verify usable game controls
-        if: ${{ inputs.controls_only || (!inputs.network_probe_only && contains(fromJSON(inputs.release_candidates_json || '[]').*.site, 'teenpatti')) }}
+        if: ${{ !inputs.engagement_only && (inputs.controls_only || (!inputs.network_probe_only && contains(fromJSON(inputs.release_candidates_json || '[]').*.site, 'teenpatti')) ) }}
         env:
           BROWSER_ENGINE: ${{ inputs.browser || 'chromium' }}
         run: node tools/verify-controls.mjs
       - name: Capture responsive pages
-        if: ${{ !inputs.controls_only && !inputs.network_probe_only && !cancelled() }}
+        if: ${{ !inputs.engagement_only && (!inputs.controls_only && !inputs.network_probe_only && !cancelled() ) }}
         env:
           CAPTURE_LIVE: ${{ inputs.live }}
           CASINO_PREVIEW: ${{ inputs.casino_preview }}
@@ -88,27 +100,27 @@ jobs:
             node tools/verify-visual.mjs
           fi
       - name: Verify startup recovery under failed and stalled resources
-        if: ${{ !inputs.controls_only && !inputs.network_probe_only && !cancelled() }}
+        if: ${{ !inputs.engagement_only && (!inputs.controls_only && !inputs.network_probe_only && !cancelled() ) }}
         env:
           BROWSER_ENGINE: ${{ inputs.browser || 'chromium' }}
         run: node tools/verify-startup.mjs
       - name: Verify game entry
-        if: ${{ !inputs.controls_only && inputs.release_candidates_json && !inputs.network_probe_only && !cancelled() }}
+        if: ${{ !inputs.engagement_only && (!inputs.controls_only && inputs.release_candidates_json && !inputs.network_probe_only && !cancelled() ) }}
         env:
           BROWSER_ENGINE: ${{ inputs.browser || 'chromium' }}
         run: node tools/verify-entry.mjs
       - name: Verify gameplay across resize
-        if: ${{ !inputs.controls_only && inputs.release_candidates_json && !inputs.network_probe_only && !cancelled() }}
+        if: ${{ !inputs.engagement_only && (!inputs.controls_only && inputs.release_candidates_json && !inputs.network_probe_only && !cancelled() ) }}
         env:
           BROWSER_ENGINE: ${{ inputs.browser || 'chromium' }}
         run: node tools/verify-play.mjs
       - name: Verify service worker lifecycle
-        if: ${{ !inputs.controls_only && inputs.release_candidates_json && !inputs.network_probe_only && !cancelled() }}
+        if: ${{ !inputs.engagement_only && (!inputs.controls_only && inputs.release_candidates_json && !inputs.network_probe_only && !cancelled() ) }}
         env:
           BROWSER_ENGINE: ${{ inputs.browser || 'chromium' }}
         run: node tools/verify-pwa.mjs
       - name: Calibrate browser network diagnostics
-        if: ${{ !inputs.controls_only && inputs.release_candidates_json && !cancelled() }}
+        if: ${{ !inputs.engagement_only && (!inputs.controls_only && inputs.release_candidates_json && !cancelled() ) }}
         env:
           BROWSER_ENGINE: ${{ inputs.browser || 'chromium' }}
           TRACE_CASINO: ${{ inputs.network_probe_only }}
@@ -119,39 +131,43 @@ jobs:
             node tools/probe-network.mjs
           fi
       - name: Inspect Prize Wheel rendering
-        if: ${{ !inputs.controls_only && !inputs.network_probe_only && inputs.release_candidates_json && !cancelled() }}
+        if: ${{ !inputs.engagement_only && (!inputs.controls_only && !inputs.network_probe_only && inputs.release_candidates_json && !cancelled() ) }}
         env:
           BROWSER_ENGINE: ${{ inputs.browser || 'chromium' }}
         run: node tools/probe-wheel.mjs
       - name: Compare live and candidate performance
-        if: ${{ !inputs.controls_only && inputs.network_probe_only && !inputs.skip_performance_probe && !cancelled() }}
+        if: ${{ !inputs.engagement_only && (!inputs.controls_only && inputs.network_probe_only && !inputs.skip_performance_probe && !cancelled() ) }}
         env:
           BROWSER_ENGINE: ${{ inputs.browser || 'chromium' }}
         run: node tools/probe-performance.mjs
       - name: Verify synthetic player history with candidate styles
-        if: ${{ inputs.release_candidates_json && !inputs.controls_only && !inputs.network_probe_only && !cancelled() }}
+        if: ${{ !inputs.engagement_only && (inputs.release_candidates_json && !inputs.controls_only && !inputs.network_probe_only && !cancelled() ) }}
         env:
           BROWSER_ENGINE: ${{ inputs.browser || 'chromium' }}
         run: node tools/verify-player-history.mjs
       - name: Verify synthetic engagement interactions
-        if: ${{ inputs.release_candidates_json && !inputs.controls_only && !inputs.network_probe_only && !cancelled() }}
+        if: ${{ inputs.release_candidates_json && !inputs.controls_only && !inputs.network_probe_only && (!inputs.engagement_only || success()) && !cancelled() }}
         env:
           BROWSER_ENGINE: ${{ inputs.browser || 'chromium' }}
+          ENGAGEMENT_DIAGNOSTIC_ONLY: ${{ inputs.engagement_only }}
         run: node tools/verify-engagement.mjs
+      - name: Refuse release evidence from engagement diagnostics
+        if: always() && inputs.engagement_only
+        run: test ! -e .audit/visual/release-evidence.json
       - uses: actions/upload-artifact@v7.0.1
         if: always()
         with:
-          name: visual-review
+          name: ${{ inputs.engagement_only && 'engagement-diagnostic-only' || 'visual-review' }}
           path: .audit/visual
           retention-days: 7
       - uses: actions/upload-artifact@v7.0.1
-        if: inputs.baseline && !inputs.controls_only && !inputs.network_probe_only && success()
+        if: ${{ !inputs.engagement_only && inputs.baseline && !inputs.controls_only && !inputs.network_probe_only && success() }}
         with:
           name: performance-baseline
           path: .audit/visual/release-evidence.json
           retention-days: 90
       - uses: actions/upload-artifact@v7.0.1
-        if: inputs.release_candidates_json && !inputs.controls_only && !inputs.network_probe_only && success()
+        if: ${{ !inputs.engagement_only && inputs.release_candidates_json && !inputs.controls_only && !inputs.network_probe_only && success() }}
         with:
           name: candidate-evidence
           path: .audit/visual/release-evidence.json
