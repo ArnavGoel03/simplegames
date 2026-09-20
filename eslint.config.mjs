@@ -13,6 +13,8 @@ const config = [
       ".wrangler/**",
       "node_modules/**",
       "next-env.d.ts",
+      // Generated from fingerprint-matched games source, linted in its own gate.
+      "tools/fixtures/player-history/engagement-component.js",
     ],
   },
   ...next,

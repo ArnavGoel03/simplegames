@@ -76,6 +76,11 @@ export async function verifyAccountSession(browser, candidate) {
     }
     if (url.pathname === "/api/identity/sign-out" && request.method() === "POST") return route.fulfill({ json: { ok: true } });
     if (url.pathname === "/api/friends" && request.method() === "GET") return route.fulfill({ json: { friends: [] } });
+    if (url.pathname === "/api/player-progress" && request.method() === "GET") return route.fulfill({ json: { playerId: current.id, games: 0, wins: 0, gameKinds: 0 } });
+    if (url.pathname === "/api/solo-progress" && request.method() === "GET") return route.fulfill({ json: { playerId: current.id,
+      slots: ["daily", "freecell", "klondike", "spider"].map(slot => ({ slot, revision: 0, data: null, updatedAt: null, conflicts: [] })) } });
+    if (url.pathname === "/api/rivals" && request.method() === "GET") return route.fulfill({ json: { viewerId: current.id, rivals: [], next: null } });
+    if (url.pathname === "/api/rematches" && request.method() === "GET") return route.fulfill({ json: { viewerId: current.id, invitations: [] } });
     // No browser fixture request reaches an account, diagnostic store or ledger.
     return route.fulfill({ status: 404, json: {} });
   });

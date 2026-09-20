@@ -1,5 +1,34 @@
 # Glass Table Games: state of play
 
+## 20 September 2026: engagement candidate verification complete
+
+Branch `test/player-engagement-fixtures` maintains actual account, Daily and
+three Solitaire interaction checks plus a generated bundle of the games source's
+real recap component. Synthetic APIs exercise rival actions, rematches,
+account-scoped continuations, cloud restoration, offline recovery, save conflicts
+and exclusive tab ownership. No real account, invitation, room or database
+mutation occurs.
+
+Fixtures bind to games source `7c2f330` and its workspace fingerprint. Full
+Chromium run 35514749358 (harness `c4091c2`) and full WebKit run 35516155968
+(harness `2b534e2`) pass. Each engine completes 14 checks across 7 scenarios with
+zero errors. Strict Daily Chromium run 35515425064 (harness `8569447`) also passes;
+the actual rendered board was reviewed. All five canonical games release
+certificates pass, and candidate preview pointers have been restored.
+
+WebKit diagnostics located queued prefetch errors between beforeunload and
+pagehide during scripted departures. Hydrated readiness, verified recap identity
+and native networkidle with a 15-second cap resolved those errors. All errors
+remain fatal; no exemption, response filtering or prefetch disabling was added.
+Local checks include the full toolchain/typecheck/lint gate, 171 Vitest tests and
+44 release tests; the final navigation change also passes 38 related tests.
+See [the verification record](ENGAGEMENT-FIXTURE-2026-09-20.md).
+
+Neither the games candidate nor Studio was promoted. Neon migration 0013 still
+requires authentication, public-copy approval remains held, and the real-room
+gate was skipped. Synthetic room handoffs do not substitute for that gate.
+Studio production remains the existing 0.5.3 release below.
+
 ## 20 September 2026: game-history browser regression harness verified
 
 Branch `test/player-history-fixture` adds optional candidate-bound rendering of

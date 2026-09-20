@@ -1,0 +1,787 @@
+{
+  "schema": 1,
+  "synthetic": true,
+  "sourceHead": "7c2f330f9555d0637efef7ddabc7750cb6bf5d81",
+  "sourceFingerprint": "d3a3d6368b362ec856aac742c0e377235af275174b74d01596545f0a7ac38bb9",
+  "componentSha256": "4d8432fc46380e2cc9744e4839473a0634900a0e50eb86e276714cafd13a98ac",
+  "owners": [
+    "00000000-0000-4000-8000-000000000001",
+    "00000000-0000-4000-8000-000000000002"
+  ],
+  "saves": {
+    "freecell": [
+      {
+        "record": {
+          "best": {},
+          "bestRun": 0,
+          "bestStreak": 0,
+          "days": {},
+          "lastDay": null,
+          "played": 0,
+          "run": 0,
+          "streak": 0,
+          "version": 1,
+          "won": 0
+        },
+        "save": {
+          "attemptId": "00000000-0000-4000-8001-000000000001",
+          "deal": {
+            "number": 617,
+            "source": "numbered"
+          },
+          "elapsed": 12000,
+          "steps": [
+            [
+              {
+                "count": 1,
+                "from": {
+                  "index": 0,
+                  "kind": "tableau"
+                },
+                "to": {
+                  "index": 4,
+                  "kind": "tableau"
+                }
+              }
+            ]
+          ],
+          "undone": [],
+          "variant": "freecell",
+          "version": 2
+        }
+      },
+      {
+        "record": {
+          "best": {},
+          "bestRun": 0,
+          "bestStreak": 0,
+          "days": {},
+          "lastDay": null,
+          "played": 0,
+          "run": 0,
+          "streak": 0,
+          "version": 1,
+          "won": 0
+        },
+        "save": {
+          "attemptId": "00000000-0000-4000-8001-000000000002",
+          "deal": {
+            "number": 617,
+            "source": "numbered"
+          },
+          "elapsed": 12000,
+          "steps": [
+            [
+              {
+                "count": 1,
+                "from": {
+                  "index": 0,
+                  "kind": "tableau"
+                },
+                "to": {
+                  "index": 4,
+                  "kind": "tableau"
+                }
+              }
+            ],
+            [
+              {
+                "count": 1,
+                "from": {
+                  "index": 0,
+                  "kind": "tableau"
+                },
+                "to": {
+                  "index": 6,
+                  "kind": "tableau"
+                }
+              },
+              {
+                "count": 1,
+                "from": {
+                  "index": 0,
+                  "kind": "tableau"
+                },
+                "to": {
+                  "kind": "foundation",
+                  "suit": "clubs"
+                }
+              }
+            ]
+          ],
+          "undone": [],
+          "variant": "freecell",
+          "version": 2
+        }
+      },
+      {
+        "record": {
+          "best": {},
+          "bestRun": 0,
+          "bestStreak": 0,
+          "days": {},
+          "lastDay": null,
+          "played": 0,
+          "run": 0,
+          "streak": 0,
+          "version": 1,
+          "won": 0
+        },
+        "save": {
+          "attemptId": "00000000-0000-4000-8001-000000000003",
+          "deal": {
+            "number": 617,
+            "source": "numbered"
+          },
+          "elapsed": 12000,
+          "steps": [
+            [
+              {
+                "count": 1,
+                "from": {
+                  "index": 0,
+                  "kind": "tableau"
+                },
+                "to": {
+                  "index": 4,
+                  "kind": "tableau"
+                }
+              }
+            ],
+            [
+              {
+                "count": 1,
+                "from": {
+                  "index": 0,
+                  "kind": "tableau"
+                },
+                "to": {
+                  "index": 6,
+                  "kind": "tableau"
+                }
+              },
+              {
+                "count": 1,
+                "from": {
+                  "index": 0,
+                  "kind": "tableau"
+                },
+                "to": {
+                  "kind": "foundation",
+                  "suit": "clubs"
+                }
+              }
+            ],
+            [
+              {
+                "count": 1,
+                "from": {
+                  "index": 0,
+                  "kind": "tableau"
+                },
+                "to": {
+                  "index": 0,
+                  "kind": "free"
+                }
+              }
+            ]
+          ],
+          "undone": [],
+          "variant": "freecell",
+          "version": 2
+        }
+      }
+    ],
+    "klondike": [
+      {
+        "record": {
+          "best": {},
+          "bestRun": 0,
+          "bestStreak": 0,
+          "days": {},
+          "lastDay": null,
+          "played": 0,
+          "run": 0,
+          "streak": 0,
+          "version": 1,
+          "won": 0
+        },
+        "save": {
+          "attemptId": "00000000-0000-4000-8001-000000000001",
+          "deal": {
+            "number": 617,
+            "source": "numbered"
+          },
+          "elapsed": 12000,
+          "steps": [
+            [
+              {
+                "count": 1,
+                "from": {
+                  "index": 2,
+                  "kind": "tableau"
+                },
+                "to": {
+                  "index": 0,
+                  "kind": "tableau"
+                }
+              }
+            ]
+          ],
+          "undone": [],
+          "variant": "klondike",
+          "version": 2
+        }
+      },
+      {
+        "record": {
+          "best": {},
+          "bestRun": 0,
+          "bestStreak": 0,
+          "days": {},
+          "lastDay": null,
+          "played": 0,
+          "run": 0,
+          "streak": 0,
+          "version": 1,
+          "won": 0
+        },
+        "save": {
+          "attemptId": "00000000-0000-4000-8001-000000000002",
+          "deal": {
+            "number": 617,
+            "source": "numbered"
+          },
+          "elapsed": 12000,
+          "steps": [
+            [
+              {
+                "count": 1,
+                "from": {
+                  "index": 2,
+                  "kind": "tableau"
+                },
+                "to": {
+                  "index": 0,
+                  "kind": "tableau"
+                }
+              }
+            ],
+            [
+              {
+                "count": 1,
+                "from": {
+                  "index": 5,
+                  "kind": "tableau"
+                },
+                "to": {
+                  "index": 3,
+                  "kind": "tableau"
+                }
+              }
+            ]
+          ],
+          "undone": [],
+          "variant": "klondike",
+          "version": 2
+        }
+      },
+      {
+        "record": {
+          "best": {},
+          "bestRun": 0,
+          "bestStreak": 0,
+          "days": {},
+          "lastDay": null,
+          "played": 0,
+          "run": 0,
+          "streak": 0,
+          "version": 1,
+          "won": 0
+        },
+        "save": {
+          "attemptId": "00000000-0000-4000-8001-000000000003",
+          "deal": {
+            "number": 617,
+            "source": "numbered"
+          },
+          "elapsed": 12000,
+          "steps": [
+            [
+              {
+                "count": 1,
+                "from": {
+                  "index": 2,
+                  "kind": "tableau"
+                },
+                "to": {
+                  "index": 0,
+                  "kind": "tableau"
+                }
+              }
+            ],
+            [
+              {
+                "count": 1,
+                "from": {
+                  "index": 5,
+                  "kind": "tableau"
+                },
+                "to": {
+                  "index": 3,
+                  "kind": "tableau"
+                }
+              }
+            ],
+            [
+              {
+                "count": 1,
+                "from": {
+                  "index": 4,
+                  "kind": "tableau"
+                },
+                "to": {
+                  "index": 5,
+                  "kind": "tableau"
+                }
+              }
+            ]
+          ],
+          "undone": [],
+          "variant": "klondike",
+          "version": 2
+        }
+      }
+    ],
+    "spider": [
+      {
+        "record": {
+          "best": {},
+          "bestRun": 0,
+          "bestStreak": 0,
+          "days": {},
+          "lastDay": null,
+          "played": 0,
+          "run": 0,
+          "streak": 0,
+          "version": 1,
+          "won": 0
+        },
+        "save": {
+          "attemptId": "00000000-0000-4000-8001-000000000001",
+          "deal": {
+            "number": 617,
+            "source": "numbered"
+          },
+          "elapsed": 12000,
+          "steps": [
+            [
+              {
+                "count": 1,
+                "from": {
+                  "index": 2,
+                  "kind": "tableau"
+                },
+                "to": {
+                  "index": 1,
+                  "kind": "tableau"
+                }
+              }
+            ]
+          ],
+          "undone": [],
+          "variant": "spider",
+          "version": 2
+        }
+      },
+      {
+        "record": {
+          "best": {},
+          "bestRun": 0,
+          "bestStreak": 0,
+          "days": {},
+          "lastDay": null,
+          "played": 0,
+          "run": 0,
+          "streak": 0,
+          "version": 1,
+          "won": 0
+        },
+        "save": {
+          "attemptId": "00000000-0000-4000-8001-000000000002",
+          "deal": {
+            "number": 617,
+            "source": "numbered"
+          },
+          "elapsed": 12000,
+          "steps": [
+            [
+              {
+                "count": 1,
+                "from": {
+                  "index": 2,
+                  "kind": "tableau"
+                },
+                "to": {
+                  "index": 1,
+                  "kind": "tableau"
+                }
+              }
+            ],
+            [
+              {
+                "count": 1,
+                "from": {
+                  "index": 2,
+                  "kind": "tableau"
+                },
+                "to": {
+                  "index": 5,
+                  "kind": "tableau"
+                }
+              }
+            ]
+          ],
+          "undone": [],
+          "variant": "spider",
+          "version": 2
+        }
+      },
+      {
+        "record": {
+          "best": {},
+          "bestRun": 0,
+          "bestStreak": 0,
+          "days": {},
+          "lastDay": null,
+          "played": 0,
+          "run": 0,
+          "streak": 0,
+          "version": 1,
+          "won": 0
+        },
+        "save": {
+          "attemptId": "00000000-0000-4000-8001-000000000003",
+          "deal": {
+            "number": 617,
+            "source": "numbered"
+          },
+          "elapsed": 12000,
+          "steps": [
+            [
+              {
+                "count": 1,
+                "from": {
+                  "index": 2,
+                  "kind": "tableau"
+                },
+                "to": {
+                  "index": 1,
+                  "kind": "tableau"
+                }
+              }
+            ],
+            [
+              {
+                "count": 1,
+                "from": {
+                  "index": 2,
+                  "kind": "tableau"
+                },
+                "to": {
+                  "index": 5,
+                  "kind": "tableau"
+                }
+              }
+            ],
+            [
+              {
+                "count": 1,
+                "from": {
+                  "index": 2,
+                  "kind": "tableau"
+                },
+                "to": {
+                  "index": 6,
+                  "kind": "tableau"
+                }
+              }
+            ]
+          ],
+          "undone": [],
+          "variant": "spider",
+          "version": 2
+        }
+      }
+    ]
+  },
+  "roomsKey": "glasstable:rooms",
+  "soloKeys": {
+    "00000000-0000-4000-8000-000000000001": {
+      "daily": "glasstable:solo-progress:00000000-0000-4000-8000-000000000001:daily",
+      "freecell": "glasstable:solo-progress:00000000-0000-4000-8000-000000000001:freecell",
+      "klondike": "glasstable:solo-progress:00000000-0000-4000-8000-000000000001:klondike",
+      "spider": "glasstable:solo-progress:00000000-0000-4000-8000-000000000001:spider"
+    },
+    "00000000-0000-4000-8000-000000000002": {
+      "daily": "glasstable:solo-progress:00000000-0000-4000-8000-000000000002:daily",
+      "freecell": "glasstable:solo-progress:00000000-0000-4000-8000-000000000002:freecell",
+      "klondike": "glasstable:solo-progress:00000000-0000-4000-8000-000000000002:klondike",
+      "spider": "glasstable:solo-progress:00000000-0000-4000-8000-000000000002:spider"
+    }
+  },
+  "soloPath": "/api/solo-progress",
+  "soloHeader": "x-solo-player",
+  "copy": {
+    "title": "Saved games",
+    "local": "Saved on this device",
+    "pending": "Sync pending",
+    "cloud": "Use cloud save",
+    "device": "Keep this device",
+    "use": "Use this save",
+    "results": "Personal results",
+    "bests": "Personal bests",
+    "calendar": "Daily calendar",
+    "conflict": "Another device has a different save. Choose which one to continue.",
+    "note": "These results come from your device and do not affect ranked ratings."
+  },
+  "soloUrls": {
+    "freecell": "https://deal.glasstablegames.com/solitaire/freecell",
+    "klondike": "https://deal.glasstablegames.com/solitaire/klondike",
+    "spider": "https://deal.glasstablegames.com/solitaire/spider"
+  },
+  "daily": {
+    "day": "2026-09-20",
+    "data": {
+      "record": {
+        "best": 0,
+        "lastDay": null,
+        "progress": {
+          "day": "2026-09-20",
+          "engine": {
+            "consecutiveMaxRolls": 0,
+            "currentTurnIndex": 0,
+            "definitionId": "ludo",
+            "log": [
+              {
+                "color": "red",
+                "index": 0,
+                "type": "roll",
+                "value": 3
+              },
+              {
+                "color": "red",
+                "reason": "no-legal-move",
+                "type": "pass"
+              },
+              {
+                "color": "red",
+                "index": 1,
+                "type": "roll",
+                "value": 2
+              },
+              {
+                "color": "red",
+                "reason": "no-legal-move",
+                "type": "pass"
+              },
+              {
+                "color": "red",
+                "index": 2,
+                "type": "roll",
+                "value": 2
+              },
+              {
+                "color": "red",
+                "reason": "no-legal-move",
+                "type": "pass"
+              },
+              {
+                "color": "red",
+                "index": 3,
+                "type": "roll",
+                "value": 2
+              },
+              {
+                "color": "red",
+                "reason": "no-legal-move",
+                "type": "pass"
+              },
+              {
+                "color": "red",
+                "index": 4,
+                "type": "roll",
+                "value": 5
+              },
+              {
+                "color": "red",
+                "reason": "no-legal-move",
+                "type": "pass"
+              },
+              {
+                "color": "red",
+                "index": 5,
+                "type": "roll",
+                "value": 6
+              },
+              {
+                "color": "red",
+                "extraTurn": true,
+                "move": {
+                  "captures": [],
+                  "from": {
+                    "kind": "base"
+                  },
+                  "jumped": false,
+                  "path": [
+                    {
+                      "index": 0,
+                      "kind": "track"
+                    }
+                  ],
+                  "pieceId": "red-0",
+                  "to": {
+                    "index": 0,
+                    "kind": "track"
+                  }
+                },
+                "type": "move"
+              },
+              {
+                "color": "red",
+                "index": 6,
+                "type": "roll",
+                "value": 3
+              },
+              {
+                "color": "red",
+                "extraTurn": false,
+                "move": {
+                  "captures": [],
+                  "from": {
+                    "index": 0,
+                    "kind": "track"
+                  },
+                  "jumped": false,
+                  "path": [
+                    {
+                      "index": 1,
+                      "kind": "track"
+                    },
+                    {
+                      "index": 2,
+                      "kind": "track"
+                    },
+                    {
+                      "index": 3,
+                      "kind": "track"
+                    }
+                  ],
+                  "pieceId": "red-0",
+                  "to": {
+                    "index": 3,
+                    "kind": "track"
+                  }
+                },
+                "type": "move"
+              },
+              {
+                "color": "red",
+                "index": 7,
+                "type": "roll",
+                "value": 1
+              },
+              {
+                "color": "red",
+                "extraTurn": false,
+                "move": {
+                  "captures": [],
+                  "from": {
+                    "index": 3,
+                    "kind": "track"
+                  },
+                  "jumped": false,
+                  "path": [
+                    {
+                      "index": 4,
+                      "kind": "track"
+                    }
+                  ],
+                  "pieceId": "red-0",
+                  "to": {
+                    "index": 4,
+                    "kind": "track"
+                  }
+                },
+                "type": "move"
+              }
+            ],
+            "pendingRoll": null,
+            "pieces": [
+              {
+                "color": "red",
+                "id": "red-0",
+                "location": {
+                  "index": 4,
+                  "kind": "track"
+                },
+                "pieceIndex": 0
+              },
+              {
+                "color": "red",
+                "id": "red-1",
+                "location": {
+                  "kind": "base"
+                },
+                "pieceIndex": 1
+              },
+              {
+                "color": "red",
+                "id": "red-2",
+                "location": {
+                  "kind": "base"
+                },
+                "pieceIndex": 2
+              },
+              {
+                "color": "red",
+                "id": "red-3",
+                "location": {
+                  "kind": "base"
+                },
+                "pieceIndex": 3
+              }
+            ],
+            "rollCount": 8,
+            "seats": [
+              {
+                "active": true,
+                "color": "red",
+                "kind": "human"
+              }
+            ],
+            "turnOrder": [
+              "red"
+            ],
+            "winner": null
+          },
+          "marks": [
+            "wasted",
+            "wasted",
+            "wasted",
+            "wasted",
+            "wasted",
+            "moved",
+            "moved",
+            "moved"
+          ]
+        },
+        "results": {},
+        "streak": 0,
+        "version": 1
+      },
+      "save": null
+    }
+  },
+  "provenance": "Canonical solitaire engine, save version, adapters and storage keys imported from the bound games checkout; synthetic numbered deal617 only"
+}

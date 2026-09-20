@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "sourceHead": "1eaf6c07aca650fe2b019c78ea6e72f1a0bebdff",
-  "sourceFingerprint": "970eab9b39d9eee06a31d8d252897bd1920c585ff01a036d8f340e481af5445f",
+  "sourceHead": "7c2f330f9555d0637efef7ddabc7750cb6bf5d81",
+  "sourceFingerprint": "d3a3d6368b362ec856aac742c0e377235af275174b74d01596545f0a7ac38bb9",
   "synthetic": true,
   "rendering": "Static SSR of actual PlayerHistory and AccountPanel; account context mocked; no hydration or server authentication coverage",
   "fixtures": [
@@ -9,13 +9,13 @@
       "name": "history",
       "rows": 20,
       "next": "/player/fixture-rook?cursor=00000000-0000-4000-8001-000000000020#games",
-      "sha256": "159aa467e8766644a8411965d19c87a07ae48946f412b824991bea141b004148"
+      "sha256": "cd2ef3ea7bd4880201b14ab8f93292bc3843dc4b018e2e4ef34ffd10b9ac5195"
     },
     {
       "name": "comparison",
       "rows": 4,
       "next": null,
-      "sha256": "ffee5573dd8427193f253d24ab42e2793b48ce67887821a9bf550d54599b86c8"
+      "sha256": "4a9888950cb08efca157848294cdbac24b2e8a2497c55d2ce3557b7ecc243ad8"
     },
     {
       "name": "empty",
@@ -27,7 +27,7 @@
       "name": "account",
       "rows": 0,
       "next": null,
-      "sha256": "66e8983d3056f623f9a9a2c40706829326434f27e6a4524875505e5ad1be368f"
+      "sha256": "782014f3ac1d31423d40bf343e5026cd171db73bf8b08483ef0bf08d3a49a1ca"
     },
     {
       "name": "account-switching",
