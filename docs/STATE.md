@@ -22,8 +22,9 @@ mount/focus timing race; the switch now waits for verified ownership and a fresh
 identity response. The next diagnostic passed account and Daily checks;
 Solitaire now uses established immutable-homepage provenance and actual
 script-origin checks, and solo captures dismiss the real onboarding guide.
-Independent failures aggregate without certifying success. Replacement browser
-execution is pending. Detailed local check results are recorded in ENGAGEMENT-FIXTURE-2026-09-20.md. This branch
+Independent failures aggregate without certifying success. The next diagnostic
+exposed a missing readiness-observer installation, now fixed for the whole
+context with a calibrated regression. Replacement browser execution is pending. Detailed local check results are recorded in ENGAGEMENT-FIXTURE-2026-09-20.md. This branch
 does not change or deploy the Studio product. Production remains as below.
 
 ## 20 September 2026: game-history browser regression harness verified

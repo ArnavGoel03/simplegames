@@ -86,7 +86,7 @@ export function assertRestoredWrites(writes, owner, slot, restored) {
 export async function attemptScenario(label, run, onFailure, errors) {
   try { await run(); return true; }
   catch (error) {
-    errors.push(`${label}: ${String(error)}`);
+    errors.push(`${label}: ${error instanceof Error ? error.stack ?? String(error) : String(error)}`);
     await onFailure();
     return false;
   }

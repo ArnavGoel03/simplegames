@@ -54,6 +54,6 @@ test("independent scenario failures remain fatal while later diagnostics run", a
   assert.equal(await attemptScenario("first", async () => { throw new Error("known failure"); }, async () => { visited.push("capture"); }, errors), false);
   assert.equal(await attemptScenario("second", async () => { visited.push("continued"); }, async () => {}, errors), true);
   assert.deepEqual(visited, ["capture", "continued"]);
-  assert.match(errors[0], /^first: Error: known failure$/);
+  assert.match(errors[0], /^first: Error: known failure\n/);
   assert.throws(() => assert.deepEqual(errors, []), "The final verifier failure check must reject the collected error");
 });

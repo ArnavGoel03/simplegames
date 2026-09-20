@@ -6,7 +6,7 @@ import { chromium, webkit } from "playwright";
 import { candidates, engine, observeSource, omitServiceWorkerCapability, output } from "./browser-evidence.mjs";
 import { syntheticState, fixtureId, assertRestoredWrites, attemptScenario } from "./engagement-fixture.mjs";
 
-import { waitForReady, dismissFirstGuide } from "./gameplay-controls.mjs";
+import { prepareGameplayContext, waitForReady, dismissFirstGuide } from "./gameplay-controls.mjs";
 
 const directory = new URL("./fixtures/player-history/", import.meta.url);
 if (!existsSync(new URL("engagement.json", directory))) {
@@ -38,12 +38,13 @@ async function capture(page, name) {
 }
 async function scenario(label, candidate, run) {
   const context = await browser.newContext({ viewport: { width: 390, height: 844 }, colorScheme: "dark", serviceWorkers: "block", reducedMotion: "reduce" });
+  await prepareGameplayContext(context);
   await context.addInitScript(omitServiceWorkerCapability);
   await context.addCookies([{ name: session.hintCookie, value: "1", url: candidate.origin, secure: true, sameSite: "Lax" }]);
   const state = syntheticState(fixture, candidates);
   const page = await context.newPage();
   page.setDefaultTimeout(15_000); page.setDefaultNavigationTimeout(20_000);
-  page.on("pageerror", error => errors.push(`${label}: ${error.message}`));
+  page.on("pageerror", error => errors.push(`${label}: ${error.stack ?? error.message}`));
   await context.route("**/api/**", async route => {
     const request = route.request(), url = new URL(request.url());
     if (url.pathname === fixture.soloPath && state.soloOffline) return route.abort("internetdisconnected");
@@ -278,7 +279,7 @@ try {
     await visit(page, cards, "/solitaire/freecell");
     await page.getByText("1 move", { exact: true }).first().waitFor();
     const second = await context.newPage(); second.setDefaultTimeout(15_000);
-    second.on("pageerror", error => errors.push(`tab-ownership: ${error.message}`));
+    second.on("pageerror", error => errors.push(`tab-ownership: ${error.stack ?? error.message}`));
     await visit(second, cards, "/solitaire/freecell");
     await second.getByText(fixture.copy.pending, { exact: true }).waitFor();
     await capture(second, "freecell-second-tab-waits");

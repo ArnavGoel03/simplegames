@@ -1,3 +1,11 @@
+import { observePerformanceTiming } from "./browser-evidence.mjs";
+
+// Install before any navigation so every document, including a second tab,
+// records the actual app-ready event consumed by waitForReady.
+export async function prepareGameplayContext(context) {
+  await context.addInitScript(observePerformanceTiming);
+}
+
 // Wait for the deployed readiness event before sending non-replayed keyboard input.
 export async function waitForReady(page) {
   await page.waitForFunction(() => window.gtgPerformance?.readyMs != null, undefined, { timeout: 15_000 });

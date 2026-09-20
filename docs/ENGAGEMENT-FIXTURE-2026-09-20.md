@@ -140,3 +140,18 @@ Replacement diagnostic and full browser runs remain pending.
 
 The updated full local gate passes: 171 Vitest tests, 40 release tests,
 toolchain, typecheck and zero-warning lint. Product bindings remain `7c2f330`.
+
+## Readiness observer prerequisite
+
+Diagnostic run35514341372 reached every independent scenario and exposed a
+harness prerequisite: waitForReady consumes the canonical performance observer,
+which the engagement context had not installed. The context now installs that
+observer before creating any page, so navigation, reloads and second tabs all
+record the actual app-ready event. Readiness predicates and timeouts are unchanged.
+A regression runs the real observer and predicate in fresh document contexts;
+removing the observer remains unready even after the application event.
+Aggregated errors now retain full stacks with scenario labels.
+
+Focused script lint, 41 release tests and the four existing startup-observer
+tests pass. The prior full local gate passed; the remote workflow will run its
+full gate again. Corrected browser execution remains pending.
