@@ -83,18 +83,43 @@ try {
           return found;
         });
         assert(calibrated, "Overflow detector missed positive control");
-        const state = await page.evaluate(() => ({
-          overflow: document.documentElement.scrollWidth > innerWidth + 1,
-          clippedControls: [...document.querySelectorAll("main a, main button")].filter(element => {
-            const box = element.getBoundingClientRect();
-            return box.width > 0 && (box.left < -1 || box.right > innerWidth + 1);
-          }).length,
-        }));
+        const state = await page.evaluate(async () => {
+          const titles = [...document.querySelectorAll("[data-game-title]")];
+          const measure = title => {
+            const box = title.getBoundingClientRect();
+            const lineHeight = Number.parseFloat(getComputedStyle(title).lineHeight);
+            return { text: title.textContent, width: box.width,
+              clipped: title.scrollWidth > title.clientWidth + 1,
+              tooNarrow: box.width < 120, tooTall: box.height > lineHeight * 2 + 1 };
+          };
+          let readabilityCalibrated = titles.length === 0;
+          if (titles[0]) {
+            const title = titles[0];
+            const saved = title.getAttribute("style");
+            title.style.cssText = "display:block;width:16px;max-width:16px;white-space:nowrap;overflow:hidden";
+            const constrained = measure(title);
+            readabilityCalibrated = constrained.clipped && constrained.tooNarrow;
+            if (saved === null) title.removeAttribute("style");
+            else title.setAttribute("style", saved);
+            await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+          }
+          return {
+            overflow: document.documentElement.scrollWidth > innerWidth + 1,
+            clippedControls: [...document.querySelectorAll("main a, main button")].filter(element => {
+              const box = element.getBoundingClientRect();
+              return box.width > 0 && (box.left < -1 || box.right > innerWidth + 1);
+            }).length,
+            readabilityCalibrated, titles: titles.map(measure),
+          };
+        });
         const name = `history-${fixture.name}-${colorScheme}-${width}x${height}`;
         await page.screenshot({ path: new URL(`${name}.jpg`, output).pathname, fullPage: true, type: "jpeg", quality: 85 });
         results.push({ name, ...state, fixtureSha256: fixture.sha256 });
         assert.equal(state.overflow, false, name);
         assert.equal(state.clippedControls, 0, name);
+        assert.equal(state.titles.length, fixture.rows, "Every archive row needs a measured game title");
+        assert(state.readabilityCalibrated, "Title detector missed deliberately constrained text");
+        assert(state.titles.every(title => !title.clipped && !title.tooNarrow && !title.tooTall), `Unreadable game titles: ${name}`);
       }
       await page.close();
     }

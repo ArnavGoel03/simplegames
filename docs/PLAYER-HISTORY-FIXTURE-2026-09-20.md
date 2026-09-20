@@ -42,6 +42,17 @@ artifact. Both browser engines remain pending until the manual workflow runs.
 This does not certify server authentication, database reads or live pagination
 requests; those retain their independent games checks.
 
+The first Chromium run35506162691 and WebKit run35506164460 passed, but image
+review caught cramped phone archive titles in Chromium: fixed action/date
+columns left roughly40px for names and stacked each result across several
+lines. This was a real layout defect despite zero document overflow. The
+games source now wraps mobile actions below the title. Stronger fixtures add
+rated rows and replay links alongside verification. The browser checks each
+`data-game-title` for clipping, a120px minimum width and a two-line maximum,
+calibrated by temporarily constraining a real title to16px. Final corrected
+candidate execution and image inspection remain pending. The earlier green
+run does not certify the corrected source.
+
 Local verification: toolchain, typecheck, zero-warning lint and33 release tests
 passed. Negative controls prove stale HEAD and tree fingerprints are rejected
 before any browser launch. Application tests passed167/171; four unchanged `tools/cf.test.mjs`

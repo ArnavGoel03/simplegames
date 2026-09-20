@@ -14,6 +14,14 @@ a background check, switching on focus, and stale reads after sign-out. Its
 hint-cookie name is imported from the bound games source, never a user session.
 No real identity or account API mutation reaches the service.
 
+Both first candidate runs passed their machine checks, including the hydrated
+session checks. Actual Chromium image review found unreadable 390px archive
+titles despite zero overflow. The games source now wraps actions below the
+title on phones. Fixtures include rating deltas and replay/verification links;
+the browser gate now requires unclipped titles with at least120px of width and
+at most two text lines. A deliberately constrained title calibrates that check.
+The corrected candidate's browser run and image review remain pending.
+
 Local toolchain, typecheck and zero-warning lint passed, with all33 release
 tests passing. The local application suite passed167/171; four existing
 Cloudflare fixture tests exceeded their unchanged5000ms timeout. This repeats
