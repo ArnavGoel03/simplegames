@@ -1,3 +1,5 @@
+import assert from "node:assert/strict";
+import { randomUUID } from "node:crypto";
 import { observePerformanceTiming } from "./browser-evidence.mjs";
 
 // Install before any navigation so every document, including a second tab,
@@ -20,7 +22,7 @@ export async function dismissFirstGuide(page) {
 }
 
 // App readiness does not imply that a dynamically imported game renderer exists.
-export async function settledBoardGeometry() {
+export function settledBoardGeometry(probeId) {
   const measure = () => {
     const visible = element => {
       const box = element.getBoundingClientRect();
@@ -42,15 +44,30 @@ export async function settledBoardGeometry() {
     }
     return null;
   };
-  const before = measure();
-  if (!before) return null;
-  await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
-  const after = measure();
-  return after && after.renderer === before.renderer && ["x", "y", "width", "height", "rendererWidth", "rendererHeight"]
-    .every(key => Math.abs(after[key] - before[key]) < 1) ? after : null;
+  const current = measure();
+  const previous = window.__gtgBoardProbe;
+  const stable = current && previous?.id === probeId && previous.geometry?.renderer === current.renderer
+    && ["x", "y", "width", "height", "rendererWidth", "rendererHeight"]
+      .every(key => Math.abs(current[key] - previous.geometry[key]) < 1);
+  const frames = stable ? previous.frames + 1 : 0;
+  window.__gtgBoardProbe = { id: probeId, geometry: current, frames };
+  // waitForFunction polls synchronously once per animation frame. Two matching
+  // subsequent observations establish stability without a truthy Promise.
+  return current && frames >= 2 ? current : null;
 }
 
 export async function waitForRenderedBoard(page) {
-  const geometry = await page.waitForFunction(settledBoardGeometry, undefined, { timeout: 15_000 });
-  try { return await geometry.jsonValue(); } finally { await geometry.dispose(); }
+  const probeId = randomUUID();
+  let handle;
+  try {
+    handle = await page.waitForFunction(settledBoardGeometry, probeId, { timeout: 15_000, polling: "raf" });
+    const geometry = await handle.jsonValue();
+    assert(geometry && ["canvas", "svg"].includes(geometry.renderer), "Rendered board geometry is missing");
+    assert(["width", "height", "rendererWidth", "rendererHeight"].every(key => Number.isFinite(geometry[key]) && geometry[key] > 0), "Rendered board bounds must be positive");
+    assert(Number.isFinite(geometry.x) && Number.isFinite(geometry.y), "Rendered board position is invalid");
+    return geometry;
+  } finally {
+    await handle?.dispose();
+    await page.evaluate(id => { if (window.__gtgBoardProbe?.id === id) delete window.__gtgBoardProbe; }, probeId);
+  }
 }

@@ -171,3 +171,19 @@ renderers. Actual board pixels still require screenshot review. This supplementa
 check is separate from the full runs already using harness `c4091c2`. Product
 source remains `7c2f330`. All 42 release tests and scoped zero-warning lint pass;
 supplemental browser capture and actual pixel review remain pending.
+
+## Correcting the board-wait false positive
+
+Supplemental run35515048530 returned null renderer geometry and repeated the
+missing-board image. The first waiter supplied an async predicate to Playwright's
+poller, whose installed implementation treats the Promise itself as truthy and
+stops polling. The waiter now uses a synchronous predicate on animation frames,
+requires two subsequent matching geometry samples, and validates the returned
+renderer and positive dimensions before recording. A null handle cannot pass.
+
+Integration tests call the actual board waiter for delayed, absent, hidden, empty,
+zero-sized and unstable renderers. Another calibration executes the polling
+closure extracted from the installed Playwright bundle, reproducing the async
+null false positive and successful synchronous polling. All 44 release
+tests and scoped zero-warning lint pass. Replacement rendered evidence remains
+pending; the prior supplemental run does not establish board visibility.
