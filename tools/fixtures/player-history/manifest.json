@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "sourceHead": "1eaf6c07aca650fe2b019c78ea6e72f1a0bebdff",
-  "sourceFingerprint": "970eab9b39d9eee06a31d8d252897bd1920c585ff01a036d8f340e481af5445f",
+  "sourceHead": "d91358f8be187755e6feeb6ce6d46fa1aeb3817c",
+  "sourceFingerprint": "5821d5051853dbf9064e75d97a1283eab076fa66e3d6d225a992d05cfa1439a0",
   "synthetic": true,
   "rendering": "Static SSR of actual PlayerHistory and AccountPanel; account context mocked; no hydration or server authentication coverage",
   "fixtures": [
