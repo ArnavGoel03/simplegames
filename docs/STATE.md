@@ -2,6 +2,12 @@
 
 ## 23 September 2026: Casino-only release workflow correction
 
+The active-hand controls check now verifies all four table edges remain inside
+the measured table stage at every existing viewport, then saves its capture.
+Browser calibration against the earlier overflowing Casino candidate and a
+corrected candidate remains pending; the harness change alone is not visual
+acceptance.
+
 The synthetic player-history step now runs only when a board candidate is
 supplied. Its verifier already requires that candidate; a Casino-only release
 previously reached the board assertion after passing its own checks. All
