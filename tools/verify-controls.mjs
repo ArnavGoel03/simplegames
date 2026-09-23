@@ -201,6 +201,14 @@ try {
   for (const [width, height] of frames) {
     await resize(width, height);
     await check(`active-hand-controls-${width}`, async () => {
+      const [tableBox, stageBox] = await Promise.all([
+        table.boundingBox(), page.locator(".casino-table-stage").boundingBox(),
+      ]);
+      assert(tableBox && stageBox, "Active table or its measured stage is missing");
+      assert(tableBox.x >= stageBox.x - 1 && tableBox.y >= stageBox.y - 1
+        && tableBox.x + tableBox.width <= stageBox.x + stageBox.width + 1
+        && tableBox.y + tableBox.height <= stageBox.y + stageBox.height + 1,
+      `Active table escapes its measured stage: ${JSON.stringify({ tableBox, stageBox })}`);
       assert.equal(await controls.locator(".casino-stake input").count(), 0, "Editable next bet remains during active hand");
       assert.equal(await controls.locator(".casino-chip-options").count(), 0, "Inactive chip controls remain during active hand");
       assert.equal(await controls.locator(".casino-live-stake strong").innerText(), "35");

@@ -1,5 +1,28 @@
 # Glass Table Games: state of play
 
+## 23 September 2026: Casino-only release workflow correction
+
+The active-hand controls check now verifies all four table edges remain inside
+the measured table stage at every existing viewport, then saves its capture.
+Browser calibration against the earlier overflowing Casino candidate and a
+corrected candidate remains pending; the harness change alone is not visual
+acceptance.
+
+The synthetic player-history step now runs only when a board candidate is
+supplied. Its verifier already requires that candidate; a Casino-only release
+previously reached the board assertion after passing its own checks. All
+Casino controls, responsive, startup, entry, gameplay, service-worker, network
+and wheel checks remain enabled. Board and mixed releases retain history checks.
+
+Verified by `node --test tools/quality/visual-workflow.node-spec.mjs`: the
+original condition fails the Casino-only regression, the corrected condition
+passes candidate/mode cases and all eight retained Casino steps. All 35 release
+tests, toolchain calibration, typecheck and zero-warning lint pass. The full
+local gate initially hit one existing 5-second CF fixture timeout under build
+contention; that fixture passed alone in 1,954ms and all 171 application tests
+passed with `npm test -- --maxWorkers=2`, without changing timeouts. No browser
+workflow was manually dispatched and no production deployment was performed.
+
 ## 20 September 2026: game-history browser regression harness verified
 
 Branch `test/player-history-fixture` adds optional candidate-bound rendering of
