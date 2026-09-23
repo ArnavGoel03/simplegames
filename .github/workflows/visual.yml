@@ -129,7 +129,7 @@ jobs:
           BROWSER_ENGINE: ${{ inputs.browser || 'chromium' }}
         run: node tools/probe-performance.mjs
       - name: Verify synthetic player history with candidate styles
-        if: ${{ inputs.release_candidates_json && !inputs.controls_only && !inputs.network_probe_only && !cancelled() }}
+        if: ${{ contains(fromJSON(inputs.release_candidates_json || '[]').*.site, 'board') && !inputs.controls_only && !inputs.network_probe_only && !cancelled() }}
         env:
           BROWSER_ENGINE: ${{ inputs.browser || 'chromium' }}
         run: node tools/verify-player-history.mjs
