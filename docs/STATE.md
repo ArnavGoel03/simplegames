@@ -464,7 +464,7 @@ developer-of-record for all four, and it owns the legal surface for all four.
 | | What it is | Repo | Live |
 |---|---|---|---|
 | **Glass Table Games** | Studio site. The argument, the fairness explainer, all legal docs. | `ArnavGoel03/simplegames` (public) | https://glasstablegames.com |
-| **Circuit** | Ludo and Snakes and Ladders. Dice you can verify afterwards. | `ArnavGoel03/chaupal` (**private**), `apps/web` | https://circuit.glasstablegames.com |
+| **Circuit** | Ludo and Snakes and Ladders. Dice you can verify afterwards. | `ArnavGoel03/glass-table-games` (**private**, was `chaupal`), `apps/web` | https://circuit.glasstablegames.com |
 | **Deal** | The card room: Judgement, 29, Call Break, Pachisa, 3-2-5, and three games of patience. | same monorepo, `apps/judgement` | https://deal.glasstablegames.com |
 | **Charade** | Everybody draws, everybody else races to name it. | same monorepo, `apps/draw` | https://charade.glasstablegames.com |
 | **Lattice** | Words that cross, on a board that says what counts. | same monorepo, `apps/lattice` | https://lattice.glasstablegames.com |
@@ -800,10 +800,25 @@ leak. Anyone touching the room layer should assume this is where the bug is.
 
 Both projects are indexed. `~/dev/atlas/src/data/projects.ts` gained a
 `simplegames` entry and a `chaupal` entry (the monorepo was missing from Atlas
-entirely before this). Committed as `ad13577` and pushed. Neither entry has
-been retitled for the rename, and the repository directories still carry the
-old names too, which is deliberate: a repo rename breaks every clone, remote
-and deploy hook pointing at it, and buys a tidier name.
+entirely before this). Committed as `ad13577` and pushed. ~~Neither entry has
+been retitled for the rename~~ (28 September 2026: the entries are titled
+"Glass Table Games (studio site)" and "Glass Table Games (game sites)", Atlas
+PR 33; the slugs `simplegames` and `chaupal` stay because they key the D1
+event log). The games monorepo's GitHub repo is now
+`ArnavGoel03/glass-table-games`. This repo is still `ArnavGoel03/simplegames`
+and the local directories still carry old names (`~/dev/simplegames`,
+`~/dev/chaupal*`). On 28 September 2026 the owner ruled that no old name may
+survive anywhere; the rename of repos, folders, Workers and stored ids is
+queued in the monorepo at `docs/RETIRE-OLD-NAMES.md`. Until it lands, this is
+the map:
+
+| Directory, repo or slug | Is |
+|---|---|
+| `~/dev/simplegames`, `simplegames` | Glass Table Games studio site |
+| `~/dev/chaupal-cards` (main), `~/dev/chaupal`, `~/dev/chaupal-manifest`, `~/dev/gtg-casino-debug` | worktrees of `glass-table-games`, the games monorepo |
+| Chaupal, Fair Ludo | Circuit (`apps/web`) |
+| Taash | Deal (`apps/judgement`) |
+| Draw | Charade (`apps/draw`) |
 
 ---
 
