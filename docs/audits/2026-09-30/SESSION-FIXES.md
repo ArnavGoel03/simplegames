@@ -6,7 +6,7 @@ Scope: user's thorough Glass Table Games red team, followed by "verify n fix all
 
 Final checkpoint1 October2026: Games e99a524 gate4,291+141+image passes, all five builds/uploads and99 exact assets pass. Studio623efc6 gate177+78/build/uploadad0f7abd passes. Combined111 exact assets pass. Chromium36760643929 passes all browser checks and18 unchanged metrics, including Studio404.8ms startup. Its small evidence and48MB render archive both match provider SHA; corrected Charade/Circuit renders were inspected. WebKit appearance calibration remains unverified: subsequent runs36760647553 and36761991058 timed out in browser installation. Earlier36759384451 failed the positive calibration, not an observed product mismatch. No game or Studio audit promotion occurred. Required0013 remains pending without Neon access. Studio previews restored and provider-verified false/false.
 
-Latest games gatee99a524 passes4,291 package tests,141 Node release checks and the original-image receipt control, zero-warning lint and typecheck under6,000ms. Five fresh builds/uploads and current-source browser certification are in progress. The record now includes87 numbered fixes and follow-ups.
+Latest games gatee99a524 passes4,291 package tests,141 Node release checks and the original-image receipt control, zero-warning lint and typecheck under6,000ms. Five fresh builds/uploads and current-source browser certification are in progress. The record now includes88 numbered fixes and follow-ups.
 
 Latest user steering: finish every fix, deploy after thorough verification, and correct inconsistent button geometry across the studio and different games. Game sourcee99a524 includes schema preflight, Circuit reading control, modal Tab containment and shared entry/join geometry. Final source-bound browser acceptance and production database migration remain required; no five-game or Studio audit promotion has occurred.
 
@@ -142,6 +142,8 @@ Historical game gate at2bdc3b1 passes4,285 package tests and126 Node controls pl
 | F75 | Enforce a numerical free-space guard before starting final builds. | Temporary bounded build runner | The first check printed low space but still launched Casino; that mistake was interrupted before certification or upload. Failed partial output was removed. The revised guard refuses to launch below800Mi. No source or candidate evidence was deleted. |
 
 ## Operational repairs and evidence
+
+- F88: WebKit36776513466 passes every browser check except the deliberately undersized geometry positive, which still measures48px immediately after CSS mutation. Calibration now waits for two rendered frames before measuring and retains computed/inline sizing diagnostics. The actual16px requirement and detector assertion remain unchanged. Six focused controls and zero-warning lint pass. This is a harness follow-up pending actual WebKit evidence, not a proved product improvement.
 
 - F87: Hosted WebKit repeatedly exhausted the ten-minute job during native apt downloads from the Azure mirror. CI now uses the Ubuntu HTTPS primary, 15-second connection bounds, one retry and hard 150-second bounds for native and browser installation. Exact OS/architecture/lockfile/engine browser caching retains native validation and every browser check. Six focused controls pass, including three rejected broken configurations; lint and shell syntax pass. Actual hosted installation and acceptance remain pending. No application speed improvement is claimed.
 

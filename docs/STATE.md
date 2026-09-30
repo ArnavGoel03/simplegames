@@ -1,3 +1,7 @@
+## 1 October 2026: actual browser installation verified
+
+Studioa2dbbd4 gate177+80 passes, build/uploadb8ac4cfe passes,144HTTPchecks and combined111exactassets pass. Hosted Chromium36776511593 passes allchecks and18unchangedmetrics, Studio startup392.7ms. WebKit36776513466 native/browser installation succeeds in64seconds and every check passes except the positive geometry calibration, which reads48px after the attempted16px inline mutation. The calibration now awaits two rendered frames and retains sizing diagnostics, with its strict positive unchanged. Six focused controls and zero-warning lint pass; new source certification remains required. Games8cae7b1 gate4,291+141+image and allfivebuilds/uploads pass. Migration0013 stillpending, no Studio/game promotion. Ledger88 fixes/follow-ups.
+
 ## 1 October 2026: bounded browser installation follow-up
 
 CI installation now replaces the observed slow Azure apt mirror with Ubuntu HTTPS primary, bounds native/browser commands at150seconds, and caches browser binaries by exact lockfile/engine/runner identity. Six focused controls, zero-warning lint, shell syntax and diff checks pass. All application/browser checks and the ten-minute job budget remain. New current-source certification is in progress. Migration0013 still requires refreshed Neon access; stored CLI session again returns invalid_request and the supported account browser is unavailable. No additional production promotion. Ledger87 fixes/follow-ups.

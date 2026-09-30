@@ -31,7 +31,7 @@ try {
           const failures = geometryFailures(measured.groups, measured.expectedHeight);
           // Calibrate the exact detector against a deliberately undersized
           // button in an actual checked action row, then restore its CSS.
-          const calibrated = await page.evaluate(() => {
+          const calibrated = await page.evaluate(async () => {
             const control = [...document.querySelectorAll(".play-room-actions button,.play-room-join button,.play-entry-choices button,.casino-feature-picker button,[data-read-aloud-control] button,.button--large")].find(element => {
               const box = element.getBoundingClientRect();
               return box.width > 0 && box.height > 0 && getComputedStyle(element).visibility !== "hidden" && !element.closest("li.play-seat");
@@ -44,7 +44,12 @@ try {
             control.style.setProperty("appearance", "none", "important");
             control.style.setProperty("-webkit-appearance", "none", "important");
             window.controlGeometryCalibration = { control, saved };
-            return { text: control.textContent?.trim(), height: control.getBoundingClientRect().height };
+            // Observe rendered geometry after WebKit commits the appearance change.
+            await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+            const style = getComputedStyle(control);
+            return { text: control.textContent?.trim(), height: control.getBoundingClientRect().height,
+              computed: Object.fromEntries(["height", "min-height", "max-height", "block-size", "min-block-size", "max-block-size", "appearance", "-webkit-appearance", "transform", "display", "box-sizing"].map(property => [property, style.getPropertyValue(property)])),
+              inline: Object.fromEntries(["height", "min-height", "max-height", "appearance", "-webkit-appearance"].map(property => [property, { value: control.style.getPropertyValue(property), priority: control.style.getPropertyPriority(property) }])) };
           });
           assert(calibrated, "Missing positive geometry control");
           assert(calibrated.height <= 17, `Positive geometry control did not shrink: ${candidate.site}, intent${intent}, ${width}x${height}, ${JSON.stringify(calibrated)}`);
