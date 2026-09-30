@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { hashes } from "./og-receipt.mjs";
+import { hashes } from "../og-receipt.mjs";
 test("source fingerprint changes when original renderer or brand changes", () => {
   const inputs = ["renderer.tsx", "brand.ts"];
   const original = hashes(inputs, () => Buffer.from("original"));
