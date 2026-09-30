@@ -44,7 +44,7 @@ export default function HomePage() {
                 {GAMES_LINK.label}<ArrowUpRight />
               </a>
             ) : null}
-            <Link className="button button--large button--quiet" href="/fair-play">
+            <Link className="button button--large button--quiet" href="/fair-play" prefetch={false}>
               How the check works
             </Link>
           </p>
@@ -135,7 +135,7 @@ export default function HomePage() {
                 and get the same faces.
               </p>
               <p>
-                <Link href="/fair-play">Read how the check works</Link>
+                <Link href="/fair-play" prefetch={false}>Read how the check works</Link>
               </p>
             </div>
           </div>
@@ -151,9 +151,9 @@ export default function HomePage() {
               Play {game.name}
             </a>
           ))}
-          <Link className="button button--large button--quiet" href={GAMES_LINK.path}>
+          <a className="button button--large button--quiet" href={GAMES_LINK.path}>
             Read about them first
-          </Link>
+          </a>
         </p>
       </section>
     </>

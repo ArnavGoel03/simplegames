@@ -10,7 +10,7 @@ const LINKS = [GAMES_LINK, ...NAV];
 export function SiteHeader() {
   return (
     <header className="shell shell--wide masthead">
-      <Link href="/" className="wordmark">
+      <Link href="/" className="wordmark" prefetch={false}>
         <StudioMark />
         {STUDIO_NAME}
       </Link>
@@ -18,7 +18,7 @@ export function SiteHeader() {
         {LINKS.map((link) => link.path === GAMES_LINK.path ? (
           <a key={link.path} href={link.path}>{link.label}</a>
         ) : (
-          <Link key={link.path} href={link.path}>
+          <Link key={link.path} href={link.path} prefetch={false}>
             {link.label}
           </Link>
         ))}
