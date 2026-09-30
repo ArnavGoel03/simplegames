@@ -37,7 +37,7 @@ export function measureControlGeometry() {
   for (const selector of ["header a.play-btn", ".play-entry-panel:not([hidden]) .play-btn", ".play-room-entry .play-btn", ".casino-enter", ".button.button--large", "[data-read-aloud-control] button"]) {
     const controls = [...document.querySelectorAll(selector)].filter(visible).map(measure);
     // Main actions may differ semantically; compare each to the height token.
-    controls.forEach(control => groups.push({ name: selector, controls: [control] }));
+    controls.forEach(control => groups.push({ name: selector, compareType: false, controls: [{ ...control, minimum: true }] }));
   }
   const token = getComputedStyle(document.documentElement).getPropertyValue("--play-control-height").trim();
   const probe = document.createElement("div"); probe.style.height = token || "3rem"; document.body.append(probe);
