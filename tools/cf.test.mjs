@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it } from "vitest";
+import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
 import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -10,9 +10,9 @@ afterEach(() => {
   for (const path of temporary.splice(0)) rmSync(path, { recursive: true, force: true });
 });
 
-function project() {
+function project(retain = false) {
   const root = mkdtempSync(join(tmpdir(), "studio-deploy-test-"));
-  temporary.push(root);
+  if (!retain) temporary.push(root);
   for (const path of ["tools", "src/lib", "public", "bin", ".audit"]) mkdirSync(join(root, path), { recursive: true });
   symlinkSync(new URL("../node_modules", import.meta.url), join(root, "node_modules"), "dir");
   for (const file of ["cf.mjs", "site-url.mjs", "build-state.mjs", "html-policy.mjs", "build-info.mjs", "release-context.mjs"]) {
@@ -79,35 +79,50 @@ describe("the Cloudflare command wrapper", () => {
     expect(p.calls()).toEqual([]);
   });
 
-  it("stamps the generated worker and uploads an unchanged successful build", () => {
-    const p = project();
-    const source = readFileSync(join(p.root, "public/sw.js"), "utf8");
-    expect(p.run("build").status).toBe(0);
-    expect(readFileSync(join(p.root, ".open-next/assets/sw.js"), "utf8")).toContain("fixture-build");
-    expect(readFileSync(join(p.root, "public/sw.js"), "utf8")).toBe(source);
-    const upload = p.run("upload");
-    expect(upload.status, upload.stderr).toBe(0);
-    expect(upload.stderr).not.toMatch(/Warning|DEP0190/);
-    expect(p.calls()).toEqual(["build", "upload"]);
-    const candidate = JSON.parse(readFileSync(join(p.root, ".audit/quality/candidates/studio.json"), "utf8"));
-    expect(candidate.upload.command).toEqual(["wrangler", "versions", "upload"]);
-    expect(candidate.candidateVersion).toBe("12345678-1234-1234-1234-123456789abc");
-    expect(candidate.buildOutput).toMatch(/^[a-f0-9]{64}$/);
-    expect(candidate.buildOutput).toBe(outputFingerprint(p.root));
-    expect(p.run("deploy").status).toBe(1);
-    expect(p.calls()).toEqual(["build", "upload"]);
-  });
+  describe("successful certified build lifecycle", { concurrent: false }, () => {
+    let p;
+    let source;
+    let certified;
+    beforeAll(() => {
+      p = project(true);
+      source = readFileSync(join(p.root, "public/sw.js"), "utf8");
+    });
+    afterAll(() => { if (p) rmSync(p.root, { recursive: true, force: true }); });
 
-  it("prepares the actual OpenNext static cache before certification and can upload twice", () => {
-    const p = project();
-    expect(p.run("build").status).toBe(0);
-    const prepared = join(p.root, ".open-next/assets/cdn-cgi/_next_cache/fixture-build/index.cache");
-    expect(readFileSync(prepared, "utf8")).toBe('{"html":"prepared by OpenNext"}');
-    const certified = outputFingerprint(p.root);
-    expect(p.run("upload").status).toBe(0);
-    expect(outputFingerprint(p.root)).toBe(certified);
-    expect(p.run("upload").status).toBe(0);
-    expect(outputFingerprint(p.root)).toBe(certified);
+    it("stamps the worker and prepares the actual OpenNext cache before certification", () => {
+      expect(p.run("build").status).toBe(0);
+      expect(readFileSync(join(p.root, ".open-next/assets/sw.js"), "utf8")).toContain("fixture-build");
+      expect(readFileSync(join(p.root, "public/sw.js"), "utf8")).toBe(source);
+      const prepared = join(p.root, ".open-next/assets/cdn-cgi/_next_cache/fixture-build/index.cache");
+      expect(readFileSync(prepared, "utf8")).toBe('{"html":"prepared by OpenNext"}');
+      certified = outputFingerprint(p.root);
+      expect(p.calls()).toEqual(["build"]);
+    });
+
+    it("uploads unchanged bytes and records the candidate", () => {
+      const upload = p.run("upload");
+      expect(upload.status, upload.stderr).toBe(0);
+      expect(upload.stderr).not.toMatch(/Warning|DEP0190/);
+      expect(p.calls()).toEqual(["build", "upload"]);
+      const candidate = JSON.parse(readFileSync(join(p.root, ".audit/quality/candidates/studio.json"), "utf8"));
+      expect(candidate.upload.command).toEqual(["wrangler", "versions", "upload"]);
+      expect(candidate.candidateVersion).toBe("12345678-1234-1234-1234-123456789abc");
+      expect(candidate.buildOutput).toMatch(/^[a-f0-9]{64}$/);
+      expect(candidate.buildOutput).toBe(certified);
+      expect(outputFingerprint(p.root)).toBe(certified);
+    });
+
+    it("uploads the same prepared cache twice without mutation", () => {
+      const upload = p.run("upload");
+      expect(upload.status, upload.stderr).toBe(0);
+      expect(outputFingerprint(p.root)).toBe(certified);
+      expect(p.calls()).toEqual(["build", "upload", "upload"]);
+    });
+
+    it("refuses direct deploy without another adapter invocation", () => {
+      expect(p.run("deploy").status).toBe(1);
+      expect(p.calls()).toEqual(["build", "upload", "upload"]);
+    });
   });
 
   it.each([["--skipNextBuild"], ["--skipBuild"], ["-s"], ["--openNextConfigPath", "alternate.ts"]])("refuses build override %j before calling OpenNext", (...args) => {
