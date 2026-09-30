@@ -36,10 +36,13 @@ try {
             if (!control) return false;
             const saved = control.getAttribute("style");
             control.style.setProperty("height", "16px", "important"); control.style.setProperty("min-height", "16px", "important");
+            control.style.setProperty("max-height", "16px", "important"); control.style.setProperty("padding-block", "0", "important");
+            control.style.setProperty("box-sizing", "border-box", "important");
             window.controlGeometryCalibration = { control, saved };
-            return true;
+            return { text: control.textContent?.trim(), height: control.getBoundingClientRect().height };
           });
           assert(calibrated, "Missing positive geometry control");
+          assert(calibrated.height <= 17, `Positive geometry control did not shrink: ${candidate.site}, intent${intent}, ${width}x${height}, ${JSON.stringify(calibrated)}`);
           const positive = await page.evaluate(measureControlGeometry);
           assert(geometryFailures(positive.groups, positive.expectedHeight).length > 0, "Geometry detector missed undersized real control");
           await page.evaluate(() => { const { control, saved } = window.controlGeometryCalibration; if (saved === null) control.removeAttribute("style"); else control.setAttribute("style", saved); delete window.controlGeometryCalibration; });

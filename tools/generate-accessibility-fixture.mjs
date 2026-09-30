@@ -63,6 +63,7 @@ function Fixture(){
  const stroke=React.useCallback(value=>{log.current.strokes.push(value);window.fixture.strokes.push(value);setRevision(n=>n+1)},[]);
  const mark=React.useCallback(value=>window.fixture.marks.push(value),[]);
  window.fixture={...(window.fixture||{strokes:[],marks:[]}),setBrush,setMode,unmount:()=>root.unmount()};
+ useEffect(()=>{window.fixture.committedBrush=brush;window.fixture.committedMode=mode},[brush,mode]);
  const close=()=>setActive('');
  return <main><div id="fixture-background"><button id="fixture-trigger" onClick={()=>setActive(new URLSearchParams(location.search).get('surface')||'blank')}>Open</button><button id="fixture-background-action">Background</button></div>
  {active==='blank'&&<BlankPicker onPick={letter=>{window.fixture.picked=letter;close()}} onCancel={close}/>}
