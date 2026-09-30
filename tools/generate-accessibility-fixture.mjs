@@ -14,7 +14,7 @@ const root = resolve(gamesPath);
 const receipts = JSON.parse(await readFile(receiptsPath, "utf8"));
 const configs = JSON.parse(await readFile(configsPath, "utf8"));
 const head = execFileSync("git", ["rev-parse", "HEAD"], { cwd: root, timeout: 5000, encoding: "utf8" }).trim();
-const { sourceFingerprint, verifyBuild } = await import(pathToFileURL(join(root, "scripts/build-state.mjs")));
+const { sourceFingerprint, workspaceFingerprint, verifyBuild } = await import(pathToFileURL(join(root, "scripts/build-state.mjs")));
 const studio = join(root, "packages/studio/src");
 const cards = join(root, "apps/judgement/src");
 const requireGame = createRequire(join(root, "apps/judgement/package.json"));
@@ -91,9 +91,10 @@ for(const candidate of receipts.filter(item=>accessibilitySites[item.site])){
  const config=configs[candidate.site];assert(config&&config.site===candidate.site&&config.head===head);assert.equal(head,candidate.sourceHead);
  assert(Object.keys(config.publicEnv).every(key=>key.startsWith('NEXT_PUBLIC_')), 'Only public build configuration is accepted');
  const app=join(root,'apps',accessibilitySites[candidate.site]);
- const fingerprint=sourceFingerprint(root,app,config);assert.equal(fingerprint,candidate.sourceFingerprint,'Source changed since certified build');
+ const fingerprint=sourceFingerprint(root,app,config);assert.equal(fingerprint,candidate.buildSource,'App source changed since certified build');
+ assert.equal(workspaceFingerprint(root,{head}),candidate.sourceFingerprint,'Workspace source changed since certified build');
  const stamp=verifyBuild(app,fingerprint);assert.equal(stamp.output,candidate.buildOutput);
- manifests.push({schema:1,synthetic:true,site:candidate.site,sourceHead:head,sourceFingerprint:fingerprint,buildOutput:stamp.output,sha256:digest(bytes),sources:[...sources].map(([path,sha256])=>({path,sha256})),adapters:['Fixed synthetic pathname, no Next router','Synthetic game state and callbacks','Original CardTable score modal JSX and Pachisa showdown functions extracted without edits']});
+ manifests.push({schema:1,synthetic:true,site:candidate.site,sourceHead:head,sourceFingerprint:candidate.sourceFingerprint,buildSource:fingerprint,buildOutput:stamp.output,sha256:digest(bytes),sources:[...sources].map(([path,sha256])=>({path,sha256})),adapters:['Fixed synthetic pathname, no Next router','Synthetic game state and callbacks','Original CardTable score modal JSX and Pachisa showdown functions extracted without edits']});
 }
 assert(manifests.length,'No supported accessibility candidates supplied');
 await writeFile(new URL('manifest.json',output),JSON.stringify(manifests,null,2));
