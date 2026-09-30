@@ -228,7 +228,7 @@ export async function readLiveApplicationVersion(origin) {
 }
 
 /** Promote the tested bytes, preserving an available rollback version first. */
-export async function promoteCandidate({ root, site, cwd, env, validate, requiredSecrets = [], liveOrigin, readLiveVersion = readLiveApplicationVersion, readCandidateVersion = readLiveApplicationVersion, query = wranglerJson, run = runRecorded }) {
+export async function promoteCandidate({ root, site, cwd, env, validate, requiredSecrets = [], liveOrigin, readLiveVersion = readLiveApplicationVersion, readCandidateVersion = readLiveApplicationVersion, query = wranglerJson, run = runRecorded, preflight }) {
   const { candidate } = validate();
   const options = { cwd, env };
   const version = (id) => {
@@ -250,6 +250,7 @@ export async function promoteCandidate({ root, site, cwd, env, validate, require
     if (await readCandidateVersion(candidate.origin) !== candidate.appVersion) throw new Error("release: uploaded application version does not match its receipt");
     requireVersionAdvance(candidate.appVersion, await readLiveVersion(liveOrigin));
   }
+  const preflightReceipt = preflight ? await preflight(candidate) : undefined;
   const observedAgain = deployments();
   if (digest(JSON.stringify(observedAgain)) !== digest(JSON.stringify(previous))) throw new Error("release: production changed during preflight");
   const current = validate().candidate;
@@ -258,6 +259,7 @@ export async function promoteCandidate({ root, site, cwd, env, validate, require
     schema: 1, kind: "deployment", startedAt: new Date().toISOString(), site,
     sourceHead: candidate.sourceHead, sourceFingerprint: candidate.sourceFingerprint,
     candidateVersion: candidate.candidateVersion, buildOutput: candidate.buildOutput,
+    ...(preflightReceipt ? { preflight: preflightReceipt } : {}),
     previous, rollbackCommand: ["wrangler", "versions", "deploy", ...previous.versions.map((item) => `${item.version_id}@${item.percentage}`), "--name", candidate.worker, "--yes"],
   };
   const path = receiptPath(root, "deployments", `${site}-${Date.now()}.json`);

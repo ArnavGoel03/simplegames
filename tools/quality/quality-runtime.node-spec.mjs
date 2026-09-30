@@ -180,3 +180,20 @@ test("application receipt substitution and concurrent traffic changes fail befor
   await assert.rejects(promoteCandidate({ ...options, readCandidateVersion: async () => "1.0.1" }), /production changed/);
   assert.equal(mutations, 0);
 }));
+
+test("awaited preflight is recorded before traffic moves", () => fixture(async ({ root }) => {
+  let promoted = false, checked = false;
+  const proof = { kind: "database-schema", schema: { current: true } };
+  const query = args => args[0] === "versions" ? { id: args[2] } : [{ id: promoted ? "after" : "before", created_on: "2026-09-13T00:00:00Z", versions: [{ version_id: promoted ? uuid : previousId, percentage: 100 }] }];
+  const attempt = await promoteCandidate({ root, site: "board", cwd: root, validate: () => ({ candidate }), query, readLiveVersion: async () => "1.0.0", readCandidateVersion: async () => "1.0.1", preflight: async () => { await Promise.resolve(); checked = true; return proof; }, run: async () => { assert(checked); promoted = true; return { exitCode: 0, signal: null, error: null }; } });
+  assert.deepEqual(attempt.preflight, proof);
+}));
+
+test("preflight failure and identity changes after await prevent traffic mutation", () => fixture(async ({ root }) => {
+  let mutations = 0, changed = false;
+  const query = args => args[0] === "versions" ? { id: args[2] } : [{ id: "before", created_on: "2026-09-13T00:00:00Z", versions: [{ version_id: previousId, percentage: 100 }] }];
+  const options = { root, site: "board", cwd: root, validate: () => ({ candidate: changed ? { ...candidate, sourceFingerprint: "c".repeat(64) } : candidate }), query, readLiveVersion: async () => "1.0.0", readCandidateVersion: async () => "1.0.1", run: async () => { mutations++; } };
+  await assert.rejects(promoteCandidate({ ...options, preflight: async () => { throw new Error("missing schema"); } }), /missing schema/);
+  await assert.rejects(promoteCandidate({ ...options, preflight: async () => { changed = true; } }), /candidate changed/);
+  assert.equal(mutations, 0);
+}));
