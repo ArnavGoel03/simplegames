@@ -1,0 +1,302 @@
+[
+  {
+    "site": "studio",
+    "engine": "webkit",
+    "observedSourceHead": "cfdf6a486095d9e939a29a9adba7e2e9e50f2ea4",
+    "samples": [
+      {
+        "startupMs": 1190,
+        "observedMs": 1218,
+        "driverDelayMs": 28,
+        "domReadyMs": 677,
+        "appReadyMs": 1004,
+        "lcpMs": 1080,
+        "decodedJsBytes": 485982,
+        "decodedCssBytes": 27023,
+        "resources": 9,
+        "stylesReady": true
+      },
+      {
+        "startupMs": 874,
+        "observedMs": 902,
+        "driverDelayMs": 28,
+        "domReadyMs": 410,
+        "appReadyMs": 728,
+        "lcpMs": 808,
+        "decodedJsBytes": 485982,
+        "decodedCssBytes": 27023,
+        "resources": 9,
+        "stylesReady": true
+      },
+      {
+        "startupMs": 546,
+        "observedMs": 573,
+        "driverDelayMs": 27,
+        "domReadyMs": 221,
+        "appReadyMs": 449,
+        "lcpMs": 544,
+        "decodedJsBytes": 485982,
+        "decodedCssBytes": 27023,
+        "resources": 9,
+        "stylesReady": true
+      }
+    ],
+    "interactionMs": [
+      159,
+      166,
+      182
+    ],
+    "interactionMetric": "games-navigation",
+    "definition": "startup: navigation to DOM and app readiness, loaded fonts, then two animation frames, timestamped inside the browser; loaded styles validated separately; games-navigation: trusted existing-control click to completed fragment scroll and two further stable frames; fresh browser context per sample"
+  },
+  {
+    "site": "chaupal",
+    "engine": "webkit",
+    "observedSourceHead": "9558b9a8e1beda00c308c3acd480b92bf9f02522",
+    "samples": [
+      {
+        "startupMs": 754,
+        "observedMs": 769,
+        "driverDelayMs": 15,
+        "domReadyMs": 412,
+        "appReadyMs": 656,
+        "lcpMs": 682,
+        "decodedJsBytes": 759284,
+        "decodedCssBytes": 73322,
+        "resources": 17,
+        "stylesReady": true
+      },
+      {
+        "startupMs": 999,
+        "observedMs": 1007,
+        "driverDelayMs": 8,
+        "domReadyMs": 687,
+        "appReadyMs": 907,
+        "lcpMs": 936,
+        "decodedJsBytes": 759284,
+        "decodedCssBytes": 73322,
+        "resources": 17,
+        "stylesReady": true
+      },
+      {
+        "startupMs": 704,
+        "observedMs": 719,
+        "driverDelayMs": 15,
+        "domReadyMs": 384,
+        "appReadyMs": 601,
+        "lcpMs": 633,
+        "decodedJsBytes": 759284,
+        "decodedCssBytes": 73322,
+        "resources": 17,
+        "stylesReady": true
+      }
+    ],
+    "interactionMs": [
+      72,
+      79,
+      94
+    ],
+    "interactionMetric": "interaction",
+    "definition": "startup: navigation to DOM and app readiness, loaded fonts, then two animation frames, timestamped inside the browser; loaded styles validated separately; interaction: trusted existing-control click to two animation frames; fresh browser context per sample"
+  },
+  {
+    "site": "taash",
+    "engine": "webkit",
+    "observedSourceHead": "874fd826b399c1c1eb326ec7d9c3adfacaccf36b",
+    "samples": [
+      {
+        "startupMs": 1500,
+        "observedMs": 1613,
+        "driverDelayMs": 113,
+        "domReadyMs": 918,
+        "appReadyMs": 1331,
+        "lcpMs": 1018,
+        "decodedJsBytes": 812829,
+        "decodedCssBytes": 115324,
+        "resources": 19,
+        "stylesReady": true
+      },
+      {
+        "startupMs": 1043,
+        "observedMs": 1195,
+        "driverDelayMs": 152,
+        "domReadyMs": 408,
+        "appReadyMs": 870,
+        "lcpMs": 508,
+        "decodedJsBytes": 812829,
+        "decodedCssBytes": 115324,
+        "resources": 19,
+        "stylesReady": true
+      },
+      {
+        "startupMs": 1326,
+        "observedMs": 1439,
+        "driverDelayMs": 113,
+        "domReadyMs": 766,
+        "appReadyMs": 1163,
+        "lcpMs": 866,
+        "decodedJsBytes": 812829,
+        "decodedCssBytes": 115324,
+        "resources": 19,
+        "stylesReady": true
+      }
+    ],
+    "interactionMs": [
+      123,
+      56,
+      40
+    ],
+    "interactionMetric": "interaction",
+    "definition": "startup: navigation to DOM and app readiness, loaded fonts, then two animation frames, timestamped inside the browser; loaded styles validated separately; interaction: trusted existing-control click to two animation frames; fresh browser context per sample"
+  },
+  {
+    "site": "draw",
+    "engine": "webkit",
+    "observedSourceHead": "9558b9a8e1beda00c308c3acd480b92bf9f02522",
+    "samples": [
+      {
+        "startupMs": 1250,
+        "observedMs": 1275,
+        "driverDelayMs": 25,
+        "domReadyMs": 844,
+        "appReadyMs": 1110,
+        "lcpMs": 956,
+        "decodedJsBytes": 703766,
+        "decodedCssBytes": 75803,
+        "resources": 15,
+        "stylesReady": true
+      },
+      {
+        "startupMs": 1052,
+        "observedMs": 1075,
+        "driverDelayMs": 23,
+        "domReadyMs": 691,
+        "appReadyMs": 918,
+        "lcpMs": 738,
+        "decodedJsBytes": 703766,
+        "decodedCssBytes": 75803,
+        "resources": 15,
+        "stylesReady": true
+      },
+      {
+        "startupMs": 784,
+        "observedMs": 794,
+        "driverDelayMs": 10,
+        "domReadyMs": 335,
+        "appReadyMs": 645,
+        "lcpMs": 468,
+        "decodedJsBytes": 703766,
+        "decodedCssBytes": 75803,
+        "resources": 15,
+        "stylesReady": true
+      }
+    ],
+    "interactionMs": [
+      38,
+      68,
+      37
+    ],
+    "interactionMetric": "interaction",
+    "definition": "startup: navigation to DOM and app readiness, loaded fonts, then two animation frames, timestamped inside the browser; loaded styles validated separately; interaction: trusted existing-control click to two animation frames; fresh browser context per sample"
+  },
+  {
+    "site": "lattice",
+    "engine": "webkit",
+    "observedSourceHead": "9558b9a8e1beda00c308c3acd480b92bf9f02522",
+    "samples": [
+      {
+        "startupMs": 1076,
+        "observedMs": 1087,
+        "driverDelayMs": 11,
+        "domReadyMs": 717,
+        "appReadyMs": 955,
+        "lcpMs": 778,
+        "decodedJsBytes": 726516,
+        "decodedCssBytes": 76461,
+        "resources": 15,
+        "stylesReady": true
+      },
+      {
+        "startupMs": 713,
+        "observedMs": 725,
+        "driverDelayMs": 12,
+        "domReadyMs": 376,
+        "appReadyMs": 615,
+        "lcpMs": 429,
+        "decodedJsBytes": 726516,
+        "decodedCssBytes": 76461,
+        "resources": 15,
+        "stylesReady": true
+      },
+      {
+        "startupMs": 1068,
+        "observedMs": 1086,
+        "driverDelayMs": 18,
+        "domReadyMs": 743,
+        "appReadyMs": 956,
+        "lcpMs": 789,
+        "decodedJsBytes": 726516,
+        "decodedCssBytes": 76461,
+        "resources": 15,
+        "stylesReady": true
+      }
+    ],
+    "interactionMs": [
+      75,
+      75,
+      74
+    ],
+    "interactionMetric": "interaction",
+    "definition": "startup: navigation to DOM and app readiness, loaded fonts, then two animation frames, timestamped inside the browser; loaded styles validated separately; interaction: trusted existing-control click to two animation frames; fresh browser context per sample"
+  },
+  {
+    "site": "teenpatti",
+    "engine": "webkit",
+    "observedSourceHead": "714ace9222d70643edc8818b95e671f161604343",
+    "samples": [
+      {
+        "startupMs": 1251,
+        "observedMs": 1298,
+        "driverDelayMs": 47,
+        "domReadyMs": 416,
+        "appReadyMs": 929,
+        "lcpMs": 1059,
+        "decodedJsBytes": 722062,
+        "decodedCssBytes": 152016,
+        "resources": 16,
+        "stylesReady": true
+      },
+      {
+        "startupMs": 1662,
+        "observedMs": 1716,
+        "driverDelayMs": 54,
+        "domReadyMs": 810,
+        "appReadyMs": 1345,
+        "lcpMs": 1472,
+        "decodedJsBytes": 722062,
+        "decodedCssBytes": 152016,
+        "resources": 16,
+        "stylesReady": true
+      },
+      {
+        "startupMs": 1589,
+        "observedMs": 1652,
+        "driverDelayMs": 63,
+        "domReadyMs": 738,
+        "appReadyMs": 1271,
+        "lcpMs": 1392,
+        "decodedJsBytes": 722062,
+        "decodedCssBytes": 152016,
+        "resources": 16,
+        "stylesReady": true
+      }
+    ],
+    "interactionMs": [
+      277,
+      122,
+      130
+    ],
+    "interactionMetric": "interaction",
+    "definition": "startup: navigation to DOM and app readiness, loaded fonts, then two animation frames, timestamped inside the browser; loaded styles validated separately; interaction: trusted existing-control click to two animation frames; fresh browser context per sample"
+  }
+]

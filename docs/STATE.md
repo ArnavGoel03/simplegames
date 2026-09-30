@@ -1,3 +1,9 @@
+## Red-team audit checkpoint, 30 September 2026
+
+Studio reset escape now bounds stalled browser storage APIs using the existing eight-second recovery deadline. Three regressions fail original source, all six success/failure controls pass the repair. Typecheck, zero-warning lint, 35 release-policy checks and production build pass. Full Studio tests remain uncertified: two CF wrapper fixtures exceed their unchanged five-second deadlines, including isolated runs. No reset repair is deployed.
+
+Both fresh production browser baselines pass 72 layouts each, phone renders inspected. WebKit Studio startup median 874 ms exceeds the existing 750 ms release budget. Existing public privacy/cookie claims remain inaccurate and owner-held. Canonical findings and queue: `../chaupal-cards/docs/audits/2026-09-30/README.md`. Browser reports/images and dependency summary are in this repo's `docs/audits/2026-09-30`. No publication, billing change or support message occurred.
+
 # Glass Table Games: state of play
 
 ## 23 September 2026: Casino-only release workflow correction

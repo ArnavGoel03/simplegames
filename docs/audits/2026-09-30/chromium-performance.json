@@ -1,0 +1,302 @@
+[
+  {
+    "site": "studio",
+    "engine": "chromium",
+    "observedSourceHead": "cfdf6a486095d9e939a29a9adba7e2e9e50f2ea4",
+    "samples": [
+      {
+        "startupMs": 464.5999999999767,
+        "observedMs": 467,
+        "driverDelayMs": 2.400000000023283,
+        "domReadyMs": 351.5,
+        "appReadyMs": 441.79999999998836,
+        "lcpMs": 452,
+        "decodedJsBytes": 485982,
+        "decodedCssBytes": 27023,
+        "resources": 9,
+        "stylesReady": true
+      },
+      {
+        "startupMs": 606.5,
+        "observedMs": 624.7000000000116,
+        "driverDelayMs": 18.20000000001164,
+        "domReadyMs": 106.29999999998836,
+        "appReadyMs": 194.59999999997672,
+        "lcpMs": 240,
+        "decodedJsBytes": 485982,
+        "decodedCssBytes": 27023,
+        "resources": 9,
+        "stylesReady": true
+      },
+      {
+        "startupMs": 457.70000000001164,
+        "observedMs": 476.29999999998836,
+        "driverDelayMs": 18.599999999976717,
+        "domReadyMs": 339.1000000000349,
+        "appReadyMs": 436.6000000000349,
+        "lcpMs": 404,
+        "decodedJsBytes": 485982,
+        "decodedCssBytes": 27023,
+        "resources": 9,
+        "stylesReady": true
+      }
+    ],
+    "interactionMs": [
+      45.5,
+      47,
+      47
+    ],
+    "interactionMetric": "games-navigation",
+    "definition": "startup: navigation to DOM and app readiness, loaded fonts, then two animation frames, timestamped inside the browser; loaded styles validated separately; games-navigation: trusted existing-control click to completed fragment scroll and two further stable frames; fresh browser context per sample"
+  },
+  {
+    "site": "chaupal",
+    "engine": "chromium",
+    "observedSourceHead": "9558b9a8e1beda00c308c3acd480b92bf9f02522",
+    "samples": [
+      {
+        "startupMs": 701.2999999999884,
+        "observedMs": 719.2999999999884,
+        "driverDelayMs": 18,
+        "domReadyMs": 571.8999999999651,
+        "appReadyMs": 682.5999999999767,
+        "lcpMs": 636,
+        "decodedJsBytes": 759284,
+        "decodedCssBytes": 73322,
+        "resources": 17,
+        "stylesReady": true
+      },
+      {
+        "startupMs": 256.9000000000233,
+        "observedMs": 275,
+        "driverDelayMs": 18.099999999976717,
+        "domReadyMs": 127.79999999998836,
+        "appReadyMs": 238.70000000001164,
+        "lcpMs": 208,
+        "decodedJsBytes": 759284,
+        "decodedCssBytes": 73322,
+        "resources": 17,
+        "stylesReady": true
+      },
+      {
+        "startupMs": 343.20000000001164,
+        "observedMs": 361,
+        "driverDelayMs": 17.79999999998836,
+        "domReadyMs": 211.70000000001164,
+        "appReadyMs": 318.20000000001164,
+        "lcpMs": 344,
+        "decodedJsBytes": 759284,
+        "decodedCssBytes": 73322,
+        "resources": 17,
+        "stylesReady": true
+      }
+    ],
+    "interactionMs": [
+      29.29999999998836,
+      29.29999999998836,
+      29.5
+    ],
+    "interactionMetric": "interaction",
+    "definition": "startup: navigation to DOM and app readiness, loaded fonts, then two animation frames, timestamped inside the browser; loaded styles validated separately; interaction: trusted existing-control click to two animation frames; fresh browser context per sample"
+  },
+  {
+    "site": "taash",
+    "engine": "chromium",
+    "observedSourceHead": "874fd826b399c1c1eb326ec7d9c3adfacaccf36b",
+    "samples": [
+      {
+        "startupMs": 289.4000000000233,
+        "observedMs": 294.29999999998836,
+        "driverDelayMs": 4.899999999965075,
+        "domReadyMs": 196.79999999998836,
+        "appReadyMs": 273.5,
+        "lcpMs": 216,
+        "decodedJsBytes": 812829,
+        "decodedCssBytes": 115324,
+        "resources": 19,
+        "stylesReady": true
+      },
+      {
+        "startupMs": 293.20000000001164,
+        "observedMs": 311.1000000000349,
+        "driverDelayMs": 17.900000000023283,
+        "domReadyMs": 137.10000000003492,
+        "appReadyMs": 263.6000000000349,
+        "lcpMs": 216,
+        "decodedJsBytes": 812829,
+        "decodedCssBytes": 115324,
+        "resources": 19,
+        "stylesReady": true
+      },
+      {
+        "startupMs": 361.4000000000233,
+        "observedMs": 379.20000000001164,
+        "driverDelayMs": 17.79999999998836,
+        "domReadyMs": 201.20000000001164,
+        "appReadyMs": 340.29999999998836,
+        "lcpMs": 316,
+        "decodedJsBytes": 812829,
+        "decodedCssBytes": 115324,
+        "resources": 19,
+        "stylesReady": true
+      }
+    ],
+    "interactionMs": [
+      28.300000000046566,
+      27.100000000034925,
+      27.5
+    ],
+    "interactionMetric": "interaction",
+    "definition": "startup: navigation to DOM and app readiness, loaded fonts, then two animation frames, timestamped inside the browser; loaded styles validated separately; interaction: trusted existing-control click to two animation frames; fresh browser context per sample"
+  },
+  {
+    "site": "draw",
+    "engine": "chromium",
+    "observedSourceHead": "9558b9a8e1beda00c308c3acd480b92bf9f02522",
+    "samples": [
+      {
+        "startupMs": 608.8000000000466,
+        "observedMs": 626.6000000000349,
+        "driverDelayMs": 17.79999999998836,
+        "domReadyMs": 486.20000000001164,
+        "appReadyMs": 590.5,
+        "lcpMs": 548,
+        "decodedJsBytes": 703766,
+        "decodedCssBytes": 75803,
+        "resources": 15,
+        "stylesReady": true
+      },
+      {
+        "startupMs": 759.1000000000349,
+        "observedMs": 777.1000000000349,
+        "driverDelayMs": 18,
+        "domReadyMs": 618.4000000000233,
+        "appReadyMs": 729.7999999999884,
+        "lcpMs": 684,
+        "decodedJsBytes": 703766,
+        "decodedCssBytes": 75803,
+        "resources": 15,
+        "stylesReady": true
+      },
+      {
+        "startupMs": 361,
+        "observedMs": 378.8999999999651,
+        "driverDelayMs": 17.899999999965075,
+        "domReadyMs": 246.19999999995343,
+        "appReadyMs": 333.8999999999651,
+        "lcpMs": 268,
+        "decodedJsBytes": 703766,
+        "decodedCssBytes": 75803,
+        "resources": 15,
+        "stylesReady": true
+      }
+    ],
+    "interactionMs": [
+      28.70000000001164,
+      29.099999999976717,
+      28.899999999965075
+    ],
+    "interactionMetric": "interaction",
+    "definition": "startup: navigation to DOM and app readiness, loaded fonts, then two animation frames, timestamped inside the browser; loaded styles validated separately; interaction: trusted existing-control click to two animation frames; fresh browser context per sample"
+  },
+  {
+    "site": "lattice",
+    "engine": "chromium",
+    "observedSourceHead": "9558b9a8e1beda00c308c3acd480b92bf9f02522",
+    "samples": [
+      {
+        "startupMs": 735.7999999999884,
+        "observedMs": 736.7999999999884,
+        "driverDelayMs": 1,
+        "domReadyMs": 628.7000000000116,
+        "appReadyMs": 717.0999999999767,
+        "lcpMs": 664,
+        "decodedJsBytes": 726516,
+        "decodedCssBytes": 76461,
+        "resources": 15,
+        "stylesReady": true
+      },
+      {
+        "startupMs": 642.2999999999884,
+        "observedMs": 643.5,
+        "driverDelayMs": 1.2000000000116415,
+        "domReadyMs": 507.0999999999767,
+        "appReadyMs": 617.9000000000233,
+        "lcpMs": 584,
+        "decodedJsBytes": 726516,
+        "decodedCssBytes": 76461,
+        "resources": 15,
+        "stylesReady": true
+      },
+      {
+        "startupMs": 560.7999999999884,
+        "observedMs": 562,
+        "driverDelayMs": 1.2000000000116415,
+        "domReadyMs": 415.5999999999767,
+        "appReadyMs": 530.1999999999534,
+        "lcpMs": 500,
+        "decodedJsBytes": 726516,
+        "decodedCssBytes": 76461,
+        "resources": 15,
+        "stylesReady": true
+      }
+    ],
+    "interactionMs": [
+      29.5,
+      28.899999999965075,
+      30
+    ],
+    "interactionMetric": "interaction",
+    "definition": "startup: navigation to DOM and app readiness, loaded fonts, then two animation frames, timestamped inside the browser; loaded styles validated separately; interaction: trusted existing-control click to two animation frames; fresh browser context per sample"
+  },
+  {
+    "site": "teenpatti",
+    "engine": "chromium",
+    "observedSourceHead": "714ace9222d70643edc8818b95e671f161604343",
+    "samples": [
+      {
+        "startupMs": 731.2000000000116,
+        "observedMs": 748,
+        "driverDelayMs": 16.79999999998836,
+        "domReadyMs": 555.3000000000466,
+        "appReadyMs": 703.1000000000349,
+        "lcpMs": 656,
+        "decodedJsBytes": 722062,
+        "decodedCssBytes": 152016,
+        "resources": 16,
+        "stylesReady": true
+      },
+      {
+        "startupMs": 313.3999999999651,
+        "observedMs": 324.70000000001164,
+        "driverDelayMs": 11.300000000046566,
+        "domReadyMs": 137.39999999996508,
+        "appReadyMs": 289.3999999999651,
+        "lcpMs": 244,
+        "decodedJsBytes": 722062,
+        "decodedCssBytes": 152016,
+        "resources": 16,
+        "stylesReady": true
+      },
+      {
+        "startupMs": 888,
+        "observedMs": 896.9000000000233,
+        "driverDelayMs": 8.900000000023283,
+        "domReadyMs": 708.2999999999884,
+        "appReadyMs": 864.2000000000116,
+        "lcpMs": 816,
+        "decodedJsBytes": 722062,
+        "decodedCssBytes": 152016,
+        "resources": 16,
+        "stylesReady": true
+      }
+    ],
+    "interactionMs": [
+      29.699999999953434,
+      29,
+      29.099999999976717
+    ],
+    "interactionMetric": "interaction",
+    "definition": "startup: navigation to DOM and app readiness, loaded fonts, then two animation frames, timestamped inside the browser; loaded styles validated separately; interaction: trusted existing-control click to two animation frames; fresh browser context per sample"
+  }
+]

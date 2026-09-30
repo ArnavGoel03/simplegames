@@ -1,0 +1,94 @@
+{
+  "observedAt": "2026-09-30T14:45:37.976Z",
+  "rows": [
+    {
+      "url": "https://glasstablegames.com/legal/privacy",
+      "status": 200,
+      "headers": {
+        "cache-control": "s-maxage=31536000, max-age=0, must-revalidate, no-transform",
+        "content-security-policy": "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; form-action 'none'; frame-ancestors 'none'; base-uri 'self'; object-src 'none'",
+        "referrer-policy": "strict-origin-when-cross-origin",
+        "server": "cloudflare"
+      },
+      "hasFalsePrivacy": true,
+      "hasFalseHost": true,
+      "hasFutureCookiePromise": false,
+      "source": [
+        "cfdf6a486095d9e939a29a9adba7e2e9e50f2ea4"
+      ],
+      "readAloud": false,
+      "canvasCount": 0
+    },
+    {
+      "url": "https://glasstablegames.com/legal/cookies",
+      "status": 200,
+      "headers": {
+        "cache-control": "s-maxage=31536000, max-age=0, must-revalidate, no-transform",
+        "content-security-policy": "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; form-action 'none'; frame-ancestors 'none'; base-uri 'self'; object-src 'none'",
+        "referrer-policy": "strict-origin-when-cross-origin",
+        "server": "cloudflare"
+      },
+      "hasFalsePrivacy": false,
+      "hasFalseHost": false,
+      "hasFutureCookiePromise": true,
+      "source": [
+        "cfdf6a486095d9e939a29a9adba7e2e9e50f2ea4"
+      ],
+      "readAloud": false,
+      "canvasCount": 0
+    },
+    {
+      "url": "https://glasstablegames.com/fair-play",
+      "status": 200,
+      "headers": {
+        "cache-control": "s-maxage=31536000, max-age=0, must-revalidate, no-transform",
+        "content-security-policy": "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; form-action 'none'; frame-ancestors 'none'; base-uri 'self'; object-src 'none'",
+        "referrer-policy": "strict-origin-when-cross-origin",
+        "server": "cloudflare"
+      },
+      "hasFalsePrivacy": false,
+      "hasFalseHost": false,
+      "hasFutureCookiePromise": false,
+      "source": [
+        "cfdf6a486095d9e939a29a9adba7e2e9e50f2ea4"
+      ],
+      "readAloud": false,
+      "canvasCount": 0
+    },
+    {
+      "url": "https://board.glasstablegames.com/",
+      "error": "fetch failed"
+    },
+    {
+      "url": "https://cards.glasstablegames.com/",
+      "error": "fetch failed"
+    },
+    {
+      "url": "https://words.glasstablegames.com/",
+      "error": "fetch failed"
+    },
+    {
+      "url": "https://draw.glasstablegames.com/",
+      "error": "fetch failed"
+    },
+    {
+      "url": "https://teenpatti.glasstablegames.com/",
+      "status": 200,
+      "headers": {
+        "cache-control": "s-maxage=31536000, max-age=0, must-revalidate, no-transform",
+        "content-encoding": "gzip",
+        "content-security-policy": "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self' https://circuit.glasstablegames.com wss://rooms.glasstablegames.com https://rooms.glasstablegames.com; frame-src 'none'; worker-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests",
+        "referrer-policy": "strict-origin-when-cross-origin",
+        "server": "cloudflare"
+      },
+      "hasFalsePrivacy": false,
+      "hasFalseHost": false,
+      "hasFutureCookiePromise": false,
+      "source": [
+        "714ace9222d70643edc8818b95e671f161604343"
+      ],
+      "readAloud": false,
+      "canvasCount": 0
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "metadata": {
+    "vulnerabilities": {
+      "info": 0,
+      "low": 0,
+      "moderate": 2,
+      "high": 2,
+      "critical": 0,
+      "total": 4
+    },
+    "dependencies": {
+      "prod": 20,
+      "dev": 797,
+      "optional": 200,
+      "peer": 33,
+      "peerOptional": 0,
+      "total": 851
+    }
+  },
+  "packages": [
+    {
+      "name": "brace-expansion",
+      "severity": "high",
+      "isDirect": false,
+      "range": "<=1.1.20 || 4.0.0 - 5.0.11",
+      "fixAvailable": true
+    },
+    {
+      "name": "miniflare",
+      "severity": "moderate",
+      "isDirect": false,
+      "range": "4.20260617.0 - 5.20260926.0-alpha",
+      "fixAvailable": {
+        "name": "wrangler",
+        "version": "4.145.0",
+        "isSemVerMajor": false
+      }
+    },
+    {
+      "name": "undici",
+      "severity": "high",
+      "isDirect": false,
+      "range": "7.0.0 - 7.29.0",
+      "fixAvailable": {
+        "name": "wrangler",
+        "version": "4.145.0",
+        "isSemVerMajor": false
+      }
+    },
+    {
+      "name": "wrangler",
+      "severity": "moderate",
+      "isDirect": true,
+      "range": "<=0.0.0-31bfd374c || 4.102.0 - 4.143.0",
+      "fixAvailable": {
+        "name": "wrangler",
+        "version": "4.145.0",
+        "isSemVerMajor": false
+      }
+    }
+  ]
+}
