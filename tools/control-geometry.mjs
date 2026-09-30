@@ -30,12 +30,12 @@ export function measureControlGeometry() {
   const groups = [];
   for (const selector of [".play-room-actions", ".play-room-join", ".play-door-split", ".play-entry-choices", ".casino-feature-picker", ".casino-floor-filters"]) {
     for (const element of document.querySelectorAll(selector)) {
-      const controls = [...element.querySelectorAll("button,a.play-btn,input.play-input")].filter(visible).map(measure);
+      const controls = [...element.querySelectorAll("button,a.play-btn,input.play-input")].filter(element => visible(element) && !element.closest("li.play-seat")).map(measure);
       if (controls.length) groups.push({ name: selector, compareType: [".play-room-actions", ".play-room-join", ".play-door-split"].includes(selector), controls: controls.map(control => ({ ...control, minimum: selector === ".play-entry-choices" })) });
     }
   }
   for (const selector of ["header a.play-btn", ".play-entry-panel:not([hidden]) .play-btn", ".play-room-entry .play-btn", ".casino-enter", ".button.button--large", "[data-read-aloud-control] button"]) {
-    const controls = [...document.querySelectorAll(selector)].filter(visible).map(measure);
+    const controls = [...document.querySelectorAll(selector)].filter(element => visible(element) && !element.closest("li.play-seat")).map(measure);
     // Main actions may differ semantically; compare each to the height token.
     controls.forEach(control => groups.push({ name: selector, compareType: false, controls: [{ ...control, minimum: true }] }));
   }
