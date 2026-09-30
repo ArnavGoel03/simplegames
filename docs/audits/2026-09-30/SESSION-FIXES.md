@@ -4,6 +4,8 @@ Scope: user's thorough Glass Table Games red team, followed by "verify n fix all
 
 ## Deployment and verification checkpoint
 
+Final games gateb18e083 passes4,286 package tests,141 Node release checks and the original-image receipt control, zero-warning lint and3,566ms typecheck under6,000ms. Five new builds/uploads and current-source browser certification are in progress.
+
 Latest user steering: finish every fix, deploy after thorough verification, and correct inconsistent button geometry across the studio and different games. Final game sourceb18e083 adds the schema preflight, Circuit reading control and shared geometry; it requires fresh gate/build/browser receipts. The fixture import and AI progress follow-ups are included.
 
 
@@ -134,6 +136,8 @@ Historical game gate at2bdc3b1 passes4,285 package tests and126 Node controls pl
 | F73 | Include the new database preflight dependency in the synthetic OpenNext release fixture. | Games3af345c | Full gate exposed ERR_MODULE_NOT_FOUND in the fixture; repaired actual adapter suite10/10 and focused lint pass. Final full gate rerun pending. |
 
 | F74 | Emit completed AI cases with the verbose reporter so the release runner distinguishes progress from a hung process. | Gamesb18e083 | Same166 tests pass with166 completion lines; no idle/test timeout increased. Full source-bound gate and unchanged typecheck budget still required. |
+
+| F75 | Enforce a numerical free-space guard before starting final builds. | Temporary bounded build runner | The first check printed low space but still launched Casino; that mistake was interrupted before certification or upload. Failed partial output was removed. The revised guard refuses to launch below800Mi. No source or candidate evidence was deleted. |
 
 ## Operational repairs and evidence
 

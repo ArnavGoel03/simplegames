@@ -3,10 +3,10 @@
     "schema": 1,
     "synthetic": true,
     "site": "cards",
-    "sourceHead": "2bdc3b191188174fb5f846bc1457a0f8183bf98b",
-    "sourceFingerprint": "f11e6490a220f2adcb55a3b78d447a2044dc60ca0e6fe0328910a4e059efa51d",
-    "buildSource": "d7f0111365cdc680535ef574f840846c6dda6580125b55802bfaf2728ad89a6f",
-    "buildOutput": "dc9bd789c7953c9d1990a4bb835a4e2beab871129ebd34cb60a1b7119a06ef61",
+    "sourceHead": "b18e0835dff79a3604796203df7798d53534ca21",
+    "sourceFingerprint": "66c1c3157aed78ee7126c887818d098e9f2cd21db4c0c87bd18a1e19513d7fa5",
+    "buildSource": "b11c4bd250e69da93e202628ebaec005e5bac9af69213341e959eeebd5c19ef2",
+    "buildOutput": "126ce53066f141ec0e646e99a5eb8b1ee6e7c798c25dbf9d7bbd808beb54ce1d",
     "sha256": "250d0c6298dd9d96d9f4e8fa549b2e6bc8c3dfb2a9544801ce947cd90f32b2b5",
     "sources": [
       {
@@ -544,10 +544,10 @@
     "schema": 1,
     "synthetic": true,
     "site": "words",
-    "sourceHead": "2bdc3b191188174fb5f846bc1457a0f8183bf98b",
-    "sourceFingerprint": "f11e6490a220f2adcb55a3b78d447a2044dc60ca0e6fe0328910a4e059efa51d",
-    "buildSource": "50ef812c11fc503845cbe4516ec7b141986dc1ce21f9c7e8a9958d62c3d8ba26",
-    "buildOutput": "9a5dd009161b6a8c0032b8dc6fc76e11b166a27085b6d1aa966753c1553fb321",
+    "sourceHead": "b18e0835dff79a3604796203df7798d53534ca21",
+    "sourceFingerprint": "66c1c3157aed78ee7126c887818d098e9f2cd21db4c0c87bd18a1e19513d7fa5",
+    "buildSource": "35739269bbe21bfb0db86e7a600c2a2881fc24c7e9df51bf34650f93be27e6e9",
+    "buildOutput": "ab53a560bc64709cd2172944ca38e5a25bd56f2aaa87471cf66eab8d1ca19766",
     "sha256": "250d0c6298dd9d96d9f4e8fa549b2e6bc8c3dfb2a9544801ce947cd90f32b2b5",
     "sources": [
       {
@@ -1085,10 +1085,10 @@
     "schema": 1,
     "synthetic": true,
     "site": "draw",
-    "sourceHead": "2bdc3b191188174fb5f846bc1457a0f8183bf98b",
-    "sourceFingerprint": "f11e6490a220f2adcb55a3b78d447a2044dc60ca0e6fe0328910a4e059efa51d",
-    "buildSource": "33370bea760d6a8ee22c60d732777299d903b97dfc94dc2cb9fb6127b85e954e",
-    "buildOutput": "943129b50967606d7a047d0ab23a2a5246877eb46b096aec0848c522e709e590",
+    "sourceHead": "b18e0835dff79a3604796203df7798d53534ca21",
+    "sourceFingerprint": "66c1c3157aed78ee7126c887818d098e9f2cd21db4c0c87bd18a1e19513d7fa5",
+    "buildSource": "46d796cbe3c1846fde941487734b39b447b915ad614dfb4ca83c3aa6c895c91b",
+    "buildOutput": "ddb6009ea66cb012bcca685f369b263db588c6c4ac5bfd56aeec46512d43d828",
     "sha256": "250d0c6298dd9d96d9f4e8fa549b2e6bc8c3dfb2a9544801ce947cd90f32b2b5",
     "sources": [
       {
