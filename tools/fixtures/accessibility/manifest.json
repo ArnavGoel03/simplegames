@@ -3,11 +3,11 @@
     "schema": 1,
     "synthetic": true,
     "site": "cards",
-    "sourceHead": "b18e0835dff79a3604796203df7798d53534ca21",
-    "sourceFingerprint": "66c1c3157aed78ee7126c887818d098e9f2cd21db4c0c87bd18a1e19513d7fa5",
-    "buildSource": "b11c4bd250e69da93e202628ebaec005e5bac9af69213341e959eeebd5c19ef2",
-    "buildOutput": "126ce53066f141ec0e646e99a5eb8b1ee6e7c798c25dbf9d7bbd808beb54ce1d",
-    "sha256": "250d0c6298dd9d96d9f4e8fa549b2e6bc8c3dfb2a9544801ce947cd90f32b2b5",
+    "sourceHead": "efdc9c0197b51747b15510d666454e6597cdb4fd",
+    "sourceFingerprint": "65e755e2e4e77c8235f6ec790b945d144d2b3fcaec029ee99f639337961218b5",
+    "buildSource": "a501b2589554619b2b745cbd8697f5cbbf3692b26ec9a6473c1d9bc52586c887",
+    "buildOutput": "e16806a3753c02d227bc0b09ca1b16573b8904e7778236f32ddcaefe68166191",
+    "sha256": "2f0bd8ba2d0013eeba85906f6c67316f3b74dc937b1aff9cd1d49710216acdd3",
     "sources": [
       {
         "path": "apps/judgement/src/components/cards/CardTable.tsx",
@@ -19,7 +19,7 @@
       },
       {
         "path": "packages/studio/src/modal/lifecycle.ts",
-        "sha256": "3f60fd2d48abe0a8f058245afddff20f3ba0e62335d8bdf0f55c3275dd0beb1e"
+        "sha256": "573ea3a34b6adf1d75d72d6d25d2484b0e808987cc1a34cb97a2cc093ad069c5"
       },
       {
         "path": "packages/studio/src/modal/Modal.tsx",
@@ -544,11 +544,11 @@
     "schema": 1,
     "synthetic": true,
     "site": "words",
-    "sourceHead": "b18e0835dff79a3604796203df7798d53534ca21",
-    "sourceFingerprint": "66c1c3157aed78ee7126c887818d098e9f2cd21db4c0c87bd18a1e19513d7fa5",
-    "buildSource": "35739269bbe21bfb0db86e7a600c2a2881fc24c7e9df51bf34650f93be27e6e9",
-    "buildOutput": "ab53a560bc64709cd2172944ca38e5a25bd56f2aaa87471cf66eab8d1ca19766",
-    "sha256": "250d0c6298dd9d96d9f4e8fa549b2e6bc8c3dfb2a9544801ce947cd90f32b2b5",
+    "sourceHead": "efdc9c0197b51747b15510d666454e6597cdb4fd",
+    "sourceFingerprint": "65e755e2e4e77c8235f6ec790b945d144d2b3fcaec029ee99f639337961218b5",
+    "buildSource": "78a943239aad738e0e4cebe310ed06f87eaa87b56f0d277c7766668d6bb53f26",
+    "buildOutput": "dd144b7cda3fe3d9d9163a9c06f39d193a57d3a5d3c88e47f8607b03dac79fac",
+    "sha256": "2f0bd8ba2d0013eeba85906f6c67316f3b74dc937b1aff9cd1d49710216acdd3",
     "sources": [
       {
         "path": "apps/judgement/src/components/cards/CardTable.tsx",
@@ -560,7 +560,7 @@
       },
       {
         "path": "packages/studio/src/modal/lifecycle.ts",
-        "sha256": "3f60fd2d48abe0a8f058245afddff20f3ba0e62335d8bdf0f55c3275dd0beb1e"
+        "sha256": "573ea3a34b6adf1d75d72d6d25d2484b0e808987cc1a34cb97a2cc093ad069c5"
       },
       {
         "path": "packages/studio/src/modal/Modal.tsx",
@@ -1085,11 +1085,11 @@
     "schema": 1,
     "synthetic": true,
     "site": "draw",
-    "sourceHead": "b18e0835dff79a3604796203df7798d53534ca21",
-    "sourceFingerprint": "66c1c3157aed78ee7126c887818d098e9f2cd21db4c0c87bd18a1e19513d7fa5",
-    "buildSource": "46d796cbe3c1846fde941487734b39b447b915ad614dfb4ca83c3aa6c895c91b",
-    "buildOutput": "ddb6009ea66cb012bcca685f369b263db588c6c4ac5bfd56aeec46512d43d828",
-    "sha256": "250d0c6298dd9d96d9f4e8fa549b2e6bc8c3dfb2a9544801ce947cd90f32b2b5",
+    "sourceHead": "efdc9c0197b51747b15510d666454e6597cdb4fd",
+    "sourceFingerprint": "65e755e2e4e77c8235f6ec790b945d144d2b3fcaec029ee99f639337961218b5",
+    "buildSource": "9552dda3e89f67bb91f4dd6b867ea865046e99f7fc334d6fc52aa97de4151651",
+    "buildOutput": "dc24bd3a6ee661414188e516ecc3d5aadd2f2e7d3c9900eaff8344fd162ae71e",
+    "sha256": "2f0bd8ba2d0013eeba85906f6c67316f3b74dc937b1aff9cd1d49710216acdd3",
     "sources": [
       {
         "path": "apps/judgement/src/components/cards/CardTable.tsx",
@@ -1101,7 +1101,7 @@
       },
       {
         "path": "packages/studio/src/modal/lifecycle.ts",
-        "sha256": "3f60fd2d48abe0a8f058245afddff20f3ba0e62335d8bdf0f55c3275dd0beb1e"
+        "sha256": "573ea3a34b6adf1d75d72d6d25d2484b0e808987cc1a34cb97a2cc093ad069c5"
       },
       {
         "path": "packages/studio/src/modal/Modal.tsx",

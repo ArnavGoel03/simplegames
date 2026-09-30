@@ -1,6 +1,6 @@
 {
-  "sourceHead": "b18e0835dff79a3604796203df7798d53534ca21",
-  "sourceFingerprint": "66c1c3157aed78ee7126c887818d098e9f2cd21db4c0c87bd18a1e19513d7fa5",
+  "sourceHead": "efdc9c0197b51747b15510d666454e6597cdb4fd",
+  "sourceFingerprint": "65e755e2e4e77c8235f6ec790b945d144d2b3fcaec029ee99f639337961218b5",
   "hintCookie": "glasstable-session-here",
   "provenance": "SESSION_HINT_COOKIE imported from @play/identity/session in the bound games source checkout; no credential values read"
 }
