@@ -10,8 +10,8 @@
       "unit": "ms",
       "limit": 900,
       "baseline": {
-        "sourceHead": "5816711827f5f77de785a7c7b61453d619f2f009",
-        "value": 539,
+        "sourceHead": "026ce12cb2124d860457a733e0a0525821fb8847",
+        "value": 535,
         "evidence": "docs/quality/typecheck-baseline.json"
       }
     }

@@ -1,14 +1,14 @@
 {
   "schema": 1,
-  "sourceHead": "5816711827f5f77de785a7c7b61453d619f2f009",
+  "sourceHead": "026ce12cb2124d860457a733e0a0525821fb8847",
   "command": "npm run typecheck",
-  "milliseconds": 539,
+  "milliseconds": 535,
   "exitCode": 0,
   "environment": {
-    "node": "26.8.2",
+    "node": "26.9.0",
     "machine": "arm64",
     "system": "darwin"
   },
   "limitMilliseconds": 900,
-  "limitReason": "Rounded 1.5x measured local native compiler duration for scheduler headroom."
+  "limitReason": "Existing900ms limit retained for Node26.9.0 environment calibration; no allowance increased."
 }
