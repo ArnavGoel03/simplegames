@@ -17,6 +17,7 @@ export function verifyFixture(manifest, candidate, bytes) {
   assert.equal(manifest.synthetic, true);
   assert.equal(manifest.sourceHead, candidate.sourceHead, "Accessibility fixture HEAD differs from candidate");
   assert.equal(manifest.sourceFingerprint, candidate.sourceFingerprint, "Accessibility fixture source differs from candidate");
+  assert.equal(manifest.buildSource, candidate.buildSource, "Accessibility fixture app source differs from candidate");
   assert.equal(manifest.buildOutput, candidate.buildOutput, "Accessibility fixture build differs from candidate");
   assert.equal(digest(bytes), manifest.sha256, "Accessibility fixture bundle changed");
   assert(manifest.sources.length > 0 && manifest.sources.every(source => /^[a-f0-9]{64}$/.test(source.sha256)));
