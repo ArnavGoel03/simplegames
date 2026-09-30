@@ -1,3 +1,7 @@
+## Accessibility browser harness, 30 September 2026
+
+Candidate-bound canonical game fixtures and a hosted Chromium/WebKit step now cover migrated native modals, keyboard drawing and synthetic read-aloud speech boundaries/navigation cleanup. Six fixture binding, source extraction and workflow condition checks pass; fixture bundling and focused zero-warning lint pass. Hosted interactions and image review remain pending. Generation and scope limits: `tools/fixtures/accessibility/README.md`. No production change or deployment.
+
 ## Red-team audit checkpoint, 30 September 2026
 
 Studio reset escape now bounds stalled browser storage APIs using the existing eight-second recovery deadline. Three regressions fail original source, all six success/failure controls pass the repair. Typecheck, zero-warning lint, 35 release-policy checks and production build pass. Full Studio tests remain uncertified: two CF wrapper fixtures exceed their unchanged five-second deadlines, including isolated runs. No reset repair is deployed.
