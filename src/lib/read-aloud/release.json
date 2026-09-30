@@ -1,0 +1,13 @@
+{
+  "schema": 1,
+  "files": [
+    {
+      "name": "read-aloud.ts",
+      "sha256": "fde7fd9908977a43f9a7d8a2a805a99597584116761c7721e9d15ab7ace08004"
+    },
+    {
+      "name": "ReadAloud.tsx",
+      "sha256": "130b04d8bfe7874a29304146433d728988cf53ffe3fb83deae8405d07b0f8b59"
+    }
+  ]
+}
