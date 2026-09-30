@@ -402,7 +402,8 @@ a {
 
 /* ---------- controls ---------- */
 
-.button {
+.button,
+.play-read-aloud .play-btn {
   min-height: 44px; border-radius: 999px; gap: 1.5rem; justify-content: center;
   font-family: var(--font-body);
   font-size: var(--step-small);
@@ -480,24 +481,28 @@ a.button {
   color: var(--muted);
 }
 
-.button:hover:not(:disabled) {
+.button:hover:not(:disabled),
+.play-read-aloud .play-btn:hover:not(:disabled) {
   background: var(--indigo);
   border-color: var(--indigo);
   color: var(--paper);
 }
 
-.button:disabled {
+.button:disabled,
+.play-read-aloud .play-btn:disabled {
   opacity: 0.45;
   cursor: not-allowed;
 }
 
-.button--quiet {
+.button--quiet,
+.play-read-aloud .play-btn {
   background: transparent;
   color: var(--ink);
   border-color: var(--rule-strong);
 }
 
-.button--quiet:hover:not(:disabled) {
+.button--quiet:hover:not(:disabled),
+.play-read-aloud .play-btn:hover:not(:disabled) {
   background: transparent;
   border-color: var(--ink);
   color: var(--ink);
