@@ -8,7 +8,7 @@ test("mirrors canonical reading bytes and detects a same-size content substituti
   const root = mkdtempSync(join(tmpdir(), "reading-mirror-"));
   try {
     const source = join(root, "source"), target = join(root, "target"); mkdirSync(source);
-    writeFileSync(join(source, "read-aloud.ts"), "engine"); writeFileSync(join(source, "ReadAloud.tsx"), "control");
+    writeFileSync(join(source, "read-aloud.ts"), "engine"); writeFileSync(join(source, "read-aloud-loader.ts"), "loader"); writeFileSync(join(source, "ReadAloud.tsx"), "control");
     mirrorReadAloud(source, target); mirrorReadAloud(source, target, true);
     assert.equal(readFileSync(join(target, "read-aloud.ts"), "utf8"), "engine");
     writeFileSync(join(target, "read-aloud.ts"), "ENGINE");

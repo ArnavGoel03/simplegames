@@ -4,7 +4,7 @@ import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
-const FILES = ["read-aloud.ts", "ReadAloud.tsx"];
+const FILES = ["read-aloud.ts", "read-aloud-loader.ts", "ReadAloud.tsx"];
 export function mirrorReadAloud(source, target, check = false) {
   const files = FILES.map(name => ({ name, bytes: readFileSync(join(source, name)) }));
   for (const file of files) assert(file.bytes.length > 0 && file.bytes.length <= 50000, "Invalid reading source");

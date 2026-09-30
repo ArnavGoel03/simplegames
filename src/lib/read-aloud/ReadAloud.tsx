@@ -2,7 +2,8 @@
 
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { usePathname } from "next/navigation";
-import { passagesFrom, rangeHighlighter, readingSession } from "./read-aloud";
+import { readingLoader } from "./read-aloud-loader";
+import type { readingSession } from "./read-aloud";
 
 /** Owner-approved copy belongs here. Empty slots retain existing control labels. */
 const STOP_READING_EVENT = "play:stop-reading";
@@ -14,9 +15,13 @@ export function ReadAloud({ target }: { target: string }) {
   const pathname = usePathname();
   const session = useRef<ReturnType<typeof readingSession> | null>(null);
   const [reading, setReading] = useState(false);
+  const [pending, setPending] = useState(false);
+  const [failed, setFailed] = useState(false);
+  const loader = useRef<ReturnType<typeof readingLoader<typeof import("./read-aloud")>> | null>(null);
+  if (loader.current === null) { loader.current = readingLoader(() => import("./read-aloud"), setPending); }
   const supported = useSyncExternalStore(observeCapability, capability, serverCapability);
   useEffect(() => {
-    const stop = () => { session.current?.stop(); session.current = null; };
+    const stop = () => { loader.current?.cancel(); session.current?.stop(); session.current = null; setReading(false); };
     window.addEventListener(STOP_READING_EVENT, stop);
     window.addEventListener("pagehide", stop);
     window.addEventListener("popstate", stop);
@@ -33,17 +38,21 @@ export function ReadAloud({ target }: { target: string }) {
   }, [pathname]);
   return <span data-read-aloud-control className="play-read-aloud">
     <button type="button" className="play-btn play-btn-secondary text-sm" disabled={!supported}
-      aria-pressed={reading} aria-controls={target} onClick={() => {
-        if (reading) { session.current?.stop(); session.current = null; return; }
+      aria-pressed={reading} aria-busy={pending} aria-controls={target} onClick={() => {
+        if (reading || loader.current?.pending) { loader.current?.cancel(); session.current?.stop(); session.current = null; setReading(false); return; }
         const root = document.getElementById(target);
         if (!root) return;
-        const highlighter = rangeHighlighter(root);
         window.dispatchEvent(new Event(STOP_READING_EVENT));
         window.speechSynthesis.cancel();
-        session.current = readingSession(passagesFrom(root), window.speechSynthesis,
-          text => new SpeechSynthesisUtterance(text), highlighter.show, highlighter.clear, () => setReading(false));
-        setReading(true); session.current.start();
+        setFailed(false);
+        void loader.current?.start(({ passagesFrom, rangeHighlighter, readingSession }) => {
+          if (!root.isConnected) return;
+          const highlighter = rangeHighlighter(root);
+          session.current = readingSession(passagesFrom(root), window.speechSynthesis,
+            text => new SpeechSynthesisUtterance(text), highlighter.show, highlighter.clear, () => setReading(false));
+          setReading(true); session.current.start();
+        }, () => { session.current?.stop(); session.current = null; setFailed(true); setReading(false); });
       }}>{reading ? READ_ALOUD_COPY.stop || "Stop" : READ_ALOUD_COPY.start || "Play"}</button>
-    <span className="sr-only" role="status" aria-live="polite">{!supported ? READ_ALOUD_COPY.unavailable : reading ? READ_ALOUD_COPY.reading : ""}</span>
+    <span className="sr-only" role="status" aria-live="polite">{!supported || failed ? READ_ALOUD_COPY.unavailable : reading ? READ_ALOUD_COPY.reading : ""}</span>
   </span>;
 }

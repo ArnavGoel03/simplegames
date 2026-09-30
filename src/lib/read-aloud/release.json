@@ -6,8 +6,12 @@
       "sha256": "bc9d074d51a92dfdd185a410fcb4f4992f6b010b4dc1674d4521dbfc26ce1cfa"
     },
     {
+      "name": "read-aloud-loader.ts",
+      "sha256": "b28a21da7be51793244431ec014c5bbfd984972f8f1a679515a97ac9329ee7ad"
+    },
+    {
       "name": "ReadAloud.tsx",
-      "sha256": "c4932c3fdee4184e0f8288430770423029c2ecdc3999e12865b03d0d97e51f57"
+      "sha256": "c3d0d1e7fef7eea6dc2a5f361210d8ea7cec3578ee3bbb055e548b9b2cea89c6"
     }
   ]
 }
