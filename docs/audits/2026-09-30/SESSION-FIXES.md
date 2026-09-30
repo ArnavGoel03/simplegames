@@ -4,6 +4,8 @@ Scope: user's thorough Glass Table Games red team, followed by "verify n fix all
 
 ## Deployment and verification checkpoint
 
+Final checkpoint1 October2026: Games e99a524 gate4,291+141+image passes, all five builds/uploads and99 exact assets pass. Studio623efc6 gate177+78/build/uploadad0f7abd passes. Combined111 exact assets pass. Chromium36760643929 passes all browser checks and18 unchanged metrics, including Studio404.8ms startup. Its small evidence and48MB render archive both match provider SHA; corrected Charade/Circuit renders were inspected. WebKit appearance calibration remains unverified: subsequent runs36760647553 and36761991058 timed out in browser installation. Earlier36759384451 failed the positive calibration, not an observed product mismatch. No game or Studio audit promotion occurred. Required0013 remains pending without Neon access. Studio previews restored and provider-verified false/false.
+
 Latest games gatee99a524 passes4,291 package tests,141 Node release checks and the original-image receipt control, zero-warning lint and typecheck under6,000ms. Five fresh builds/uploads and current-source browser certification are in progress. The record now includes81 numbered fixes and follow-ups.
 
 Latest user steering: finish every fix, deploy after thorough verification, and correct inconsistent button geometry across the studio and different games. Game sourcee99a524 includes schema preflight, Circuit reading control, modal Tab containment and shared entry/join geometry. Final source-bound browser acceptance and production database migration remain required; no five-game or Studio audit promotion has occurred.
@@ -140,6 +142,9 @@ Historical game gate at2bdc3b1 passes4,285 package tests and126 Node controls pl
 | F75 | Enforce a numerical free-space guard before starting final builds. | Temporary bounded build runner | The first check printed low space but still launched Casino; that mistake was interrupted before certification or upload. Failed partial output was removed. The revised guard refuses to launch below800Mi. No source or candidate evidence was deleted. |
 
 ## Operational repairs and evidence
+
+- F85: Geometry positive selection uses the same visible dimensions, visibility and recent-room exclusions as the detector. Included in4d2bc94 and later Studio gates.
+- F86: WebKit native button appearance kept the forced16px positive at48px. Calibration temporarily disables native appearance and restores the complete saved inline style afterward. Chromium623efc6 passes; WebKit verification remains outstanding because both final installations timed out. This is a harness fix pending acceptance, not a demonstrated product improvement.
 
 - F82: The synthetic drawing fixture now exposes committed brush/mode state after effects; keyboard verification waits for that state instead of a zero-delay timer. Chromium36756098615 caught rectangle verification before the mode committed; failed assertions now retain actual stroke points. WebKit36756103011 passes accessibility. Focused lint/syntax pass; final hosted acceptance remains required.
 - F83: Geometry calibration now forces and verifies an actual16px border-box positive, including maximum height and zero vertical padding. WebKit exposed a calibration which could remain content-sized despite the attempted16px height. The detector and product48px requirement remain unchanged; a failed positive still fails the run.
