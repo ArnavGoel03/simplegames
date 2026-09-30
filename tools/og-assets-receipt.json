@@ -1,0 +1,17 @@
+{
+  "schema": 1,
+  "inputs": {
+    "tools/generate-og.mjs": "b9704ebe9cc7d1c60331a5c8238dcd1313ce6946e65054944ac13d08987ba08c",
+    "tools/og-receipt.mjs": "77a7d3e6c16ae90e2e970a5f2819efbaa22f27da22c6113b3d03a7d2912e3948",
+    "tools/og-renderers/studio.tsx": "bb27c84f12b5038f4046f2e052fbaf50cd129daafcd80bdae4b750de25e16ebc",
+    "src/lib/brand.ts": "cc4cb2fe879a7e7f85fb236840c316135f2c3fcd7d05f5703fa847dcd2e61dd5",
+    "src/lib/studio-mark.ts": "8b7ee53c31c34698f8cd03a035c9d8ebd752f7bd89f35ad465836cede123bdab",
+    "src/lib/studio-mark.json": "77c0237c055aebf2e1b426371385bfc5f09e9ea2ad63b5e957a87eefb3e32371",
+    "src/lib/palette.json": "d3adb7655e485f453d8fe646c6debcc4448b15636a5d6828647de15b5fcef89c",
+    "package-lock.json": "fe3e0764a0e7fdcc3a565938f5bf4fe13bbef2ab8547466c4292116c2da70508"
+  },
+  "outputs": {
+    "src/app/opengraph-image.png": "57df19733ab568342a27d1ff3383b2c39adf90787607da12f43d5a79b0104ac9",
+    "src/app/opengraph-image.alt.txt": "24d5987d16c1904c9c7c4fad157762e111fa91fd3c5837df3cb5a063f552e133"
+  }
+}
