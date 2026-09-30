@@ -164,28 +164,49 @@ function styleAssets(css, base) {
 
 async function preload() {
   const pending = new Map();
-  async function asset(url, ancestors = new Set()) {
-    if (ancestors.has(url)) return [];
-    if (pending.has(url)) return pending.get(url);
-    if (pending.size >= MAX_ENTRIES) throw new Error("too many offline assets");
-    const next = new Set([...ancestors, url]);
-    const work = (async () => {
+  // One asset fetch budget across every document and nested stylesheet.
+  const ASSET_DOWNLOAD_CONCURRENCY = 4;
+  let downloading = 0;
+  const downloads = [];
+  async function download(url) {
+    if (downloading >= ASSET_DOWNLOAD_CONCURRENCY) await new Promise(resolve => downloads.push(resolve));
+    else downloading++;
+    try {
       const response = await savedResponse(url, true) || await fetch(url, {
         cache: "reload", credentials: "omit", signal: AbortSignal.timeout(10000),
       });
       if (!validResponse(response, url)) throw new Error("offline asset unavailable");
-      const nested = new Set();
-      if (new URL(url).pathname.endsWith(".css")) {
-        const css = new TextDecoder().decode(await limitedBody(response.clone()));
-        for (const dependency of styleAssets(css, url)) {
-          nested.add(dependency);
-          for (const child of await asset(dependency, next)) nested.add(child);
-        }
-      }
-      // Copy reused immutable assets into this generation before older caches
-      // can be pruned during activation.
+      // Drain and cache the body before handing the slot to another request.
       await store(url, response.clone());
-      return [...nested];
+      return response;
+    } finally {
+      const next = downloads.shift();
+      if (next) next(); else downloading--;
+    }
+  }
+  async function dependenciesFor(urls) {
+    const visited = new Set(urls);
+    let frontier = [...visited];
+    while (frontier.length) {
+      const results = await Promise.all(frontier.map(url => asset(url)));
+      frontier = [];
+      for (const children of results) for (const child of children) {
+        if (!visited.has(child)) { visited.add(child); frontier.push(child); }
+      }
+      if (visited.size > MAX_DEPENDENCIES) throw new Error("too many offline dependencies");
+    }
+    return [...visited];
+  }
+  async function asset(url) {
+    if (pending.has(url)) return pending.get(url);
+    if (pending.size >= MAX_ENTRIES) throw new Error("too many offline assets");
+    // Shared promises cover one asset only. Recursive waits between shared
+    // stylesheet promises could deadlock when their dependencies form a cycle.
+    const work = (async () => {
+      const response = await download(url);
+      if (!new URL(url).pathname.endsWith(".css")) return [];
+      const css = new TextDecoder().decode(await limitedBody(response.clone()));
+      return [...styleAssets(css, url)];
     })();
     pending.set(url, work);
     return work;
@@ -210,10 +231,8 @@ async function preload() {
         }
         const html = new TextDecoder().decode(await limitedBody(response.clone()));
         const dependencies = documentAssets(html, new URL(path, self.location.origin).href);
-        for (const url of [...dependencies]) {
-          for (const child of await asset(url)) dependencies.add(child);
-          if (dependencies.size > MAX_DEPENDENCIES) throw new Error("too many offline dependencies");
-        }
+        for (const child of await dependenciesFor(dependencies)) dependencies.add(child);
+        if (dependencies.size > MAX_DEPENDENCIES) throw new Error("too many offline dependencies");
         await store(path, response.clone(), [...dependencies]);
       } catch (error) { void emitWorkerFault("pwa-precache", { errorType: error?.name }); }
     }

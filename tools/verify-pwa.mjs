@@ -8,6 +8,10 @@ import { candidates, engine, output, observeSource, recordEvidence, predecessorW
 assert(candidates.length, "PWA release checks require immutable candidates");
 await mkdir(output, { recursive: true });
 const report = [];
+// Failure evidence must not create another unbounded worker registration wait.
+const WORKER_DIAGNOSTIC_TIMEOUT_MS = 1_000;
+// Keep release evidence bounded even if a candidate repeatedly retries assets.
+const NETWORK_DIAGNOSTIC_LIMIT = 256;
 const browser = await ({ chromium, webkit })[engine].launch({ timeout: 20_000 });
 const offlineEnvironment = `(() => {
 let online = true;
@@ -32,6 +36,17 @@ async function offlineCandidate(candidate, result) {
   const page = await context.newPage();
   page.setDefaultTimeout(15_000);
   const errors = [];
+  const network = [];
+  const cleanUrl = value => { const url = new URL(value); return url.origin + url.pathname; };
+  context.on("request", request => {
+    if (network.length < NETWORK_DIAGNOSTIC_LIMIT) network.push({ kind: "request", at: Date.now(), url: cleanUrl(request.url()), method: request.method() });
+  });
+  context.on("requestfailed", request => {
+    if (network.length < NETWORK_DIAGNOSTIC_LIMIT) network.push({ kind: "failed", at: Date.now(), url: cleanUrl(request.url()), error: request.failure()?.errorText });
+  });
+  context.on("response", response => {
+    if (network.length < NETWORK_DIAGNOSTIC_LIMIT) network.push({ kind: "response", at: Date.now(), url: cleanUrl(response.url()), status: response.status() });
+  });
   page.on("pageerror", error => errors.push(error.message));
   try {
     await page.goto(candidate.origin, { waitUntil: "domcontentloaded", timeout: 20_000 });
@@ -70,7 +85,18 @@ async function offlineCandidate(candidate, result) {
     await page.screenshot({ path: new URL(`pwa-${candidate.site}-${engine}-offline.jpg`, output).pathname, fullPage: true });
     result.offline = "passed";
     result.offlineMechanism = "Actual candidate document with Chromium browser-emulated offline network";
-  } finally { await context.close(); }
+  } finally {
+    result.directCandidateNetwork = network;
+    result.directCandidateErrors = errors;
+    result.directWorkerState = await Promise.race([page.evaluate(async () => {
+      const registrations = await navigator.serviceWorker.getRegistrations();
+      return { controller: navigator.serviceWorker.controller?.state ?? null,
+        registrations: registrations.map(registration => ({ scope: registration.scope,
+          installing: registration.installing?.state ?? null, waiting: registration.waiting?.state ?? null,
+          active: registration.active?.state ?? null })) };
+    }), new Promise(resolve => setTimeout(() => resolve({ unavailable: "Worker diagnostic timeout" }), WORKER_DIAGNOSTIC_TIMEOUT_MS))]).catch(error => ({ unavailable: String(error) }));
+    await context.close();
+  }
 }
 
 async function updateCandidate(candidate, result) {
