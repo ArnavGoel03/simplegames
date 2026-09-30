@@ -32,7 +32,10 @@ try {
           // Calibrate the exact detector against a deliberately undersized
           // button in an actual checked action row, then restore its CSS.
           const calibrated = await page.evaluate(() => {
-            const control = [...document.querySelectorAll(".play-room-actions button,.play-room-join button,.play-entry-choices button,.casino-feature-picker button,[data-read-aloud-control] button,.button--large")].find(element => element.getBoundingClientRect().width > 0);
+            const control = [...document.querySelectorAll(".play-room-actions button,.play-room-join button,.play-entry-choices button,.casino-feature-picker button,[data-read-aloud-control] button,.button--large")].find(element => {
+              const box = element.getBoundingClientRect();
+              return box.width > 0 && box.height > 0 && getComputedStyle(element).visibility !== "hidden" && !element.closest("li.play-seat");
+            });
             if (!control) return false;
             const saved = control.getAttribute("style");
             control.style.setProperty("height", "16px", "important"); control.style.setProperty("min-height", "16px", "important");
