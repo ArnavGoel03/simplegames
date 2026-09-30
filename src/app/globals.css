@@ -4,6 +4,9 @@
 /* One checked backdrop, pastel light and glass surfaces across the studio. */
 
 :root {
+  --play-reading-sentence-color: var(--paper-raised);
+  --play-reading-word-color: var(--ink);
+  --play-reading-word-fg: var(--paper);
   /* The three faces are loaded and self-hosted by next/font in layout.tsx,
      which supplies the variables named below. Nothing here reaches out to a
      font CDN, which is why the content security policy can forbid one. */
@@ -1310,8 +1313,6 @@ a.title:hover .title__art img {
 }
 
 /* Reading highlights derive from this site's existing canonical tokens. */
-::highlight(play-reading-sentence) { background-color: var(--paper-raised); }
-::highlight(play-reading-word) { background-color: var(--ink); color: var(--paper); }
 .play-reading-overlay { position: absolute; pointer-events: none; z-index: 100; }
 .play-reading-overlay.play-reading-sentence { outline: 1px solid var(--muted); }
 .play-reading-overlay.play-reading-word { outline: 2px solid var(--ink); }

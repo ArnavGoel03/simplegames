@@ -91,11 +91,28 @@ export function readingSession(passages: readonly Passage[], port: SpeechPort,
   };
 }
 
+const HIGHLIGHT_STYLE_ID = "play-reading-highlight-style";
+// Insert only after browser feature detection. Build CSS parsers need not
+// understand the browser's newer Highlight selector to ship the same tokens.
+export function ensureHighlightStyles(): boolean {
+  if (document.getElementById(HIGHLIGHT_STYLE_ID)) return true;
+  const style = document.createElement("style");
+  style.id = HIGHLIGHT_STYLE_ID;
+  document.head.append(style);
+  try {
+    if (!style.sheet) { style.remove(); return false; }
+    style.sheet.insertRule("::highlight(play-reading-sentence) { background-color: var(--play-reading-sentence-color); }");
+    style.sheet.insertRule("::highlight(play-reading-word) { background-color: var(--play-reading-word-color); color: var(--play-reading-word-fg); }");
+    return true;
+  } catch { style.remove(); return false; }
+}
+
 /** CSS Highlight keeps source markup intact; old engines get inert range overlays. */
 export function rangeHighlighter(root: HTMLElement) {
   const overlays: HTMLElement[] = [];
   const registry = typeof CSS !== "undefined" ? (CSS as unknown as { highlights?: Map<string, unknown> }).highlights : undefined;
   const HighlightConstructor = (globalThis as unknown as { Highlight?: new (...ranges: Range[]) => unknown }).Highlight;
+  const styled = Boolean(registry && HighlightConstructor && ensureHighlightStyles());
   const sentenceKey = "play-reading-sentence", wordKey = "play-reading-word";
   let active: { sentence: Range; word: Range } | null = null;
   const remove = () => {
@@ -106,7 +123,7 @@ export function rangeHighlighter(root: HTMLElement) {
     remove();
     if (!active || !root.isConnected) return;
     const { sentence, word } = active;
-    if (registry && HighlightConstructor) {
+    if (styled && registry && HighlightConstructor) {
       registry.set(sentenceKey, new HighlightConstructor(sentence)); registry.set(wordKey, new HighlightConstructor(word));
     } else {
       for (const [range, className] of [[sentence, "play-reading-sentence"], [word, "play-reading-word"]] as const) {
