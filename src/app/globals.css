@@ -4,6 +4,10 @@
 /* One checked backdrop, pastel light and glass surfaces across the studio. */
 
 :root {
+  /* Shared action rhythm; label emphasis does not change button height. */
+  --control-height: 3rem;
+  --control-padding-x: 1.15rem;
+  --control-radius: 12px;
   --play-reading-sentence-color: var(--paper-raised);
   --play-reading-word-color: var(--ink);
   --play-reading-word-fg: var(--paper);
@@ -404,11 +408,11 @@ a {
 
 .button,
 .play-read-aloud .play-btn {
-  min-height: 44px; border-radius: 999px; gap: 1.5rem; justify-content: center;
+  min-height: var(--control-height); border-radius: var(--control-radius); gap: 1.5rem; justify-content: center;
   font-family: var(--font-body);
   font-size: var(--step-small);
   font-weight: 500;
-  padding: 0.7rem 1.25rem;
+  padding: 0 var(--control-padding-x);
   background: var(--ink);
   color: var(--paper);
   border: 1px solid var(--ink);
@@ -425,7 +429,7 @@ a.button {
 
 .button--large {
   font-size: var(--step-body);
-  padding: 0.9rem 1.6rem;
+  padding: 0 var(--control-padding-x);
 }
 
 /* Buttons set on a line together, wrapping rather than shrinking, because a
