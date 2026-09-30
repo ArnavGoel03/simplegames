@@ -5,6 +5,17 @@ import { chromium, webkit } from "playwright";
 import { candidates, engine, observeSource, omitServiceWorkerCapability, output, recordEvidence } from "./browser-evidence.mjs";
 import { accessibilitySites, verifyFixture } from "./accessibility-fixture.mjs";
 
+async function readingStopped(page, read) {
+  assert.equal(await page.evaluate(() => speechSynthesis.current), null, "Speech continued after cancellation");
+  await page.waitForFunction(target => {
+    const control = [...document.querySelectorAll("[data-read-aloud-control] button")]
+      .find(button => button.getAttribute("aria-controls") === target);
+    return control?.getAttribute("aria-pressed") === "false" && speechSynthesis.current === null
+      && !(CSS.highlights?.has("play-reading-word") || false)
+      && document.querySelectorAll(".play-reading-overlay").length === 0;
+  }, await read.getAttribute("aria-controls"), { timeout: 15_000 });
+}
+
 const directory = new URL("./fixtures/accessibility/", import.meta.url);
 const supported = candidates.filter(candidate => accessibilitySites[candidate.site]);
 if (!candidates.length) { console.log("No accessibility candidate supplied"); process.exit(0); }
@@ -65,7 +76,7 @@ try {
         await page.evaluate(() => { window.actualLateSpeech.onboundary?.({ charIndex: 0 }); window.actualLateSpeech.onend?.({}); });
         assert(await noHighlight(), "Late actual speech restored cancelled highlights");
         assert.equal(await page.evaluate(() => speechSynthesis.utterances.length), utterances, "Late actual speech resumed after navigation");
-        assert.equal(await read.getAttribute("aria-pressed"), "false");
+        await readingStopped(page, read);
         assert.deepEqual(errors, [], "Actual candidate reading emitted browser errors");
         results.push({ site: candidate.site, colorScheme, actualHome: true, keyboardPlay: true, noAutoplay: true, stop: true, navigation: true, lateSpeechCancelled: true });
       } finally { await context.close(); }
@@ -212,16 +223,16 @@ try {
       const saved = await page.evaluate(() => { window.fixture.late = speechSynthesis.current; return speechSynthesis.cancels; });
       await page.screenshot({ path: new URL(`accessibility-reading-${candidate.site}-${colorScheme}.jpg`, output).pathname, fullPage: true, type: "jpeg", quality: 85 });
       await page.locator("#fixture-navigation").click();
-      assert.equal(await read.getAttribute("aria-pressed"), "false");
+      await readingStopped(page, read);
       assert(await page.evaluate(previous => speechSynthesis.cancels > previous, saved));
       await page.evaluate(() => window.fixture.late.onboundary?.({ charIndex: 0 }));
       assert.equal(await page.evaluate(() => (CSS.highlights?.has("play-reading-word") || false) || document.querySelectorAll(".play-reading-overlay").length > 0), false, "Late speech event restored cancelled highlight");
       await read.press("Enter"); await page.keyboard.press("Escape");
-      assert.equal(await read.getAttribute("aria-pressed"), "false");
+      await readingStopped(page, read);
       await read.press("Enter"); await page.evaluate(() => window.dispatchEvent(new PopStateEvent("popstate")));
-      assert.equal(await read.getAttribute("aria-pressed"), "false");
+      await readingStopped(page, read);
       await read.press("Enter"); await page.evaluate(() => window.dispatchEvent(new Event("pagehide")));
-      assert.equal(await read.getAttribute("aria-pressed"), "false");
+      await readingStopped(page, read);
       await read.press("Enter"); await page.evaluate(() => window.fixture.unmount());
       assert.equal(await page.evaluate(() => speechSynthesis.current), null);
       assert.deepEqual(errors, [], "Canonical fixture emitted browser errors");
