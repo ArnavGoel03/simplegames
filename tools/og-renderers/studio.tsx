@@ -1,3 +1,4 @@
+import React from "react";
 import { STUDIO_MARK } from "@/lib/studio-mark";
 import palette from "@/lib/palette.json";
 import { ImageResponse } from "next/og";
