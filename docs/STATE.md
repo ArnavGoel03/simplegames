@@ -4,6 +4,8 @@ Existing approved privacy/cookie/terms wording is applied, account-control disco
 
 Studio source certificates now exclude the named local instruction files and inactive pnpm lock only while untracked in a valid Git checkout. Four regressions and six existing source-discovery checks pass; the untracked-file regression fails original source. Focused zero-warning lint passes. Tracked versions and arbitrary new project configuration remain covered.
 
+Hosted Chromium exposed an accessibility fixture bootstrap failure: a draw metadata import retained an uncompiled public environment read. The generator now substitutes the actual public draw build URL, and the real original bundle fails a browser-global VM bootstrap probe while the regenerated same-games-source bundle reaches React initialization. Four fixture checks and focused zero-warning lint pass. Browser failures now retain network, console and initialization screenshot diagnostics. The repaired harness still needs hosted verification.
+
 Full source-bound gate, final build and exact-candidate Chromium/WebKit acceptance are pending. Hosted game accessibility/history fixtures must be regenerated from final games source and actual upload receipts before release tests. Production Studio remains0.5.3/sourcecfdf6a4 at100%; no audit repairs are deployed. The earlier874ms WebKit baseline miss requires a fresh candidate measurement under the unchanged750ms budget. Current canonical queue: games/docs/audits/2026-09-30/REPAIR-QUEUE.md.
 
 # Glass Table Games: state of play

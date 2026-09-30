@@ -13,6 +13,12 @@ assert(gamesPath && receiptsPath && configsPath, "Usage: node tools/generate-acc
 const root = resolve(gamesPath);
 const receipts = JSON.parse(await readFile(receiptsPath, "utf8"));
 const configs = JSON.parse(await readFile(configsPath, "utf8"));
+for (const config of Object.values(configs)) {
+  assert(config.publicEnv && Object.keys(config.publicEnv).every(key => key.startsWith("NEXT_PUBLIC_")), "Only public build configuration is accepted");
+}
+// The canvas imports draw site metadata. Substitute its actual public build
+// value just as Next does, without creating a browser-wide Node process shim.
+assert(typeof configs.draw?.publicEnv.NEXT_PUBLIC_SITE_URL === "string", "Canonical draw public site URL is required by the bundled canvas");
 const head = execFileSync("git", ["rev-parse", "HEAD"], { cwd: root, timeout: 5000, encoding: "utf8" }).trim();
 const { sourceFingerprint, workspaceFingerprint, verifyBuild } = await import(pathToFileURL(join(root, "scripts/build-state.mjs")));
 const studio = join(root, "packages/studio/src");
@@ -72,7 +78,7 @@ const root=createRoot(document.getElementById('fixture-root'));root.render(<Fixt
 const output = new URL("./fixtures/accessibility/", import.meta.url);
 await mkdir(output, { recursive: true });
 const bundled = await build({ absWorkingDir: root, stdin: { contents: fixture, resolveDir: root, loader: "tsx" }, bundle: true, write: false, format: "iife", platform: "browser", jsx: "automatic", minify: true, metafile: true,
-  define: { "process.env.NODE_ENV": '"production"' },
+  define: { "process.env.NODE_ENV": '"production"', "process.env.NEXT_PUBLIC_SITE_URL": JSON.stringify(configs.draw.publicEnv.NEXT_PUBLIC_SITE_URL) },
   plugins: [{name:"canonical-fixture-adapters",setup(api){
     api.onResolve({filter:/^(react(?:\/.*)?|react-dom(?:\/.*)?)$/},args=>({path:requireGame.resolve(args.path)}));
     api.onResolve({filter:/^@play\/pachisa$/},()=>({path:join(root,"packages/pachisa/src/index.ts")}));

@@ -13,6 +13,7 @@ const manifests = JSON.parse(await readFile(new URL("manifest.json", directory),
 const bytes = await readFile(new URL("bundle.js", directory));
 await mkdir(output, { recursive: true });
 const results = [];
+const diagnostics = [];
 const browser = await ({ chromium, webkit })[engine].launch();
 function fakeSpeech() {
   const speech = { utterances: [], current: null, cancels: 0,
@@ -31,7 +32,14 @@ try {
       await context.addInitScript(omitServiceWorkerCapability);
       await context.addInitScript(fakeSpeech);
       const errors = [];
-      context.on("page", page => page.on("pageerror", error => errors.push(error.message)));
+      const diagnostic = { site: candidate.site, colorScheme, errors, requests: [] };
+      diagnostics.push(diagnostic);
+      context.on("page", page => {
+        page.on("pageerror", error => { errors.push(error.message); console.error(`Accessibility ${candidate.site} browser error: ${error.message}`); });
+        page.on("requestfailed", request => diagnostic.requests.push({ url: request.url(), failure: request.failure()?.errorText }));
+        page.on("response", response => { if (response.url().includes("/__accessibility_fixture__/") || response.status() >= 400) diagnostic.requests.push({ url: response.url(), status: response.status(), contentType: response.headers()["content-type"] }); });
+        page.on("console", message => { if (message.type() === "error") { const entry = `Console: ${message.text()}`; errors.push(entry); console.error(entry); } });
+      });
       const shellPage = await context.newPage();
       shellPage.setDefaultTimeout(15_000);
       const response = await shellPage.goto(candidate.origin, { waitUntil: "domcontentloaded", timeout: 20_000 });
@@ -51,7 +59,12 @@ try {
       page.setDefaultTimeout(15_000);
       const open = async surface => {
         await page.goto(new URL(`/__accessibility_fixture__/?surface=${surface}`, candidate.origin).href, { waitUntil: "load", timeout: 20_000 });
-        await page.waitForFunction(() => Boolean(window.fixture));
+        try { await page.waitForFunction(() => Boolean(window.fixture)); }
+        catch (error) {
+          console.error(`Accessibility fixture initialization failed: ${JSON.stringify(diagnostic)}`);
+          await page.screenshot({ path: new URL(`accessibility-failed-${candidate.site}-${colorScheme}.jpg`, output).pathname, fullPage: true, type: "jpeg", quality: 85 });
+          throw error;
+        }
         await page.evaluate(() => document.fonts.ready);
         assert(await page.evaluate(() => [...document.querySelectorAll('link[rel="stylesheet"]')].every(link => link.sheet && new URL(link.href).origin === location.origin)), "Candidate styles failed to load");
       };
@@ -169,7 +182,7 @@ try {
     await recordEvidence(candidate.site, candidate.sourceHead, [{ id: "accessibility", status: "passed", details: "Canonical migrated surfaces, native focus lifecycle, keyboard drawing, synthetic speech boundary and navigation cancellation" }], [], candidate.origin);
   }
 } finally {
-  await writeFile(new URL(`accessibility-${engine}.json`, output), JSON.stringify({ candidates: supported, synthetic: true, speech: "Deterministic injected speech, no installed voice required", results }, null, 2));
+  await writeFile(new URL(`accessibility-${engine}.json`, output), JSON.stringify({ candidates: supported, synthetic: true, speech: "Deterministic injected speech, no installed voice required", diagnostics, results }, null, 2));
   await browser.close();
 }
 console.log(`Verified ${results.length} canonical accessibility layouts`);
