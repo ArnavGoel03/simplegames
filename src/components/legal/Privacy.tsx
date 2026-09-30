@@ -1,26 +1,26 @@
 import Link from "next/link";
-import { STUDIO_NAME, studio } from "@/lib/brand";
+import { studio } from "@/lib/brand";
 import { LEGAL_EMAIL, legalPath } from "@/lib/legal";
 
 export function Privacy() {
   return (
     <>
       <p className="lede">
-        {STUDIO_NAME} collects nothing about you. Not an email address, not a name, not an
-        analytics event, not a cookie. This page explains what that means, and is honest about the
-        one thing that happens anyway because every website on the internet is hosted somewhere.
+        This studio site has no account form or analytics. The games can keep guest identities,
+        optional account details, game records and diagnostic reports. This page explains the
+        difference between the studio site and the games.
       </p>
 
       <h2>1. What this site collects</h2>
-      <p>Nothing. Specifically, and in the order people usually ask:</p>
+      <p>The studio site itself has:</p>
       <ul>
         <li>
           <strong>No analytics.</strong> There is no Google Analytics, no Vercel Analytics, no
-          Plausible, no pixel, no beacon and no session recorder. Nothing counts your visit.
+          Plausible, no pixel, no beacon and no session recorder.
         </li>
         <li>
-          <strong>No cookies.</strong> This site sets none at all. See the{" "}
-          <Link href={legalPath("cookies")}>cookies page</Link>, which is short for that reason.
+          <strong>No cookies.</strong> This site sets none itself. Game session cookies can also be sent to this shared domain. See the{" "}
+          <Link href={legalPath("cookies")}>cookies page</Link>.
         </li>
         <li>
           <strong>No third-party requests.</strong> The typefaces are served from this site rather
@@ -39,36 +39,46 @@ export function Privacy() {
         mistake were made in the code.
       </p>
 
-      <h2>2. What the hosting provider sees</h2>
       <p>
-        This site is hosted on Vercel, and the games are served the same way. Like every web host,
-        Vercel handles the request your browser makes in order to answer it, and keeps operational
-        logs that can include your IP address, the page you asked for, the time, and your browser
-        and device type.
-      </p>
-      <p>
-        That is the hosting provider acting as an infrastructure operator, not {STUDIO_NAME}{" "}
-        gathering data. It is not linked to a name, not used to build a profile, not sold, and not
-        read by anyone here in the ordinary course of running the site. It is mentioned because a
-        privacy policy that claimed no data existed anywhere would be false, and this one is meant
-        to survive being checked.
+        The studio does not send automatic diagnostic reports. Earlier versions could send
+        failure reports with device information and a random session identifier. The current
+        version removes its local queue without sending it, and the retired studio endpoint no
+        longer accepts or forwards reports. This does not erase reports already stored by the
+        games&rsquo; diagnostic service.
       </p>
 
-      <h2>3. What a game room holds while you play</h2>
+      <h2>2. What the hosting provider sees</h2>
       <p>
-        When you play with friends, the room holds what it needs to run the game and nothing more:
-        the display name you typed, the position of the pieces or the state of the hands, and the
-        fairness values that let the result be verified afterwards.
+        This site and the games are hosted on Cloudflare. The hosting provider processes requests
+        to serve them, including network information such as your IP address, requested page and
+        browser information. Hosting and operational logs are separate from the studio&rsquo;s absence
+        of analytics.
+      </p>
+
+      <h2>3. What the games can store</h2>
+      <p>
+        Games can create a guest player record and session before you register. Player records
+        include a display name, avatar identifier and activity timestamps. Optional signup adds
+        an email address and password hash. Google sign-in can supply an account identifier,
+        email address and display name.
       </p>
       <p>
-        A display name is whatever you type. It is not verified, not required to be your real name,
-        and there is no reason to make it one. Room state is transient. When a room ends, it goes.
+        Multiplayer room state is stored on the server. In Charade, that can include drawings
+        and messages. Supported completed games can be archived and linked to player records.
+        Ending a room does not erase a player&rsquo;s identity or archived results. Account Casino
+        play can store play-money balances, ledger entries, round actions, results and fairness
+        proofs. Practice play runs in your browser.
+      </p>
+      <p>
+        Games can send diagnostic reports when failures occur. Reports can include a random
+        session identifier, error information, device information, recent game events and,
+        where supported, replay data. Reports can be queued in browser storage for delivery.
+        This studio&rsquo;s reporting change does not disable reporting in the games.
       </p>
 
       <h2>4. Children</h2>
       <p>
-        No personal information is knowingly collected from anyone, which includes children. There
-        is no sign-up form to collect it with. Parents should read the{" "}
+        The collection described above can apply when a child plays too. Parents should read the{" "}
         <Link href={legalPath("content")}>content and age page</Link>, which describes what is
         actually in the
         games and the one part worth knowing about: rooms are shared by link, so a child plays with
@@ -78,29 +88,18 @@ export function Privacy() {
       <h2>5. Your rights</h2>
       <p>
         Data protection law gives you rights to see, correct, export and delete what an
-        organisation holds about you. Those rights are honoured here, and honouring them is
-        unusually simple: there is nothing held, so there is nothing to produce and nothing to
-        erase.
+        organisation holds about you.
       </p>
       <p>
-        If you believe that is wrong and something about you is held here, write to{" "}
-        <a href={`mailto:${LEGAL_EMAIL}`}>{LEGAL_EMAIL}</a> and it will be looked into properly
-        rather than answered with this paragraph.
+        For privacy questions and requests, write to{" "}
+        <a href={`mailto:${LEGAL_EMAIL}`}>{LEGAL_EMAIL}</a>.
       </p>
 
-      <h2>6. If this ever changes</h2>
+      <h2>6. Changes to this page</h2>
       <p>
-        Adding accounts, or analytics, or anything that stores something about you, would make most
-        of this page false. If that day comes, this page is rewritten before the feature ships, not
-        after, and the effective date at the top changes.
-      </p>
-      <p>
-        There is no mailing list to announce it on, which is a direct consequence of collecting no
-        email addresses.{" "}
-        <a href={studio.github} rel="noreferrer">
-          The repository
-        </a>{" "}
-        carries the full history of this page, so a quiet edit is not possible.
+        Changes to what the studio and games collect or store will be described here, with an
+        updated date. <a href={studio.github} rel="noreferrer">The repository</a> carries the
+        history of this page.
       </p>
 
       <h2>7. Contact</h2>

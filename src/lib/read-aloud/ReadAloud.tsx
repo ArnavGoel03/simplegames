@@ -1,19 +1,21 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { usePathname } from "next/navigation";
 import { passagesFrom, rangeHighlighter, readingSession } from "./read-aloud";
 
 /** Owner-approved copy belongs here. Empty slots retain existing control labels. */
 const STOP_READING_EVENT = "play:stop-reading";
 export const READ_ALOUD_COPY = { start: "", stop: "", unavailable: "", reading: "" } as const;
+const capability = () => typeof window !== "undefined" && "speechSynthesis" in window && "SpeechSynthesisUtterance" in window;
+const serverCapability = () => false;
+const observeCapability = () => () => {};
 export function ReadAloud({ target }: { target: string }) {
   const pathname = usePathname();
   const session = useRef<ReturnType<typeof readingSession> | null>(null);
   const [reading, setReading] = useState(false);
-  const [supported, setSupported] = useState(false);
+  const supported = useSyncExternalStore(observeCapability, capability, serverCapability);
   useEffect(() => {
-    setSupported("speechSynthesis" in window && "SpeechSynthesisUtterance" in window);
     const stop = () => { session.current?.stop(); session.current = null; };
     window.addEventListener(STOP_READING_EVENT, stop);
     window.addEventListener("pagehide", stop);

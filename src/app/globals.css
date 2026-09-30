@@ -1308,3 +1308,13 @@ a.title:hover .title__art img {
     transition-duration: 0.001ms !important;
   }
 }
+
+/* Reading highlights derive from this site's existing canonical tokens. */
+::highlight(play-reading-sentence) { background-color: var(--paper-raised); }
+::highlight(play-reading-word) { background-color: var(--ink); color: var(--paper); }
+.play-reading-overlay { position: absolute; pointer-events: none; z-index: 100; }
+.play-reading-overlay.play-reading-sentence { outline: 1px solid var(--muted); }
+.play-reading-overlay.play-reading-word { outline: 2px solid var(--ink); }
+.play-read-aloud { display: inline-flex; margin-block: 1rem; }
+
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }

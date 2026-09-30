@@ -18,7 +18,7 @@
 // request re-renders a page that was already built.
 
 import { spawnSync } from "node:child_process";
-import { rmSync } from "node:fs";
+import { readFileSync, rmSync } from "node:fs";
 
 import { SITE_URL } from "./site-url.mjs";
 import { invalidateBuild, stampBuild, verifyBuild } from "./build-state.mjs";
@@ -58,10 +58,10 @@ try {
     const validate = () => {
       const candidate = readJson(receiptPath(root, "candidates", "studio.json"));
       return requireRelease({ root, site: "studio", identity: identity(), command: gateCommand,
-        expectedCandidate: { worker: workerName(), buildSource: buildSource(), origin: previewOrigin(candidate.candidateVersion) }, policy: policy() });
+        expectedCandidate: { appVersion: JSON.parse(readFileSync(new URL("../package.json", import.meta.url), "utf8")).version, worker: workerName(), buildSource: buildSource(), origin: previewOrigin(candidate.candidateVersion) }, policy: policy() });
     };
     const releaseEnv = await staticReleaseEnvironment(root, env);
-    await promoteCandidate({ root, site: "studio", cwd: root, env: releaseEnv, validate });
+    await promoteCandidate({ root, site: "studio", cwd: root, env: releaseEnv, liveOrigin: SITE_URL, validate });
     process.exit(0);
   }
   if (command === "upload") {
@@ -77,6 +77,7 @@ try {
     if (after.outputHash !== certified.outputHash || after.buildId !== certified.buildId) throw new Error("cf: certified output changed during upload; no receipt written");
     const candidateVersion = parseUploadedVersion(result.output);
     const candidate = { schema: 1, kind: "candidate", site: "studio", worker: workerName(), ...before,
+      appVersion: JSON.parse(readFileSync(new URL("../package.json", import.meta.url), "utf8")).version,
       buildSource: certified.fingerprint, buildOutput: certified.outputHash, candidateVersion,
       origin: previewOrigin(candidateVersion), recordedAt: new Date().toISOString(), upload: commandOutcome(result) };
     writeJson(path, candidate);

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { GAMES, STUDIO_NAME, studio } from "@/lib/brand";
+import { GAMES, STUDIO_NAME } from "@/lib/brand";
 import { JURISDICTION, LEGAL_EMAIL, legalPath } from "@/lib/legal";
 
 export function Terms() {
@@ -29,7 +29,10 @@ export function Terms() {
       </p>
       <ul>
         <li>There is nothing to buy. No purchase, subscription, pass or upgrade exists.</li>
-        <li>No real money</li>
+        <li>
+          Casino games use play money. Chips have no monetary value. There are no deposits,
+          chip purchases or cash-outs.
+        </li>
         <li>
           Nothing you can win in a game has value outside the game, and nothing can be cashed out,
           traded, transferred or redeemed for anything at all.
@@ -52,24 +55,17 @@ export function Terms() {
 
       <h2>3. Accounts</h2>
       <p>
-        You do not need an account to play. A room asks for a display name so the other players can
-        tell who is who; that name lives as long as the room does and is not an account.
-      </p>
-      <p>
-        If accounts are introduced later, they will be introduced across {STUDIO_NAME} as a whole
-        rather than per game, and you will be told what they store before you are asked to make
-        one.
+        You do not need to register an account to play. Games can create a guest player record
+        and session cookie. You can optionally register or sign in to keep an account across
+        supported games. The <Link href={legalPath("privacy")}>privacy</Link> and{" "}
+        <Link href={legalPath("cookies")}>cookies</Link> pages explain what is stored.
       </p>
 
       <h2>4. What is promised, and what is not</h2>
       <p>
-        One thing is promised precisely. The number every roll and every deal is derived from is
-        committed to before play and published after it, and the derivation is arithmetic anyone
-        can repeat. That claim is testable, and{" "}
-        <a href={studio.github} rel="noreferrer">
-          the code that makes it
-        </a>{" "}
-        is published so it can be tested.
+        Supported games publish a fairness proof after play. The <Link href="/fair-play">Fair
+        play</Link> page explains what can be checked and what the proof does not cover. The
+        game repositories themselves are not open yet.
       </p>
       <p>
         Nothing else is promised. The games are provided as they are. There is no guarantee that a
@@ -100,9 +96,7 @@ export function Terms() {
 
       <h2>7. Changes to these terms</h2>
       <p>
-        These terms may change. The effective date at the top of this page changes with them. There
-        is no mailing list to notify, because no email addresses are collected, so the date is the
-        notice.
+        These terms may change. The effective date at the top of this page changes with them. The updated date is the notice.
       </p>
 
       <h2>8. Governing law</h2>
@@ -115,8 +109,7 @@ export function Terms() {
         <p>
           No governing law is stated yet, and naming one at random would be worse than naming none.
           Your own local consumer law therefore applies to you in the ordinary way, and nothing here
-          asks you to give it up. A jurisdiction will be named here before {STUDIO_NAME} takes any
-          payment, opens any account, or offers the games to anyone beyond a circle of friends.
+          asks you to give it up.
         </p>
       )}
 

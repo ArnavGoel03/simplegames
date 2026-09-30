@@ -5,7 +5,7 @@ import { appendFileSync, mkdirSync, mkdtempSync, readFileSync, renameSync, rmSyn
 import { machine, platform, tmpdir } from "node:os";
 import { dirname, isAbsolute, join, relative } from "node:path";
 import { stripVTControlCharacters } from "node:util";
-import { SHA256, SOURCE_HEAD, latestDeployment, measuredValue, sitePolicy, validateCandidate, validateCILookup, validateEvidence } from "./release-policy.mjs";
+import { SHA256, SOURCE_HEAD, latestDeployment, measuredValue, requireVersionAdvance, sitePolicy, validateCandidate, validateCILookup, validateEvidence } from "./release-policy.mjs";
 
 export const digest = (value) => createHash("sha256").update(value).digest("hex");
 export const receiptPath = (root, ...parts) => join(root, ".audit", "quality", ...parts);
@@ -217,8 +217,18 @@ export function wranglerJson(args, { cwd, env = process.env }) {
   return JSON.parse(output.slice(start));
 }
 
+export async function readLiveApplicationVersion(origin) {
+  if (!origin || new URL(origin).protocol !== "https:") throw new Error("release: missing canonical live origin");
+  const response = await fetch(origin, { signal: AbortSignal.timeout(15000), cache: "no-store", redirect: "error" });
+  if (!response.ok) throw new Error("release: cannot read live application version");
+  const html = await response.text();
+  const versions = [...html.matchAll(/class="[^"]*(?:build-stamp|play-num)[^"]*"[^>]*>\s*v(?:<!-- -->)?([0-9]+\.[0-9]+\.[0-9]+)/g)].map(match => match[1]);
+  if (versions.length !== 1) throw new Error("release: missing or ambiguous live application version");
+  return versions[0];
+}
+
 /** Promote the tested bytes, preserving an available rollback version first. */
-export async function promoteCandidate({ root, site, cwd, env, validate, requiredSecrets = [], query = wranglerJson, run = runRecorded }) {
+export async function promoteCandidate({ root, site, cwd, env, validate, requiredSecrets = [], liveOrigin, readLiveVersion = readLiveApplicationVersion, readCandidateVersion = readLiveApplicationVersion, query = wranglerJson, run = runRecorded }) {
   const { candidate } = validate();
   const options = { cwd, env };
   const version = (id) => {
@@ -233,6 +243,15 @@ export async function promoteCandidate({ root, site, cwd, env, validate, require
   const deployments = () => latestDeployment(query(["deployments", "list", "--name", candidate.worker, "--json"], options));
   const previous = deployments();
   for (const item of previous.versions) version(item.version_id);
+  if (site !== "realtime") {
+    // Legacy uploads lack an application tag. A single 100% deployment can
+    // be identified by its public footer; mixed legacy traffic fails closed.
+    if (previous.versions.length !== 1) throw new Error("release: cannot verify application versions in mixed legacy traffic");
+    if (await readCandidateVersion(candidate.origin) !== candidate.appVersion) throw new Error("release: uploaded application version does not match its receipt");
+    requireVersionAdvance(candidate.appVersion, await readLiveVersion(liveOrigin));
+  }
+  const observedAgain = deployments();
+  if (digest(JSON.stringify(observedAgain)) !== digest(JSON.stringify(previous))) throw new Error("release: production changed during preflight");
   const current = validate().candidate;
   if (digest(JSON.stringify(current)) !== digest(JSON.stringify(candidate))) throw new Error("release: candidate changed during production preflight");
   const attempt = {

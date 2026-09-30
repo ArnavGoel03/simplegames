@@ -1,13 +1,12 @@
-import { STUDIO_NAME } from "@/lib/brand";
 import { LEGAL_EMAIL } from "@/lib/legal";
 
 export function Cookies() {
   return (
     <>
       <p className="lede">
-        This site sets no cookies. There is no banner asking you to accept any, because there are
-        none to accept, and a banner that appears anyway is just a website apologising for
-        something it did not need to do.
+        This studio site does not set cookies itself. The games use session cookies and browser
+        storage. A game cookie scoped to the shared domain can also be sent when you visit the
+        studio site.
       </p>
 
       <h2>1. What a cookie is, briefly</h2>
@@ -17,45 +16,43 @@ export function Cookies() {
         advertising network recognises you on a site you have never visited before.
       </p>
 
-      <h2>2. What this site uses</h2>
-      <p>None of it. To be specific, this site does not:</p>
-      <ul>
-        <li>set any cookie, of any kind, for any purpose;</li>
-        <li>write to local storage or session storage;</li>
-        <li>use an analytics or advertising service that would set one on its behalf;</li>
-        <li>
-          load any script, style, typeface, image or frame from another company, so no other
-          company is in a position to set one either.
-        </li>
-      </ul>
+      <h2>2. What this studio site uses</h2>
       <p>
-        You can confirm this rather than take it on trust. Open your browser&rsquo;s storage
-        inspector on any page of this site and the cookie list is empty.
+        The studio does not use an analytics or advertising service. Its pages, typefaces,
+        images and scripts are served from this site.
+      </p>
+      <p>
+        The studio caches pages and assets for offline use. If a required asset fails, it can
+        save a temporary recovery marker in session storage to avoid repeated reloads. This
+        marker is not an account identifier or an analytics record. Earlier studio versions
+        could queue diagnostic reports in local storage; the current version removes that
+        queue without sending its contents.
       </p>
 
-      <h2>3. Why there is no consent banner</h2>
+      <h2>3. Checking browser storage</h2>
       <p>
-        Consent rules exist so that people are asked before a site stores things on their device or
-        tracks them across the web. Neither happens here, so there is nothing to ask about. The
-        correct response to those rules, when you genuinely collect nothing, is silence rather than
-        a dialog.
+        You can inspect cookies, session storage, local storage and cached assets in your
+        browser&rsquo;s storage inspector. Game cookies scoped to the shared domain may appear on
+        the studio site even though the studio does not set them.
       </p>
 
       <h2>4. The games</h2>
       <p>
-        A game may need to remember something strictly practical, such as which room you are in, so
-        that a refresh mid-match does not throw you out. Where that is needed it is done with
-        storage in your own browser that never leaves your device and is never read by{" "}
-        {STUDIO_NAME}. It is not used to recognise you, and it is not shared.
+        Games use browser storage for practical features including saved games, preferences,
+        streaks and queued diagnostic reports. Some stored values are sent to the server to
+        reconnect a player or deliver a report.
       </p>
       <p>
-        If a game ever needs a genuine cookie, it will be listed on this page by name, purpose and
-        lifetime before it ships.
+        Games use <code>glasstable-session</code> to identify a guest or signed-in player, and{" "}
+        <code>glasstable-session-here</code> to tell the browser that a session exists. Both have
+        a maximum age of 180 days when issued and can be renewed. The{" "}
+        <code>glasstable-google</code> cookie is temporary state for Google sign-in, with a
+        maximum age of 10 minutes. Browser expiry does not by itself erase server records.
       </p>
 
       <h2>5. Contact</h2>
       <p>
-        If you find a cookie on this site, that is a bug and worth reporting. Write to{" "}
+        Cookie and browser-storage questions can be sent to{" "}
         <a href={`mailto:${LEGAL_EMAIL}`}>{LEGAL_EMAIL}</a>.
       </p>
     </>

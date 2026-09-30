@@ -1,4 +1,4 @@
-import next from "@glasstable/eslint-compat";
+import next from "./tools/eslint-compat/index.mjs";
 
 const config = [
   {

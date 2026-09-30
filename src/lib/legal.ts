@@ -52,21 +52,23 @@ export interface LegalDoc {
 export const LEGAL_DOCS = [
   {
     slug: "terms",
-    updated: "2026-09-13",
+    updated: "2026-09-30",
     title: "Terms of use",
     summary:
       "What you may do with the games, what is promised, and what is not. Free to play, nothing to buy, no money involved.",
   },
   {
     slug: "privacy",
+    updated: "2026-09-30",
     title: "Privacy",
     summary:
-      "What is collected about you, which is nothing, and what the hosting provider sees regardless.",
+      "What the studio site and games collect and store, and what their hosting provider sees.",
   },
   {
     slug: "cookies",
+    updated: "2026-09-30",
     title: "Cookies",
-    summary: "This site sets none, and does not load anything that could set one on its behalf.",
+    summary: "The studio site, game session cookies and practical browser storage.",
   },
   {
     slug: "rules-of-play",

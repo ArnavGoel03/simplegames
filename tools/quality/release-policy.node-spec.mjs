@@ -5,7 +5,7 @@ import { latestDeployment, measuredValue, parseUploadedVersion, validateCandidat
 const head = "a".repeat(40);
 const sha = "b".repeat(64);
 const uuid = "12345678-1234-1234-1234-123456789abc";
-const candidate = { schema: 1, kind: "candidate", site: "board", worker: "board", sourceHead: head, sourceFingerprint: sha, buildSource: sha, buildOutput: sha, candidateVersion: uuid, origin: "https://candidate.example.test", upload: { exitCode: 0, signal: null, logDigest: sha } };
+const candidate = { schema: 1, kind: "candidate", appVersion: "1.0.1", site: "board", worker: "board", sourceHead: head, sourceFingerprint: sha, buildSource: sha, buildOutput: sha, candidateVersion: uuid, origin: "https://candidate.example.test", upload: { exitCode: 0, signal: null, logDigest: sha } };
 const policy = { schema: 1, sites: { board: { checks: ["startup", "resize-play"], metrics: [{ id: "startup", unit: "ms", statistic: "median", minSamples: 3, limit: 200, baseline: { sourceHead: head, runId: 1, artifactId: 2, value: 100 } }] } } };
 const report = () => ({ ...candidate, browsers: ["chromium", "webkit"].map((engine) => ({ engine, observedSourceHead: head, checks: [{ id: "startup", status: "passed" }, { id: "resize-play", status: "passed" }], measurements: [{ id: "startup", unit: "ms", samples: [90, 100, 110] }] })) });
 

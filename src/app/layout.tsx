@@ -2,6 +2,7 @@ import { studioIconPath } from "@/lib/studio-mark";
 import type { Metadata, Viewport } from "next";
 import { Fraunces, IBM_Plex_Mono, IBM_Plex_Sans } from "next/font/google";
 import { JsonLd } from "@/components/JsonLd";
+import { ReadAloud } from "@/lib/read-aloud/ReadAloud";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { STUDIO_NAME, STUDIO_TAGLINE, studio } from "@/lib/brand";
@@ -119,7 +120,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             defines says nothing at all. See src/lib/structured-data.ts. */}
         <JsonLd data={studioNode()} />
         <SiteHeader />
-        <main>{children}</main>
+        <main id="main"><div className="shell shell--wide"><ReadAloud target="main" /></div>{children}</main>
         <SiteFooter />
       </body>
     </html>

@@ -10,7 +10,7 @@ const sha = "b".repeat(64);
 const uuid = "12345678-1234-1234-1234-123456789abc";
 const previousId = "22345678-1234-1234-1234-123456789abc";
 const identity = { sourceHead: head, sourceFingerprint: sha };
-const candidate = { schema: 1, kind: "candidate", site: "board", worker: "board", ...identity, buildSource: sha, buildOutput: sha, candidateVersion: uuid, origin: "https://candidate.example.test", upload: { exitCode: 0, signal: null, logDigest: sha } };
+const candidate = { schema: 1, kind: "candidate", appVersion: "1.0.1", site: "board", worker: "board", ...identity, buildSource: sha, buildOutput: sha, candidateVersion: uuid, origin: "https://candidate.example.test", upload: { exitCode: 0, signal: null, logDigest: sha } };
 const ci = { repository: "owner/harness", workflow: ".github/workflows/visual.yml" };
 const report = (engine) => ({ ...candidate, browsers: [{ engine, observedSourceHead: head, checks: [{ id: "startup", status: "passed" }], measurements: [{ id: "startup", unit: "ms", samples: [80, 100, 120] }] }] });
 
@@ -116,7 +116,7 @@ test("promotion verifies immutable candidate, rollback and resulting deployment"
     if (args[0] === "versions") return { id: args[2], resources: { bindings: [{ type: "secret_text", name: "DATABASE_URL" }] } };
     return [{ id: promoted ? "after" : "before", created_on: "2026-09-13T00:00:00Z", versions: [{ version_id: promoted ? uuid : previousId, percentage: 100 }] }];
   };
-  const attempt = await promoteCandidate({ root, site: "board", cwd: root, validate: () => { validations++; return { candidate }; }, requiredSecrets: ["DATABASE_URL"], query, run: async (command, args) => {
+  const attempt = await promoteCandidate({ root, site: "board", readLiveVersion: async () => "1.0.0", readCandidateVersion: async () => "1.0.1", cwd: root, validate: () => { validations++; return { candidate }; }, requiredSecrets: ["DATABASE_URL"], query, run: async (command, args) => {
     assert.deepEqual([command, ...args], ["wrangler", "versions", "deploy", `${uuid}@100%`, "--name", "board", "--yes"]);
     promoted = true;
     return { exitCode: 0, signal: null, error: null, logDigest: sha, output: "deployed" };
@@ -130,7 +130,7 @@ test("promotion verifies immutable candidate, rollback and resulting deployment"
 
 test("missing remote candidate secrets prevents any production mutation", () => fixture(async ({ root }) => {
   let mutations = 0;
-  await assert.rejects(promoteCandidate({ root, site: "board", cwd: root, validate: () => ({ candidate }), requiredSecrets: ["DATABASE_URL"], query: () => ({ id: uuid, resources: { bindings: [] } }), run: async () => { mutations++; } }), /missing required secret/);
+  await assert.rejects(promoteCandidate({ root, site: "board", readLiveVersion: async () => "1.0.0", readCandidateVersion: async () => "1.0.1", cwd: root, validate: () => ({ candidate }), requiredSecrets: ["DATABASE_URL"], query: () => ({ id: uuid, resources: { bindings: [] } }), run: async () => { mutations++; } }), /missing required secret/);
   assert.equal(mutations, 0);
 }));
 
@@ -138,13 +138,13 @@ test("a candidate changed during provider lookup cannot be promoted", () => fixt
   let validations = 0;
   let mutations = 0;
   const query = (args) => args[0] === "versions" ? { id: args[2] } : [{ id: "before", created_on: "2026-09-13T00:00:00Z", versions: [{ version_id: previousId, percentage: 100 }] }];
-  await assert.rejects(promoteCandidate({ root, site: "board", cwd: root, validate: () => ({ candidate: validations++ ? { ...candidate, sourceFingerprint: "c".repeat(64) } : candidate }), query, run: async () => { mutations++; } }), /changed during production preflight/);
+  await assert.rejects(promoteCandidate({ root, site: "board", readLiveVersion: async () => "1.0.0", readCandidateVersion: async () => "1.0.1", cwd: root, validate: () => ({ candidate: validations++ ? { ...candidate, sourceFingerprint: "c".repeat(64) } : candidate }), query, run: async () => { mutations++; } }), /changed during production preflight/);
   assert.equal(mutations, 0);
 }));
 
 test("an interrupted promotion retains its rollback receipt without claiming success", () => fixture(async ({ root }) => {
   const query = (args) => args[0] === "versions" ? { id: args[2] } : [{ id: "before", created_on: "2026-09-13T00:00:00Z", versions: [{ version_id: previousId, percentage: 100 }] }];
-  await assert.rejects(promoteCandidate({ root, site: "board", cwd: root, validate: () => ({ candidate }), query, run: async () => ({ exitCode: null, signal: "SIGTERM", error: "interrupted", logDigest: sha }) }), /interrupted/);
+  await assert.rejects(promoteCandidate({ root, site: "board", readLiveVersion: async () => "1.0.0", readCandidateVersion: async () => "1.0.1", cwd: root, validate: () => ({ candidate }), query, run: async () => ({ exitCode: null, signal: "SIGTERM", error: "interrupted", logDigest: sha }) }), /interrupted/);
   const [file] = readdirSync(receiptPath(root, "deployments"));
   const attempt = readJson(receiptPath(root, "deployments", file));
   assert.equal(attempt.previous.versions[0].version_id, previousId);
@@ -160,4 +160,23 @@ test("a recording callback failure stops the detached command", async () => fixt
   assert.match(result.error, /recording failed: recording unavailable/);
   assert.notEqual(result.exitCode, 0);
   assert.ok(result.durationMs < 3000);
+}));
+
+for (const live of ["1.0.1", "1.0.2", "2.0.0", "", undefined, "01.0.0", "1.0", "1.0.0-beta"]) {
+  test(`application advancement rejects live version ${live}`, () => fixture(async ({ root }) => {
+    let mutations = 0;
+    const query = (args) => args[0] === "versions" ? { id: args[2] } : [{ id: "before", created_on: "2026-09-13T00:00:00Z", versions: [{ version_id: previousId, percentage: 100 }] }];
+    await assert.rejects(promoteCandidate({ root, site: "board", cwd: root, validate: () => ({ candidate }), readCandidateVersion: async () => "1.0.1", readLiveVersion: async () => live, query, run: async () => { mutations++; } }), /application version/);
+    assert.equal(mutations, 0);
+  }));
+}
+
+test("application receipt substitution and concurrent traffic changes fail before mutation", () => fixture(async ({ root }) => {
+  let mutations = 0, reads = 0;
+  const query = (args) => args[0] === "versions" ? { id: args[2] } : [{ id: ++reads > 1 ? "changed" : "before", created_on: "2026-09-13T00:00:00Z", versions: [{ version_id: previousId, percentage: 100 }] }];
+  const options = { root, site: "board", cwd: root, validate: () => ({ candidate }), readLiveVersion: async () => "1.0.0", query, run: async () => { mutations++; } };
+  await assert.rejects(promoteCandidate({ ...options, readCandidateVersion: async () => "1.0.2" }), /does not match/);
+  reads = 0;
+  await assert.rejects(promoteCandidate({ ...options, readCandidateVersion: async () => "1.0.1" }), /production changed/);
+  assert.equal(mutations, 0);
 }));

@@ -4,6 +4,20 @@ export const SHA256 = /^[a-f0-9]{64}$/;
 export const SOURCE_HEAD = /^[a-f0-9]{40}$/;
 export const VERSION_ID = /^[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}$/;
 
+// Stable application releases use three numeric components, without coercion.
+export function versionParts(value) {
+  requireValue(typeof value === "string" && /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/.test(value), "missing or malformed application version");
+  const parts = value.split(".").map(Number);
+  requireValue(parts.every(Number.isSafeInteger), "application version exceeds safe integer range");
+  return parts;
+}
+
+export function requireVersionAdvance(candidate, current) {
+  const next = versionParts(candidate), previous = versionParts(current);
+  const difference = next.findIndex((part, i) => part !== previous[i]);
+  requireValue(difference >= 0 && next[difference] > previous[difference], "application version must advance beyond every live version");
+}
+
 function requireValue(condition, message) {
   if (!condition) throw new Error(`release: ${message}`);
 }
@@ -40,6 +54,7 @@ export function sitePolicy(policy, site) {
 
 export function validateCandidate(candidate, expected) {
   requireValue(candidate?.schema === 1 && candidate.kind === "candidate", "missing candidate upload receipt");
+  if (candidate.site !== "realtime") versionParts(candidate.appVersion);
   requireValue(SOURCE_HEAD.test(candidate.sourceHead) && SHA256.test(candidate.sourceFingerprint) && SHA256.test(candidate.buildSource) && SHA256.test(candidate.buildOutput) && VERSION_ID.test(candidate.candidateVersion), "invalid candidate identity");
   for (const [key, value] of Object.entries(expected)) requireValue(candidate[key] === value, `candidate ${key} is stale or belongs to another app`);
   const origin = new URL(candidate.origin);

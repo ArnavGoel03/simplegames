@@ -1,6 +1,6 @@
 {
   "name": "glass-table-games",
-  "version": "0.5.3",
+  "version": "0.5.4",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -25,15 +25,16 @@
     "test:release": "node --test tools/quality/*.node-spec.mjs",
     "quality": "node tools/quality-gate.mjs",
     "cf:upload": "node tools/cf.mjs upload",
-    "release:receipt": "node tools/release-receipt.mjs"
+    "release:receipt": "node tools/release-receipt.mjs",
+    "postinstall": "npm ci --prefix tools/eslint-compat --ignore-scripts --no-audit --no-fund"
   },
   "dependencies": {
-    "next": "16.3.5",
+    "next": "16.3.7",
     "react": "19.3.0",
     "react-dom": "19.3.0"
   },
   "devDependencies": {
-    "@opennextjs/cloudflare": "1.20.6",
+    "@opennextjs/cloudflare": "1.20.7",
     "@types/node": "^24.0.0",
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",
@@ -43,12 +44,17 @@
     "sharp": "^0.35.4",
     "typescript": "7.0.2",
     "vitest": "5.0.1",
-    "wrangler": "4.134.0",
-    "@glasstable/eslint-compat": "file:tools/eslint-compat"
+    "wrangler": "4.145.0"
   },
   "overrides": {
-    "eslint-config-next": {
-      "typescript": "6.0.3"
-    }
+    "brace-expansion@1": "1.1.21",
+    "brace-expansion@2": "2.1.7",
+    "brace-expansion@5": "5.0.12"
+  },
+  "allowScripts": {
+    "esbuild": true,
+    "fsevents": true,
+    "unrs-resolver": true,
+    "workerd": true
   }
 }
