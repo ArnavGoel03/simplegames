@@ -2,6 +2,8 @@
 
 Existing approved privacy/cookie/terms wording is applied, account-control discovery is enabled in the games, and Studio mirrors the canonical read-aloud implementation. Next16.3.7/OpenNext1.20.7/Wrangler4.145.0 dependency patches produce zero registry vulnerabilities. Native compiler and physically isolated ESLint compiler calibration pass. Original static share images, font notices and generated-runtime library notices are retained.
 
+Studio source certificates now exclude the named local instruction files and inactive pnpm lock only while untracked in a valid Git checkout. Four regressions and six existing source-discovery checks pass; the untracked-file regression fails original source. Focused zero-warning lint passes. Tracked versions and arbitrary new project configuration remain covered.
+
 Full source-bound gate, final build and exact-candidate Chromium/WebKit acceptance are pending. Hosted game accessibility/history fixtures must be regenerated from final games source and actual upload receipts before release tests. Production Studio remains0.5.3/sourcecfdf6a4 at100%; no audit repairs are deployed. The earlier874ms WebKit baseline miss requires a fresh candidate measurement under the unchanged750ms budget. Current canonical queue: games/docs/audits/2026-09-30/REPAIR-QUEUE.md.
 
 # Glass Table Games: state of play

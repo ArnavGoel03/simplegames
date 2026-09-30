@@ -1,6 +1,7 @@
 // A successful upload must correspond to the source and origin being shipped.
 // The marker lives with generated output, so a failed rebuild cannot certify it.
 import { createHash } from "node:crypto";
+import { execFileSync } from "node:child_process";
 import { existsSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
@@ -28,6 +29,19 @@ const SOURCE_DIRECTORIES = ["src", "public", "tools", "docs/quality", ".github"]
 const GENERATED = new Set(["node_modules", ".audit", ".git", ".next", ".open-next", ".wrangler", ".vercel", "coverage", "dist", "test-results", "playwright-report", ".DS_Store"]);
 const generated = (name) => GENERATED.has(name) || name.endsWith(".tsbuildinfo") || name === "next-env.d.ts";
 
+// Personal instructions and an inactive package-manager lock are local metadata
+// only while untracked. Tracked project versions still belong to the certificate.
+const LOCAL_ROOT_METADATA = ["AGENTS.md", "CLAUDE.md", "pnpm-lock.yaml"];
+function untrackedLocalMetadata(root) {
+  // Fixtures without their own Git index retain source discovery semantics.
+  if (!existsSync(join(root, ".git"))) return new Set();
+  try {
+    const tracked = new Set(execFileSync("git", ["ls-files", "-z", "--", ...LOCAL_ROOT_METADATA],
+      { cwd: root, encoding: "utf8", timeout: 5000, stdio: ["ignore", "pipe", "ignore"] }).split("\0"));
+    return new Set(LOCAL_ROOT_METADATA.filter(name => !tracked.has(name)));
+  } catch { return new Set(); }
+}
+
 export function sourceFingerprint(root, origin) {
   const publicEnv = Object.fromEntries(Object.entries(process.env).filter(([key]) => key.startsWith("NEXT_PUBLIC_")).sort(([a], [b]) => a.localeCompare(b)));
   const hash = createHash("sha256").update(JSON.stringify({ origin, publicEnv }));
@@ -44,7 +58,8 @@ export function sourceFingerprint(root, origin) {
     }
   }
   // Discover root files so a new compiler, environment or gate config is covered.
-  const files = readdirSync(root, { withFileTypes: true }).filter((entry) => (entry.isFile() || entry.isSymbolicLink()) && !generated(entry.name)).map((entry) => entry.name);
+  const localMetadata = untrackedLocalMetadata(root);
+  const files = readdirSync(root, { withFileTypes: true }).filter((entry) => (entry.isFile() || entry.isSymbolicLink()) && !generated(entry.name) && !localMetadata.has(entry.name)).map((entry) => entry.name);
   for (const path of [...SOURCE_DIRECTORIES, ...files].sort()) {
     if (!existsSync(join(root, path))) continue;
     if (SOURCE_DIRECTORIES.includes(path)) read(path);
