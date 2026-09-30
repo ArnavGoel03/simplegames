@@ -121,8 +121,9 @@ try {
         await page.keyboard.press("ArrowDown"); await page.keyboard.press("Escape");
         assert.equal(await page.evaluate(() => window.fixture.strokes.length), count, "Lifted keyboard pen kept drawing");
         await page.evaluate(() => window.fixture.setBrush("rect"));
-        await page.waitForTimeout(0); await page.keyboard.press("Enter"); await page.keyboard.press("Shift+ArrowDown"); await page.keyboard.press("Enter");
-        assert(await page.evaluate(previous => window.fixture.strokes.length > previous, count), "Keyboard shape did not commit");
+        await page.waitForTimeout(0); await page.keyboard.press("Enter"); await page.keyboard.press("Shift+ArrowRight"); await page.keyboard.press("Shift+ArrowDown"); await page.keyboard.press("Enter");
+        const rectangle = await page.evaluate(() => window.fixture.strokes.at(-1));
+        assert(rectangle.points.length === 5 && rectangle.points[0].x === rectangle.points[4].x && rectangle.points[0].y === rectangle.points[4].y && new Set(rectangle.points.map(point => point.x)).size === 2 && new Set(rectangle.points.map(point => point.y)).size === 2, "Keyboard rectangle did not close with width and height");
         await page.evaluate(() => window.fixture.setMode("mark"));
         await page.waitForTimeout(0); await canvas.focus(); await page.keyboard.press("Enter");
         assert.equal(await page.evaluate(() => window.fixture.marks.length), 1);

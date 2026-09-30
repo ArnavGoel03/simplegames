@@ -1,12 +1,8 @@
-## Accessibility browser harness, 30 September 2026
+## Repair release checkpoint, 30 September 2026
 
-Candidate-bound canonical game fixtures and a hosted Chromium/WebKit step now cover migrated native modals, keyboard drawing and synthetic read-aloud speech boundaries/navigation cleanup. Six fixture binding, source extraction and workflow condition checks pass; fixture bundling and focused zero-warning lint pass. Hosted interactions and image review remain pending. Generation and scope limits: `tools/fixtures/accessibility/README.md`. No production change or deployment.
+Existing approved privacy/cookie/terms wording is applied, account-control discovery is enabled in the games, and Studio mirrors the canonical read-aloud implementation. Next16.3.7/OpenNext1.20.7/Wrangler4.145.0 dependency patches produce zero registry vulnerabilities. Native compiler and physically isolated ESLint compiler calibration pass. Original static share images, font notices and generated-runtime library notices are retained.
 
-## Red-team audit checkpoint, 30 September 2026
-
-Studio reset escape now bounds stalled browser storage APIs using the existing eight-second recovery deadline. Three regressions fail original source, all six success/failure controls pass the repair. Typecheck, zero-warning lint, 35 release-policy checks and production build pass. Full Studio tests remain uncertified: two CF wrapper fixtures exceed their unchanged five-second deadlines, including isolated runs. No reset repair is deployed.
-
-Both fresh production browser baselines pass 72 layouts each, phone renders inspected. WebKit Studio startup median 874 ms exceeds the existing 750 ms release budget. Existing public privacy/cookie claims remain inaccurate and owner-held. Canonical findings and queue: `../chaupal-cards/docs/audits/2026-09-30/README.md`. Browser reports/images and dependency summary are in this repo's `docs/audits/2026-09-30`. No publication, billing change or support message occurred.
+Full source-bound gate, final build and exact-candidate Chromium/WebKit acceptance are pending. Hosted game accessibility/history fixtures must be regenerated from final games source and actual upload receipts before release tests. Production Studio remains0.5.3/sourcecfdf6a4 at100%; no audit repairs are deployed. The earlier874ms WebKit baseline miss requires a fresh candidate measurement under the unchanged750ms budget. Current canonical queue: games/docs/audits/2026-09-30/REPAIR-QUEUE.md.
 
 # Glass Table Games: state of play
 
