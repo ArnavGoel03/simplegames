@@ -4,9 +4,9 @@ Scope: user's thorough Glass Table Games red team, followed by "verify n fix all
 
 ## Deployment and verification checkpoint
 
-Final games gateb18e083 passes4,286 package tests,141 Node release checks and the original-image receipt control, zero-warning lint and3,566ms typecheck under6,000ms. Five new builds/uploads and current-source browser certification are in progress.
+Latest games gatee99a524 passes4,291 package tests,141 Node release checks and the original-image receipt control, zero-warning lint and typecheck under6,000ms. Five fresh builds/uploads and current-source browser certification are in progress. The record now includes81 numbered fixes and follow-ups.
 
-Latest user steering: finish every fix, deploy after thorough verification, and correct inconsistent button geometry across the studio and different games. Final game sourceb18e083 adds the schema preflight, Circuit reading control and shared geometry; it requires fresh gate/build/browser receipts. The fixture import and AI progress follow-ups are included.
+Latest user steering: finish every fix, deploy after thorough verification, and correct inconsistent button geometry across the studio and different games. Game sourcee99a524 includes schema preflight, Circuit reading control, modal Tab containment and shared entry/join geometry. Final source-bound browser acceptance and production database migration remain required; no five-game or Studio audit promotion has occurred.
 
 
 - Live: realtime source5934392, immutable Worker568e01c4-01bd-4b4d-9816-a124842a03fa at100%. Existing rollback4aea2b89 retained; provider readback and /health200 verified.
