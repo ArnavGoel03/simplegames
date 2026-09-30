@@ -41,6 +41,8 @@ try {
             control.style.setProperty("height", "16px", "important"); control.style.setProperty("min-height", "16px", "important");
             control.style.setProperty("max-height", "16px", "important"); control.style.setProperty("padding-block", "0", "important");
             control.style.setProperty("box-sizing", "border-box", "important");
+            control.style.setProperty("appearance", "none", "important");
+            control.style.setProperty("-webkit-appearance", "none", "important");
             window.controlGeometryCalibration = { control, saved };
             return { text: control.textContent?.trim(), height: control.getBoundingClientRect().height };
           });
