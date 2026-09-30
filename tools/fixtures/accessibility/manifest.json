@@ -1,0 +1,1613 @@
+[
+  {
+    "schema": 1,
+    "synthetic": true,
+    "site": "cards",
+    "sourceHead": "5934392f3daa47d63b9b3a7b52953396204031ad",
+    "sourceFingerprint": "dfbb9ef47d1e8a11ee8535e905551fbf764b42f326f88556c44f3f3680accbd7",
+    "buildSource": "4368f7b863075d290c25646d641e08af1fdfa302f0ce56092b227347e7b75c58",
+    "buildOutput": "b0a7a62596d72267f9b1fb3b065512e4408dd6c4742efd02f3592ebf68721a58",
+    "sha256": "c4655a46fb4fa05d2631eb75fcc23b47a7375ac2f62addda017cc9209b74f0fd",
+    "sources": [
+      {
+        "path": "apps/judgement/src/components/cards/CardTable.tsx",
+        "sha256": "e938f3646cfa3320152b421cee55e2528e00e28662060b9810a19b0816dd67fb"
+      },
+      {
+        "path": "apps/judgement/src/components/cards/PachisaTable.tsx",
+        "sha256": "3619b70310eba6683dd7f944611bfd3bc2ccbc6a8fc09248d9755488eb705d05"
+      },
+      {
+        "path": "packages/studio/src/modal/lifecycle.ts",
+        "sha256": "3f60fd2d48abe0a8f058245afddff20f3ba0e62335d8bdf0f55c3275dd0beb1e"
+      },
+      {
+        "path": "packages/studio/src/modal/Modal.tsx",
+        "sha256": "e6a643599c09bb0ec778b4b0d8a9e1d66835bd2101d3a420273b11b817b83c14"
+      },
+      {
+        "path": "packages/studio/src/site/read-aloud.ts",
+        "sha256": "bc9d074d51a92dfdd185a410fcb4f4992f6b010b4dc1674d4521dbfc26ce1cfa"
+      },
+      {
+        "path": "packages/studio/src/site/ReadAloud.tsx",
+        "sha256": "c4932c3fdee4184e0f8288430770423029c2ecdc3999e12865b03d0d97e51f57"
+      },
+      {
+        "path": "packages/lattice/src/board.ts",
+        "sha256": "0388d6d2ad940826de37386a74bb0ff534fe8077bab60b0774dbc92da217a4db"
+      },
+      {
+        "path": "packages/lattice/src/dawg-format.ts",
+        "sha256": "97d4a19826ef3676d176c89c5420eae1af268d2786687b44d5aec361bb93f696"
+      },
+      {
+        "path": "packages/fairness/src/primitives.ts",
+        "sha256": "9eedd53f47d7c6ae030e2f64d9e4a4d20fb55fb3e2c0fd45662e378f8a8f210e"
+      },
+      {
+        "path": "packages/fairness/src/rng.ts",
+        "sha256": "58304900a9c84411ded0a3d2713383c282c1c913a65a003970a49b54ae0e15bc"
+      },
+      {
+        "path": "packages/fairness/src/shuffle.ts",
+        "sha256": "7240f591cc9b3bbfc917370c29b314ca9614c90a54e1268bce9f6710ffb5838b"
+      },
+      {
+        "path": "packages/fairness/src/types.ts",
+        "sha256": "be6198b0938e87ff68b5033a3564776f01eb76aa1cb17066694367b98026bf08"
+      },
+      {
+        "path": "packages/engine/src/types.ts",
+        "sha256": "f7793ad10c4a441bde4f7cfb57d5dd75ebb10a560dee78f79f55a44fb4054352"
+      },
+      {
+        "path": "packages/engine/src/checks.ts",
+        "sha256": "7b4be53c9f524ea0ad268e098119a07b3a7dc1228067fb4b9fa5fa69d195b6ad"
+      },
+      {
+        "path": "packages/engine/src/definition.ts",
+        "sha256": "b7d483039aa95b14da16584988ef22f777d305be0a0c5724b4044b002092a2f0"
+      },
+      {
+        "path": "packages/engine/src/games/ludo.ts",
+        "sha256": "61b59f825886c6259bf43011767f82d4dcb062ee62a5441bc626b367b1cb5673"
+      },
+      {
+        "path": "packages/engine/src/track.ts",
+        "sha256": "9cbfdbef2f81d722c7dce1a20377f281f1681c9c771e2969f2b02a9e64075452"
+      },
+      {
+        "path": "packages/engine/src/board.ts",
+        "sha256": "3ea6da7505f3471de4b5802f8dd9d97bef10c7f8f42ac863ebdb161031627929"
+      },
+      {
+        "path": "packages/engine/src/games/snakes-and-ladders.ts",
+        "sha256": "876ce6b528a0f0d8ebbbafc27400156b0e6cbef3436e7537c9fddd9af989ffff"
+      },
+      {
+        "path": "packages/engine/src/games/variants.ts",
+        "sha256": "44024cf07093f9419f2600250709aad824bff5a82d08300ee0d31d0f6c7216da"
+      },
+      {
+        "path": "packages/engine/src/games/registry.ts",
+        "sha256": "6b97ad16ff06d44b3330481a0a088db266d8ae97b9cb2cfa54ebcf52cd9bef4e"
+      },
+      {
+        "path": "packages/engine/src/rules.ts",
+        "sha256": "f996a7e2b1a8eff2d6df74b0ec8675b6b1ea76983d0e42cd05b22f037fccaf3f"
+      },
+      {
+        "path": "packages/engine/src/engine.ts",
+        "sha256": "064c4c0d4ee331d74567ec79859912ac15b8597d0d313410a61bc00f26bba12e"
+      },
+      {
+        "path": "packages/engine/src/illegal.ts",
+        "sha256": "4b44f412c474b14f4c455a3a60d94e5493be8568f37c066b54443ca784d02f79"
+      },
+      {
+        "path": "packages/engine/src/invariants.ts",
+        "sha256": "43762bccf93f94bbad7a9108fd589b0e9db39ae880e0ef3c9e286eb625885502"
+      },
+      {
+        "path": "packages/engine/src/luck.ts",
+        "sha256": "279f96362eec2e7a101dd1b4c9920ef0180140be2a084cd4108bc1881e13b755"
+      },
+      {
+        "path": "packages/engine/src/match.ts",
+        "sha256": "8a80d3c0ef35fb51b3117f045bdf7ec49e938594876dd07186b8a3f834a7c244"
+      },
+      {
+        "path": "packages/engine/src/standing.ts",
+        "sha256": "9c54b200df0e0706069166ac8256a169d89a358c88f8e2d6924f05e3a9907eb4"
+      },
+      {
+        "path": "packages/engine/src/summary.ts",
+        "sha256": "5cd5dac2346916664578eedf273961c6f565493597ba337052432fbdc142d714"
+      },
+      {
+        "path": "packages/engine/src/index.ts",
+        "sha256": "186ce78d3036a3b4a788e56782035222a5fbb1cbb5037da393374c49b098ba97"
+      },
+      {
+        "path": "packages/fairness/src/v2/derive.ts",
+        "sha256": "b1cc2115fa3a0a03bacc75b8367f6a98664fe62c5fab01f37b2c3677a64b6bb8"
+      },
+      {
+        "path": "packages/fairness/src/v2/attest.ts",
+        "sha256": "acb9cd57d9367f0b728a9bdf8498af216ddc4e90e11624591cceae882a5b8c64"
+      },
+      {
+        "path": "packages/fairness/src/v2/seat.ts",
+        "sha256": "3e9d882493469aa5b83a16fff01060ce3a3eec847c561f8c11d68b425d2ee4d7"
+      },
+      {
+        "path": "packages/fairness/src/v2/types.ts",
+        "sha256": "afd21147820d74e4c6d6567af6897e8ca72a2e93a791b3b27cc22ca27809a236"
+      },
+      {
+        "path": "packages/fairness/src/v2/verify.ts",
+        "sha256": "f3c0f1c649935867611ed974c08d0115fe0ccf06c7a2ab6f5f78313b96b79e8d"
+      },
+      {
+        "path": "packages/fairness/src/v2/index.ts",
+        "sha256": "9e68d3ffd30d61d2e1951ed86a85d14e1d1de134718fdf5059ac076caa638386"
+      },
+      {
+        "path": "packages/fairness/src/index.ts",
+        "sha256": "89c3c94e2cf00c89fb6bce16b127341cc238f7a597e5efed2e7f95522500e67f"
+      },
+      {
+        "path": "packages/lattice/src/tiles.ts",
+        "sha256": "66027cc3cb0f30e3ba6519164b046675df4584d05c93711a1877ef6a125ecdd7"
+      },
+      {
+        "path": "packages/lattice/src/lexicons.ts",
+        "sha256": "68d7d1297a829e7e86142adf53e10a1283b4f87188346275dab728613083ffbf"
+      },
+      {
+        "path": "packages/lattice/src/dictionary.ts",
+        "sha256": "a61dc9fefd77b5355ede2d46158fb02a36a90ee74314a70021a194ea9a948c39"
+      },
+      {
+        "path": "packages/lattice/src/play.ts",
+        "sha256": "3378681021a22c4b5fc2c27047d53186dab82aabab53cbd17e6dfcad407595bd"
+      },
+      {
+        "path": "packages/lattice/src/rules.ts",
+        "sha256": "7b1c265c3a83c21ca2393d84f41069cf756bfea2dabe389a2414e23365cbd35b"
+      },
+      {
+        "path": "packages/lattice/src/invariants.ts",
+        "sha256": "8829536eae9fb7a3b7ec8c63faab7dd803656905cab3c9eb29d9135cbb3fe6fa"
+      },
+      {
+        "path": "packages/lattice/src/state.ts",
+        "sha256": "30f4ed393bf0e0842edb019af54cbe35b9881a04e591c8e67b5a7068e8d8db73"
+      },
+      {
+        "path": "packages/lattice/src/replay.ts",
+        "sha256": "9aa10a1c825a0b27631c1debb2e0c713515b3a14d2851a4f27c4853a3b5097cb"
+      },
+      {
+        "path": "packages/lattice/src/restore.ts",
+        "sha256": "aa8ffb40582b786d7398ca990ebe3a4f31fb6b12ed0ef8c37dfcd52d5a75327e"
+      },
+      {
+        "path": "packages/lattice/src/view.ts",
+        "sha256": "bd0153214cc061bbd1cb5780d35d27b02d97341f823fafdac5f87114f4b81ea0"
+      },
+      {
+        "path": "packages/lattice/src/index.ts",
+        "sha256": "98fbd1e6b89607bdbf4e9ff0a0c53689e0d64f1a7265b1f2197e06cfca8b1c70"
+      },
+      {
+        "path": "apps/lattice/src/components/room/BlankPicker.tsx",
+        "sha256": "0f5df9d66f60405ead5b8764d500660d60fdfbf7f8b0ae80c57c6b3944624f34"
+      },
+      {
+        "path": "packages/cards/src/bidding.ts",
+        "sha256": "eded6ec978ecdc2df839da02f51815390ca33e4535995d9f64fc285b6b619c5c"
+      },
+      {
+        "path": "packages/cards/src/deck.ts",
+        "sha256": "26365bf4bd5ce4673e8b4d8d367509fe8bbc95e2513281f85b75c2c433760623"
+      },
+      {
+        "path": "packages/cards/src/checks.ts",
+        "sha256": "536bf7627cb0efc7758ab597fa00216059c31869d3eaeea8f448b9b444768a2e"
+      },
+      {
+        "path": "packages/cards/src/deal.ts",
+        "sha256": "11f703516a8e4c0a7d39730694efa563c2498513ccbbd1c19d4649c688513237"
+      },
+      {
+        "path": "packages/cards/src/frozen.ts",
+        "sha256": "e88e2c99af102790ceb1a750ec68f9f52c79f2e6430cf432ed89741a85892f9c"
+      },
+      {
+        "path": "packages/cards/src/rounds.ts",
+        "sha256": "8d8a6a90ba46526b2d22ec0c64c09802bfa228744a050dc45a97e96714710d95"
+      },
+      {
+        "path": "packages/cards/src/variants.ts",
+        "sha256": "96e3a087a93c73ee827cb5daf43ffad52ec3ef7b33ff7690b0527b8065959bfb"
+      },
+      {
+        "path": "packages/cards/src/invariants.ts",
+        "sha256": "296183533eaa6d8e8199642064a331a9a3a4bae60d8d7778091786c47a09fc2b"
+      },
+      {
+        "path": "packages/cards/src/scoring.ts",
+        "sha256": "a16a013f0c6101a913aff65c47925d0d401a0ccfab271a1e1ab00fede9710427"
+      },
+      {
+        "path": "packages/cards/src/tricks.ts",
+        "sha256": "9a9f96f0e5192fc964e656f1ef6d2a5ad3486ed543fbd453aa418970aa050e6c"
+      },
+      {
+        "path": "packages/cards/src/state.ts",
+        "sha256": "836f268be3253034e4a2ccfb377f5b7cfe6e60a9803d869430d5e3c7dd8d092d"
+      },
+      {
+        "path": "packages/cards/src/view.ts",
+        "sha256": "d7ee85dcf06806a38f61b5fadd2b26e8d1029bc96e602c517d4d8df826c41be7"
+      },
+      {
+        "path": "packages/cards/src/index.ts",
+        "sha256": "5e7b1d986778da9b8613f86cc999e8553794e309a33c1940c78893cdaa24a901"
+      },
+      {
+        "path": "packages/cards/src/teen-patti/types.ts",
+        "sha256": "71b9d34a7040792c9be2a2a3790741d73f100f1c45b02fef530e9d4f4a7b3912"
+      },
+      {
+        "path": "packages/cards/src/teen-patti/rank.ts",
+        "sha256": "176a06bd7066488847e5736625084a334169672a16548eef23e8305e630e8b82"
+      },
+      {
+        "path": "packages/cards/src/teen-patti/settlement.ts",
+        "sha256": "e6341ac9c4188104565925bba0158cc5f90a64f384bc49ac9451e0f5cc6deaa1"
+      },
+      {
+        "path": "packages/cards/src/teen-patti/engine.ts",
+        "sha256": "fe19756f82ac186dc3c7f57a20426d4a25f702ed8902dd655f617f8d22f9fb5c"
+      },
+      {
+        "path": "packages/cards/src/teen-patti/view.ts",
+        "sha256": "61ef146a1f71caa4f1638cf684f9d5f15709cbe9cfcb113eb60d8769e46279cf"
+      },
+      {
+        "path": "packages/cards/src/teen-patti/invariants.ts",
+        "sha256": "64a6405de6319e745f5b0ea979f77cae67259b75ebaa0b08bca15a20523fa8cc"
+      },
+      {
+        "path": "packages/cards/src/teen-patti/index.ts",
+        "sha256": "6c8b92b12251e911cd980809cdc095356c3a1602f2876727a0f073aa5f4f3c93"
+      },
+      {
+        "path": "packages/cards/src/rummy/melds.ts",
+        "sha256": "a79f8981c84b8407e04dfec5ef532e5691876c19ccb78462183bba1fb786e380"
+      },
+      {
+        "path": "packages/cards/src/rummy/state.ts",
+        "sha256": "455d45c1114263c7ca4b4750c66ce12cc6d946fd01282b83f097df4ee9cfe7f8"
+      },
+      {
+        "path": "packages/cards/src/rummy/index.ts",
+        "sha256": "0135a545a6c294cdcaace79f83eb8d04227b64276db459fc6cf8bbf66f3f74f6"
+      },
+      {
+        "path": "packages/protocol/src/new-cards.ts",
+        "sha256": "c3b0fa027239a977b84b1ba5e6299b8ad8a45912db8feda40deb4d1211ad02e0"
+      },
+      {
+        "path": "packages/twentynine/src/auction.ts",
+        "sha256": "7ff9dfbbcbf246d0f171a05a2db7ed62a69d5693c504c2938888ac3a6c4c06c4"
+      },
+      {
+        "path": "packages/twentynine/src/cards.ts",
+        "sha256": "1cab99cd1223032e04838c182cdcacb361b37693f4271706825eb3c79c1ae38f"
+      },
+      {
+        "path": "packages/twentynine/src/rules.ts",
+        "sha256": "6db40c44d90d89c44622ca29781c13f0baf359408afa1ae248ed7bc3cb07f5f9"
+      },
+      {
+        "path": "packages/twentynine/src/teams.ts",
+        "sha256": "e2a742d0c410fdcc648e18c207e7452479b13ba2a1046e51f8aad19a09f34ebb"
+      },
+      {
+        "path": "packages/twentynine/src/invariants.ts",
+        "sha256": "8fe8bcf43df47a53d6c873d8cb813893220d6f36c498a552a8541e66e058c634"
+      },
+      {
+        "path": "packages/twentynine/src/scoring.ts",
+        "sha256": "c4eee80c68d8d9dba786100d64d877166cbe7adaa536837b6639757db62c9c92"
+      },
+      {
+        "path": "packages/twentynine/src/state.ts",
+        "sha256": "3664500c9356b841d715a39393c5659d57815dc1bbb16fea3a17d459de156bab"
+      },
+      {
+        "path": "packages/twentynine/src/view.ts",
+        "sha256": "2d6598876ec08c58c5f8ebc14233933682ad11d49e8f937a658d29a5fbc05c54"
+      },
+      {
+        "path": "packages/twentynine/src/index.ts",
+        "sha256": "76319a6d291da07db375e99704f5dda187f3d28d3f6c30762ee5f6fb3fd6ee64"
+      },
+      {
+        "path": "packages/pachisa/src/sets.ts",
+        "sha256": "92e471501c015c7b05f727d81f8cdacd6cb445d408750d37255ffcc5e138c467"
+      },
+      {
+        "path": "packages/pachisa/src/rules.ts",
+        "sha256": "eacd7dfd248ec9e4a71f0497b1d43a44fbf295b05e2da7ccb1880004872e4d5b"
+      },
+      {
+        "path": "packages/pachisa/src/solve.ts",
+        "sha256": "009ac8bb98bba37a57e4e7e0cf06f3420db6020088cdabb751a70dba1b7658dd"
+      },
+      {
+        "path": "packages/pachisa/src/state.ts",
+        "sha256": "2650fdcb8b41b114c4ae92aa41b2f050dde196a3a0a323a75a70883124e0b1da"
+      },
+      {
+        "path": "packages/pachisa/src/invariants.ts",
+        "sha256": "49a57ea03a33839c75b27d261b23873714dba053c9f6f589d0f120ad2689cefe"
+      },
+      {
+        "path": "packages/pachisa/src/view.ts",
+        "sha256": "39a83abfe670fb4f2d656143a9fc63464c04297a345e31087a10a0b274093fcb"
+      },
+      {
+        "path": "packages/pachisa/src/index.ts",
+        "sha256": "9b29a0d47bd9a9d664807f855504448fe5b606315e4c05320fe50aff8a5500b1"
+      },
+      {
+        "path": "packages/threetwofive/src/cards.ts",
+        "sha256": "95c11c2fe59d9167e2259d2f0b56e25291559a09279f6fb2efe4842d21e31fb6"
+      },
+      {
+        "path": "packages/threetwofive/src/rules.ts",
+        "sha256": "1b0fb4e1a10f0d39a9cd416e55e7457b8eeb1725ba96274e18090a4710368752"
+      },
+      {
+        "path": "packages/threetwofive/src/state.ts",
+        "sha256": "22b0add3da6a8989746b91481a58262e603bb59cafa75b5c7bd5f68bb2d2be25"
+      },
+      {
+        "path": "packages/threetwofive/src/invariants.ts",
+        "sha256": "a4714f0c0f3b80fcb4cc3d38013974ec68c93adc968bc5a9852335722089acd7"
+      },
+      {
+        "path": "packages/threetwofive/src/view.ts",
+        "sha256": "08f9a7a71bee41accbc83ab20068b2b9fdb14a46e54fb08e81621da5114584c9"
+      },
+      {
+        "path": "packages/threetwofive/src/index.ts",
+        "sha256": "d06285d967970beae4a949457642f6965d84a5521e2f0195b86553d9314a971e"
+      },
+      {
+        "path": "packages/brand/src/hosting.ts",
+        "sha256": "fb429dc56177344b0ecce168a4a34f6c62dac59454ce534124f8d6412496030c"
+      },
+      {
+        "path": "packages/brand/src/names.ts",
+        "sha256": "641ba6ae4629cefa8dfe3e6950280b8a5e98816d42ccebe6867ddbabf6d54220"
+      },
+      {
+        "path": "packages/brand/src/game-icons.ts",
+        "sha256": "20841d4ee2e57494dc95bc8b88fea867a19d2cbfdef8942c98e986150b13850b"
+      },
+      {
+        "path": "packages/brand/src/index.ts",
+        "sha256": "c94e94180d0ad5e1414d3826d1f17d3a469560a1a3049a3f355bda80e2d11853"
+      },
+      {
+        "path": "packages/protocol/src/families.ts",
+        "sha256": "c0eebd7bc85d51e446007c82a2927a006a2953a1dea8a706b888300a1a173047"
+      },
+      {
+        "path": "packages/protocol/src/frames.ts",
+        "sha256": "9609636fb7b2470a7331d704bcc8f31d23aaf705781aca5f28b5c85598b596a0"
+      },
+      {
+        "path": "packages/identity/src/names.ts",
+        "sha256": "70a188bb51f4c70c06e03f2484c9e65f9ed59f470888bf05a2219fd1e80786b1"
+      },
+      {
+        "path": "packages/identity/src/rooms.ts",
+        "sha256": "b46f89e2da41bad552b036100804f8703b9f20efeac55772eb5deb94e00dc19e"
+      },
+      {
+        "path": "packages/protocol/src/uuid.ts",
+        "sha256": "9cba81e1909450bdf63e10b6d4dbdefe6b710de8e97a7e93cdf6c3fee6bec024"
+      },
+      {
+        "path": "packages/protocol/src/chips.ts",
+        "sha256": "cdf6711e325407343f72315ccffbac34d29677964439bfeaecd3f5b44a4eff28"
+      },
+      {
+        "path": "packages/protocol/src/draw.ts",
+        "sha256": "9e207aa943ffdea7ba705b99ebbc6c31c35a8346697eaedddde276cb4b03a625"
+      },
+      {
+        "path": "packages/identity/src/pools.ts",
+        "sha256": "a3b15ade41565263abc235f841e341979a0dd112202890ca8fc90346771a322c"
+      },
+      {
+        "path": "packages/protocol/src/queue.ts",
+        "sha256": "8bdd8db34aab9607558ce7df178aaacc49cef7d9c229f4c16ee246858ab4deb3"
+      },
+      {
+        "path": "packages/protocol/src/body.ts",
+        "sha256": "fff368dde5e194bed12057e733caadceb3a4d69c12fa2b5b393cd5360b05b77a"
+      },
+      {
+        "path": "packages/protocol/src/scorecard-new.ts",
+        "sha256": "04cd68bc002c358919a356a66dbce0c1bd77bd483238f276473ef6862f77fca6"
+      },
+      {
+        "path": "packages/protocol/src/scorecard.ts",
+        "sha256": "81f051276048021085ad56f02d7ecf30c07103b832d5cfbdaa01b233c196df1f"
+      },
+      {
+        "path": "packages/protocol/src/index.ts",
+        "sha256": "ffc3c07160b344ce13ac2e5fea041b7861cffa7ca4549b750e5a050f1d718f0b"
+      },
+      {
+        "path": "packages/studio/src/labels.ts",
+        "sha256": "90204de365a2ef969d6b41f18cd82640e8424c4c5a77c49ec4c693d4f42d62b8"
+      },
+      {
+        "path": "packages/studio/src/room/SeatNames.tsx",
+        "sha256": "0af4d714a9a666d35affe90268bb059a8f4e95cf8c4d09c48353b47a1b0dd49d"
+      },
+      {
+        "path": "packages/studio/src/cards/faces.ts",
+        "sha256": "e6cc95e4de76c4df451611ae1efadda63c671d1b6c9b7fbeefe2bbc162958981"
+      },
+      {
+        "path": "packages/studio/src/cards/CourtFigure.tsx",
+        "sha256": "19d0b05ba9bd9eacdcc6555954ce09f6c20393db1527158f7f6620b79b7b46a9"
+      },
+      {
+        "path": "packages/studio/src/cards/PlayingCard.tsx",
+        "sha256": "d3b5e05775417c03c3d48d43166bbb2ee8e50c770b627ceb49a9ebc908f6c359"
+      },
+      {
+        "path": "packages/studio/src/cards/index.ts",
+        "sha256": "9ea42d79db6e213debd01ab2701e8e3ec5606f14857d8447a032be904bac29a2"
+      },
+      {
+        "path": "apps/judgement/src/lib/cards/faces.ts",
+        "sha256": "f38a3b59027dd488266279b0b4664a213c0d2d97c1083b84a959ca7d6b0f0ea3"
+      },
+      {
+        "path": "apps/judgement/src/components/cards/RoundBreak.tsx",
+        "sha256": "2a2bb11b4b14a623238af7be6d996230e75bb9e97fd2a8b822cea201e3baa6df"
+      },
+      {
+        "path": "apps/judgement/src/components/cards/DealBreak.tsx",
+        "sha256": "d724bedf52b2cb86d0c678d1af8bbbd7dc1ce0d0e3189619f4769fd5a0c3f9cc"
+      },
+      {
+        "path": "apps/judgement/src/components/cards/ScorePad.tsx",
+        "sha256": "c08b6293ddd8fc15aebdf5caa79dddf138f7f69723041bd676c31615b5172c0a"
+      },
+      {
+        "path": "packages/studio/src/hooks/useLayoutReset.ts",
+        "sha256": "05ed41d5f2aa8aa2fa96521a9cf510bbbd48afeddbdfbde7599eb723c44eea9e"
+      },
+      {
+        "path": "apps/draw/src/lib/brush.ts",
+        "sha256": "cce32caa0fc1bb4032557f417f3b0d25b9b351695f91836483108e5a09645127"
+      },
+      {
+        "path": "apps/draw/src/lib/fill.ts",
+        "sha256": "f2b2a590cedb7e8664a874c2e0a48dbf9f01d39ac80a350bd71e334b2065bdd6"
+      },
+      {
+        "path": "apps/draw/src/lib/site.ts",
+        "sha256": "12e42a781cfb5957f5e93bd01247ea6064948703b1016447c4baddfb0a17e3e4"
+      },
+      {
+        "path": "apps/draw/src/lib/mark.ts",
+        "sha256": "d9ef22a4ec148a4e6113fabfbb2b28ac3bf2e36e0fac40dd535e62a369b47589"
+      },
+      {
+        "path": "apps/draw/src/lib/canvas.ts",
+        "sha256": "947da397e78652ca3a7f12f09c3fdcff56ca6137c8cb0324de52e234fed59300"
+      },
+      {
+        "path": "apps/draw/src/components/room/DrawCanvas.tsx",
+        "sha256": "9702d51145c95e51fbad69884f6572cc08a0241a8031e2c53558294c3ae602c7"
+      },
+      {
+        "path": "packages/studio/src/table/haptics.ts",
+        "sha256": "bee5096eb2b3353aef8c12b7b7a97d9a335fc6ac35845ad7998f07a8b827ba57"
+      }
+    ],
+    "adapters": [
+      "Fixed synthetic pathname, no Next router",
+      "Synthetic game state and callbacks",
+      "Original CardTable score modal JSX and Pachisa showdown functions extracted without edits"
+    ]
+  },
+  {
+    "schema": 1,
+    "synthetic": true,
+    "site": "words",
+    "sourceHead": "5934392f3daa47d63b9b3a7b52953396204031ad",
+    "sourceFingerprint": "dfbb9ef47d1e8a11ee8535e905551fbf764b42f326f88556c44f3f3680accbd7",
+    "buildSource": "d632a5dadb564b1202deec65ed5005c9a62e7be7bad4f815b15e368c36c88a2d",
+    "buildOutput": "16e89a7bbff1d3c640a7b55f1f010d336dcee40352e2ac5b40fe343198341797",
+    "sha256": "c4655a46fb4fa05d2631eb75fcc23b47a7375ac2f62addda017cc9209b74f0fd",
+    "sources": [
+      {
+        "path": "apps/judgement/src/components/cards/CardTable.tsx",
+        "sha256": "e938f3646cfa3320152b421cee55e2528e00e28662060b9810a19b0816dd67fb"
+      },
+      {
+        "path": "apps/judgement/src/components/cards/PachisaTable.tsx",
+        "sha256": "3619b70310eba6683dd7f944611bfd3bc2ccbc6a8fc09248d9755488eb705d05"
+      },
+      {
+        "path": "packages/studio/src/modal/lifecycle.ts",
+        "sha256": "3f60fd2d48abe0a8f058245afddff20f3ba0e62335d8bdf0f55c3275dd0beb1e"
+      },
+      {
+        "path": "packages/studio/src/modal/Modal.tsx",
+        "sha256": "e6a643599c09bb0ec778b4b0d8a9e1d66835bd2101d3a420273b11b817b83c14"
+      },
+      {
+        "path": "packages/studio/src/site/read-aloud.ts",
+        "sha256": "bc9d074d51a92dfdd185a410fcb4f4992f6b010b4dc1674d4521dbfc26ce1cfa"
+      },
+      {
+        "path": "packages/studio/src/site/ReadAloud.tsx",
+        "sha256": "c4932c3fdee4184e0f8288430770423029c2ecdc3999e12865b03d0d97e51f57"
+      },
+      {
+        "path": "packages/lattice/src/board.ts",
+        "sha256": "0388d6d2ad940826de37386a74bb0ff534fe8077bab60b0774dbc92da217a4db"
+      },
+      {
+        "path": "packages/lattice/src/dawg-format.ts",
+        "sha256": "97d4a19826ef3676d176c89c5420eae1af268d2786687b44d5aec361bb93f696"
+      },
+      {
+        "path": "packages/fairness/src/primitives.ts",
+        "sha256": "9eedd53f47d7c6ae030e2f64d9e4a4d20fb55fb3e2c0fd45662e378f8a8f210e"
+      },
+      {
+        "path": "packages/fairness/src/rng.ts",
+        "sha256": "58304900a9c84411ded0a3d2713383c282c1c913a65a003970a49b54ae0e15bc"
+      },
+      {
+        "path": "packages/fairness/src/shuffle.ts",
+        "sha256": "7240f591cc9b3bbfc917370c29b314ca9614c90a54e1268bce9f6710ffb5838b"
+      },
+      {
+        "path": "packages/fairness/src/types.ts",
+        "sha256": "be6198b0938e87ff68b5033a3564776f01eb76aa1cb17066694367b98026bf08"
+      },
+      {
+        "path": "packages/engine/src/types.ts",
+        "sha256": "f7793ad10c4a441bde4f7cfb57d5dd75ebb10a560dee78f79f55a44fb4054352"
+      },
+      {
+        "path": "packages/engine/src/checks.ts",
+        "sha256": "7b4be53c9f524ea0ad268e098119a07b3a7dc1228067fb4b9fa5fa69d195b6ad"
+      },
+      {
+        "path": "packages/engine/src/definition.ts",
+        "sha256": "b7d483039aa95b14da16584988ef22f777d305be0a0c5724b4044b002092a2f0"
+      },
+      {
+        "path": "packages/engine/src/games/ludo.ts",
+        "sha256": "61b59f825886c6259bf43011767f82d4dcb062ee62a5441bc626b367b1cb5673"
+      },
+      {
+        "path": "packages/engine/src/track.ts",
+        "sha256": "9cbfdbef2f81d722c7dce1a20377f281f1681c9c771e2969f2b02a9e64075452"
+      },
+      {
+        "path": "packages/engine/src/board.ts",
+        "sha256": "3ea6da7505f3471de4b5802f8dd9d97bef10c7f8f42ac863ebdb161031627929"
+      },
+      {
+        "path": "packages/engine/src/games/snakes-and-ladders.ts",
+        "sha256": "876ce6b528a0f0d8ebbbafc27400156b0e6cbef3436e7537c9fddd9af989ffff"
+      },
+      {
+        "path": "packages/engine/src/games/variants.ts",
+        "sha256": "44024cf07093f9419f2600250709aad824bff5a82d08300ee0d31d0f6c7216da"
+      },
+      {
+        "path": "packages/engine/src/games/registry.ts",
+        "sha256": "6b97ad16ff06d44b3330481a0a088db266d8ae97b9cb2cfa54ebcf52cd9bef4e"
+      },
+      {
+        "path": "packages/engine/src/rules.ts",
+        "sha256": "f996a7e2b1a8eff2d6df74b0ec8675b6b1ea76983d0e42cd05b22f037fccaf3f"
+      },
+      {
+        "path": "packages/engine/src/engine.ts",
+        "sha256": "064c4c0d4ee331d74567ec79859912ac15b8597d0d313410a61bc00f26bba12e"
+      },
+      {
+        "path": "packages/engine/src/illegal.ts",
+        "sha256": "4b44f412c474b14f4c455a3a60d94e5493be8568f37c066b54443ca784d02f79"
+      },
+      {
+        "path": "packages/engine/src/invariants.ts",
+        "sha256": "43762bccf93f94bbad7a9108fd589b0e9db39ae880e0ef3c9e286eb625885502"
+      },
+      {
+        "path": "packages/engine/src/luck.ts",
+        "sha256": "279f96362eec2e7a101dd1b4c9920ef0180140be2a084cd4108bc1881e13b755"
+      },
+      {
+        "path": "packages/engine/src/match.ts",
+        "sha256": "8a80d3c0ef35fb51b3117f045bdf7ec49e938594876dd07186b8a3f834a7c244"
+      },
+      {
+        "path": "packages/engine/src/standing.ts",
+        "sha256": "9c54b200df0e0706069166ac8256a169d89a358c88f8e2d6924f05e3a9907eb4"
+      },
+      {
+        "path": "packages/engine/src/summary.ts",
+        "sha256": "5cd5dac2346916664578eedf273961c6f565493597ba337052432fbdc142d714"
+      },
+      {
+        "path": "packages/engine/src/index.ts",
+        "sha256": "186ce78d3036a3b4a788e56782035222a5fbb1cbb5037da393374c49b098ba97"
+      },
+      {
+        "path": "packages/fairness/src/v2/derive.ts",
+        "sha256": "b1cc2115fa3a0a03bacc75b8367f6a98664fe62c5fab01f37b2c3677a64b6bb8"
+      },
+      {
+        "path": "packages/fairness/src/v2/attest.ts",
+        "sha256": "acb9cd57d9367f0b728a9bdf8498af216ddc4e90e11624591cceae882a5b8c64"
+      },
+      {
+        "path": "packages/fairness/src/v2/seat.ts",
+        "sha256": "3e9d882493469aa5b83a16fff01060ce3a3eec847c561f8c11d68b425d2ee4d7"
+      },
+      {
+        "path": "packages/fairness/src/v2/types.ts",
+        "sha256": "afd21147820d74e4c6d6567af6897e8ca72a2e93a791b3b27cc22ca27809a236"
+      },
+      {
+        "path": "packages/fairness/src/v2/verify.ts",
+        "sha256": "f3c0f1c649935867611ed974c08d0115fe0ccf06c7a2ab6f5f78313b96b79e8d"
+      },
+      {
+        "path": "packages/fairness/src/v2/index.ts",
+        "sha256": "9e68d3ffd30d61d2e1951ed86a85d14e1d1de134718fdf5059ac076caa638386"
+      },
+      {
+        "path": "packages/fairness/src/index.ts",
+        "sha256": "89c3c94e2cf00c89fb6bce16b127341cc238f7a597e5efed2e7f95522500e67f"
+      },
+      {
+        "path": "packages/lattice/src/tiles.ts",
+        "sha256": "66027cc3cb0f30e3ba6519164b046675df4584d05c93711a1877ef6a125ecdd7"
+      },
+      {
+        "path": "packages/lattice/src/lexicons.ts",
+        "sha256": "68d7d1297a829e7e86142adf53e10a1283b4f87188346275dab728613083ffbf"
+      },
+      {
+        "path": "packages/lattice/src/dictionary.ts",
+        "sha256": "a61dc9fefd77b5355ede2d46158fb02a36a90ee74314a70021a194ea9a948c39"
+      },
+      {
+        "path": "packages/lattice/src/play.ts",
+        "sha256": "3378681021a22c4b5fc2c27047d53186dab82aabab53cbd17e6dfcad407595bd"
+      },
+      {
+        "path": "packages/lattice/src/rules.ts",
+        "sha256": "7b1c265c3a83c21ca2393d84f41069cf756bfea2dabe389a2414e23365cbd35b"
+      },
+      {
+        "path": "packages/lattice/src/invariants.ts",
+        "sha256": "8829536eae9fb7a3b7ec8c63faab7dd803656905cab3c9eb29d9135cbb3fe6fa"
+      },
+      {
+        "path": "packages/lattice/src/state.ts",
+        "sha256": "30f4ed393bf0e0842edb019af54cbe35b9881a04e591c8e67b5a7068e8d8db73"
+      },
+      {
+        "path": "packages/lattice/src/replay.ts",
+        "sha256": "9aa10a1c825a0b27631c1debb2e0c713515b3a14d2851a4f27c4853a3b5097cb"
+      },
+      {
+        "path": "packages/lattice/src/restore.ts",
+        "sha256": "aa8ffb40582b786d7398ca990ebe3a4f31fb6b12ed0ef8c37dfcd52d5a75327e"
+      },
+      {
+        "path": "packages/lattice/src/view.ts",
+        "sha256": "bd0153214cc061bbd1cb5780d35d27b02d97341f823fafdac5f87114f4b81ea0"
+      },
+      {
+        "path": "packages/lattice/src/index.ts",
+        "sha256": "98fbd1e6b89607bdbf4e9ff0a0c53689e0d64f1a7265b1f2197e06cfca8b1c70"
+      },
+      {
+        "path": "apps/lattice/src/components/room/BlankPicker.tsx",
+        "sha256": "0f5df9d66f60405ead5b8764d500660d60fdfbf7f8b0ae80c57c6b3944624f34"
+      },
+      {
+        "path": "packages/cards/src/bidding.ts",
+        "sha256": "eded6ec978ecdc2df839da02f51815390ca33e4535995d9f64fc285b6b619c5c"
+      },
+      {
+        "path": "packages/cards/src/deck.ts",
+        "sha256": "26365bf4bd5ce4673e8b4d8d367509fe8bbc95e2513281f85b75c2c433760623"
+      },
+      {
+        "path": "packages/cards/src/checks.ts",
+        "sha256": "536bf7627cb0efc7758ab597fa00216059c31869d3eaeea8f448b9b444768a2e"
+      },
+      {
+        "path": "packages/cards/src/deal.ts",
+        "sha256": "11f703516a8e4c0a7d39730694efa563c2498513ccbbd1c19d4649c688513237"
+      },
+      {
+        "path": "packages/cards/src/frozen.ts",
+        "sha256": "e88e2c99af102790ceb1a750ec68f9f52c79f2e6430cf432ed89741a85892f9c"
+      },
+      {
+        "path": "packages/cards/src/rounds.ts",
+        "sha256": "8d8a6a90ba46526b2d22ec0c64c09802bfa228744a050dc45a97e96714710d95"
+      },
+      {
+        "path": "packages/cards/src/variants.ts",
+        "sha256": "96e3a087a93c73ee827cb5daf43ffad52ec3ef7b33ff7690b0527b8065959bfb"
+      },
+      {
+        "path": "packages/cards/src/invariants.ts",
+        "sha256": "296183533eaa6d8e8199642064a331a9a3a4bae60d8d7778091786c47a09fc2b"
+      },
+      {
+        "path": "packages/cards/src/scoring.ts",
+        "sha256": "a16a013f0c6101a913aff65c47925d0d401a0ccfab271a1e1ab00fede9710427"
+      },
+      {
+        "path": "packages/cards/src/tricks.ts",
+        "sha256": "9a9f96f0e5192fc964e656f1ef6d2a5ad3486ed543fbd453aa418970aa050e6c"
+      },
+      {
+        "path": "packages/cards/src/state.ts",
+        "sha256": "836f268be3253034e4a2ccfb377f5b7cfe6e60a9803d869430d5e3c7dd8d092d"
+      },
+      {
+        "path": "packages/cards/src/view.ts",
+        "sha256": "d7ee85dcf06806a38f61b5fadd2b26e8d1029bc96e602c517d4d8df826c41be7"
+      },
+      {
+        "path": "packages/cards/src/index.ts",
+        "sha256": "5e7b1d986778da9b8613f86cc999e8553794e309a33c1940c78893cdaa24a901"
+      },
+      {
+        "path": "packages/cards/src/teen-patti/types.ts",
+        "sha256": "71b9d34a7040792c9be2a2a3790741d73f100f1c45b02fef530e9d4f4a7b3912"
+      },
+      {
+        "path": "packages/cards/src/teen-patti/rank.ts",
+        "sha256": "176a06bd7066488847e5736625084a334169672a16548eef23e8305e630e8b82"
+      },
+      {
+        "path": "packages/cards/src/teen-patti/settlement.ts",
+        "sha256": "e6341ac9c4188104565925bba0158cc5f90a64f384bc49ac9451e0f5cc6deaa1"
+      },
+      {
+        "path": "packages/cards/src/teen-patti/engine.ts",
+        "sha256": "fe19756f82ac186dc3c7f57a20426d4a25f702ed8902dd655f617f8d22f9fb5c"
+      },
+      {
+        "path": "packages/cards/src/teen-patti/view.ts",
+        "sha256": "61ef146a1f71caa4f1638cf684f9d5f15709cbe9cfcb113eb60d8769e46279cf"
+      },
+      {
+        "path": "packages/cards/src/teen-patti/invariants.ts",
+        "sha256": "64a6405de6319e745f5b0ea979f77cae67259b75ebaa0b08bca15a20523fa8cc"
+      },
+      {
+        "path": "packages/cards/src/teen-patti/index.ts",
+        "sha256": "6c8b92b12251e911cd980809cdc095356c3a1602f2876727a0f073aa5f4f3c93"
+      },
+      {
+        "path": "packages/cards/src/rummy/melds.ts",
+        "sha256": "a79f8981c84b8407e04dfec5ef532e5691876c19ccb78462183bba1fb786e380"
+      },
+      {
+        "path": "packages/cards/src/rummy/state.ts",
+        "sha256": "455d45c1114263c7ca4b4750c66ce12cc6d946fd01282b83f097df4ee9cfe7f8"
+      },
+      {
+        "path": "packages/cards/src/rummy/index.ts",
+        "sha256": "0135a545a6c294cdcaace79f83eb8d04227b64276db459fc6cf8bbf66f3f74f6"
+      },
+      {
+        "path": "packages/protocol/src/new-cards.ts",
+        "sha256": "c3b0fa027239a977b84b1ba5e6299b8ad8a45912db8feda40deb4d1211ad02e0"
+      },
+      {
+        "path": "packages/twentynine/src/auction.ts",
+        "sha256": "7ff9dfbbcbf246d0f171a05a2db7ed62a69d5693c504c2938888ac3a6c4c06c4"
+      },
+      {
+        "path": "packages/twentynine/src/cards.ts",
+        "sha256": "1cab99cd1223032e04838c182cdcacb361b37693f4271706825eb3c79c1ae38f"
+      },
+      {
+        "path": "packages/twentynine/src/rules.ts",
+        "sha256": "6db40c44d90d89c44622ca29781c13f0baf359408afa1ae248ed7bc3cb07f5f9"
+      },
+      {
+        "path": "packages/twentynine/src/teams.ts",
+        "sha256": "e2a742d0c410fdcc648e18c207e7452479b13ba2a1046e51f8aad19a09f34ebb"
+      },
+      {
+        "path": "packages/twentynine/src/invariants.ts",
+        "sha256": "8fe8bcf43df47a53d6c873d8cb813893220d6f36c498a552a8541e66e058c634"
+      },
+      {
+        "path": "packages/twentynine/src/scoring.ts",
+        "sha256": "c4eee80c68d8d9dba786100d64d877166cbe7adaa536837b6639757db62c9c92"
+      },
+      {
+        "path": "packages/twentynine/src/state.ts",
+        "sha256": "3664500c9356b841d715a39393c5659d57815dc1bbb16fea3a17d459de156bab"
+      },
+      {
+        "path": "packages/twentynine/src/view.ts",
+        "sha256": "2d6598876ec08c58c5f8ebc14233933682ad11d49e8f937a658d29a5fbc05c54"
+      },
+      {
+        "path": "packages/twentynine/src/index.ts",
+        "sha256": "76319a6d291da07db375e99704f5dda187f3d28d3f6c30762ee5f6fb3fd6ee64"
+      },
+      {
+        "path": "packages/pachisa/src/sets.ts",
+        "sha256": "92e471501c015c7b05f727d81f8cdacd6cb445d408750d37255ffcc5e138c467"
+      },
+      {
+        "path": "packages/pachisa/src/rules.ts",
+        "sha256": "eacd7dfd248ec9e4a71f0497b1d43a44fbf295b05e2da7ccb1880004872e4d5b"
+      },
+      {
+        "path": "packages/pachisa/src/solve.ts",
+        "sha256": "009ac8bb98bba37a57e4e7e0cf06f3420db6020088cdabb751a70dba1b7658dd"
+      },
+      {
+        "path": "packages/pachisa/src/state.ts",
+        "sha256": "2650fdcb8b41b114c4ae92aa41b2f050dde196a3a0a323a75a70883124e0b1da"
+      },
+      {
+        "path": "packages/pachisa/src/invariants.ts",
+        "sha256": "49a57ea03a33839c75b27d261b23873714dba053c9f6f589d0f120ad2689cefe"
+      },
+      {
+        "path": "packages/pachisa/src/view.ts",
+        "sha256": "39a83abfe670fb4f2d656143a9fc63464c04297a345e31087a10a0b274093fcb"
+      },
+      {
+        "path": "packages/pachisa/src/index.ts",
+        "sha256": "9b29a0d47bd9a9d664807f855504448fe5b606315e4c05320fe50aff8a5500b1"
+      },
+      {
+        "path": "packages/threetwofive/src/cards.ts",
+        "sha256": "95c11c2fe59d9167e2259d2f0b56e25291559a09279f6fb2efe4842d21e31fb6"
+      },
+      {
+        "path": "packages/threetwofive/src/rules.ts",
+        "sha256": "1b0fb4e1a10f0d39a9cd416e55e7457b8eeb1725ba96274e18090a4710368752"
+      },
+      {
+        "path": "packages/threetwofive/src/state.ts",
+        "sha256": "22b0add3da6a8989746b91481a58262e603bb59cafa75b5c7bd5f68bb2d2be25"
+      },
+      {
+        "path": "packages/threetwofive/src/invariants.ts",
+        "sha256": "a4714f0c0f3b80fcb4cc3d38013974ec68c93adc968bc5a9852335722089acd7"
+      },
+      {
+        "path": "packages/threetwofive/src/view.ts",
+        "sha256": "08f9a7a71bee41accbc83ab20068b2b9fdb14a46e54fb08e81621da5114584c9"
+      },
+      {
+        "path": "packages/threetwofive/src/index.ts",
+        "sha256": "d06285d967970beae4a949457642f6965d84a5521e2f0195b86553d9314a971e"
+      },
+      {
+        "path": "packages/brand/src/hosting.ts",
+        "sha256": "fb429dc56177344b0ecce168a4a34f6c62dac59454ce534124f8d6412496030c"
+      },
+      {
+        "path": "packages/brand/src/names.ts",
+        "sha256": "641ba6ae4629cefa8dfe3e6950280b8a5e98816d42ccebe6867ddbabf6d54220"
+      },
+      {
+        "path": "packages/brand/src/game-icons.ts",
+        "sha256": "20841d4ee2e57494dc95bc8b88fea867a19d2cbfdef8942c98e986150b13850b"
+      },
+      {
+        "path": "packages/brand/src/index.ts",
+        "sha256": "c94e94180d0ad5e1414d3826d1f17d3a469560a1a3049a3f355bda80e2d11853"
+      },
+      {
+        "path": "packages/protocol/src/families.ts",
+        "sha256": "c0eebd7bc85d51e446007c82a2927a006a2953a1dea8a706b888300a1a173047"
+      },
+      {
+        "path": "packages/protocol/src/frames.ts",
+        "sha256": "9609636fb7b2470a7331d704bcc8f31d23aaf705781aca5f28b5c85598b596a0"
+      },
+      {
+        "path": "packages/identity/src/names.ts",
+        "sha256": "70a188bb51f4c70c06e03f2484c9e65f9ed59f470888bf05a2219fd1e80786b1"
+      },
+      {
+        "path": "packages/identity/src/rooms.ts",
+        "sha256": "b46f89e2da41bad552b036100804f8703b9f20efeac55772eb5deb94e00dc19e"
+      },
+      {
+        "path": "packages/protocol/src/uuid.ts",
+        "sha256": "9cba81e1909450bdf63e10b6d4dbdefe6b710de8e97a7e93cdf6c3fee6bec024"
+      },
+      {
+        "path": "packages/protocol/src/chips.ts",
+        "sha256": "cdf6711e325407343f72315ccffbac34d29677964439bfeaecd3f5b44a4eff28"
+      },
+      {
+        "path": "packages/protocol/src/draw.ts",
+        "sha256": "9e207aa943ffdea7ba705b99ebbc6c31c35a8346697eaedddde276cb4b03a625"
+      },
+      {
+        "path": "packages/identity/src/pools.ts",
+        "sha256": "a3b15ade41565263abc235f841e341979a0dd112202890ca8fc90346771a322c"
+      },
+      {
+        "path": "packages/protocol/src/queue.ts",
+        "sha256": "8bdd8db34aab9607558ce7df178aaacc49cef7d9c229f4c16ee246858ab4deb3"
+      },
+      {
+        "path": "packages/protocol/src/body.ts",
+        "sha256": "fff368dde5e194bed12057e733caadceb3a4d69c12fa2b5b393cd5360b05b77a"
+      },
+      {
+        "path": "packages/protocol/src/scorecard-new.ts",
+        "sha256": "04cd68bc002c358919a356a66dbce0c1bd77bd483238f276473ef6862f77fca6"
+      },
+      {
+        "path": "packages/protocol/src/scorecard.ts",
+        "sha256": "81f051276048021085ad56f02d7ecf30c07103b832d5cfbdaa01b233c196df1f"
+      },
+      {
+        "path": "packages/protocol/src/index.ts",
+        "sha256": "ffc3c07160b344ce13ac2e5fea041b7861cffa7ca4549b750e5a050f1d718f0b"
+      },
+      {
+        "path": "packages/studio/src/labels.ts",
+        "sha256": "90204de365a2ef969d6b41f18cd82640e8424c4c5a77c49ec4c693d4f42d62b8"
+      },
+      {
+        "path": "packages/studio/src/room/SeatNames.tsx",
+        "sha256": "0af4d714a9a666d35affe90268bb059a8f4e95cf8c4d09c48353b47a1b0dd49d"
+      },
+      {
+        "path": "packages/studio/src/cards/faces.ts",
+        "sha256": "e6cc95e4de76c4df451611ae1efadda63c671d1b6c9b7fbeefe2bbc162958981"
+      },
+      {
+        "path": "packages/studio/src/cards/CourtFigure.tsx",
+        "sha256": "19d0b05ba9bd9eacdcc6555954ce09f6c20393db1527158f7f6620b79b7b46a9"
+      },
+      {
+        "path": "packages/studio/src/cards/PlayingCard.tsx",
+        "sha256": "d3b5e05775417c03c3d48d43166bbb2ee8e50c770b627ceb49a9ebc908f6c359"
+      },
+      {
+        "path": "packages/studio/src/cards/index.ts",
+        "sha256": "9ea42d79db6e213debd01ab2701e8e3ec5606f14857d8447a032be904bac29a2"
+      },
+      {
+        "path": "apps/judgement/src/lib/cards/faces.ts",
+        "sha256": "f38a3b59027dd488266279b0b4664a213c0d2d97c1083b84a959ca7d6b0f0ea3"
+      },
+      {
+        "path": "apps/judgement/src/components/cards/RoundBreak.tsx",
+        "sha256": "2a2bb11b4b14a623238af7be6d996230e75bb9e97fd2a8b822cea201e3baa6df"
+      },
+      {
+        "path": "apps/judgement/src/components/cards/DealBreak.tsx",
+        "sha256": "d724bedf52b2cb86d0c678d1af8bbbd7dc1ce0d0e3189619f4769fd5a0c3f9cc"
+      },
+      {
+        "path": "apps/judgement/src/components/cards/ScorePad.tsx",
+        "sha256": "c08b6293ddd8fc15aebdf5caa79dddf138f7f69723041bd676c31615b5172c0a"
+      },
+      {
+        "path": "packages/studio/src/hooks/useLayoutReset.ts",
+        "sha256": "05ed41d5f2aa8aa2fa96521a9cf510bbbd48afeddbdfbde7599eb723c44eea9e"
+      },
+      {
+        "path": "apps/draw/src/lib/brush.ts",
+        "sha256": "cce32caa0fc1bb4032557f417f3b0d25b9b351695f91836483108e5a09645127"
+      },
+      {
+        "path": "apps/draw/src/lib/fill.ts",
+        "sha256": "f2b2a590cedb7e8664a874c2e0a48dbf9f01d39ac80a350bd71e334b2065bdd6"
+      },
+      {
+        "path": "apps/draw/src/lib/site.ts",
+        "sha256": "12e42a781cfb5957f5e93bd01247ea6064948703b1016447c4baddfb0a17e3e4"
+      },
+      {
+        "path": "apps/draw/src/lib/mark.ts",
+        "sha256": "d9ef22a4ec148a4e6113fabfbb2b28ac3bf2e36e0fac40dd535e62a369b47589"
+      },
+      {
+        "path": "apps/draw/src/lib/canvas.ts",
+        "sha256": "947da397e78652ca3a7f12f09c3fdcff56ca6137c8cb0324de52e234fed59300"
+      },
+      {
+        "path": "apps/draw/src/components/room/DrawCanvas.tsx",
+        "sha256": "9702d51145c95e51fbad69884f6572cc08a0241a8031e2c53558294c3ae602c7"
+      },
+      {
+        "path": "packages/studio/src/table/haptics.ts",
+        "sha256": "bee5096eb2b3353aef8c12b7b7a97d9a335fc6ac35845ad7998f07a8b827ba57"
+      }
+    ],
+    "adapters": [
+      "Fixed synthetic pathname, no Next router",
+      "Synthetic game state and callbacks",
+      "Original CardTable score modal JSX and Pachisa showdown functions extracted without edits"
+    ]
+  },
+  {
+    "schema": 1,
+    "synthetic": true,
+    "site": "draw",
+    "sourceHead": "5934392f3daa47d63b9b3a7b52953396204031ad",
+    "sourceFingerprint": "dfbb9ef47d1e8a11ee8535e905551fbf764b42f326f88556c44f3f3680accbd7",
+    "buildSource": "1160bb582bc404318fd94bd0c0d76ff47804c3d99b4a1bdab277fa369cc71f4a",
+    "buildOutput": "b8e03a04321be6f380c51e54f7a0a9804ac043ae444596a8115498445a6b1cc1",
+    "sha256": "c4655a46fb4fa05d2631eb75fcc23b47a7375ac2f62addda017cc9209b74f0fd",
+    "sources": [
+      {
+        "path": "apps/judgement/src/components/cards/CardTable.tsx",
+        "sha256": "e938f3646cfa3320152b421cee55e2528e00e28662060b9810a19b0816dd67fb"
+      },
+      {
+        "path": "apps/judgement/src/components/cards/PachisaTable.tsx",
+        "sha256": "3619b70310eba6683dd7f944611bfd3bc2ccbc6a8fc09248d9755488eb705d05"
+      },
+      {
+        "path": "packages/studio/src/modal/lifecycle.ts",
+        "sha256": "3f60fd2d48abe0a8f058245afddff20f3ba0e62335d8bdf0f55c3275dd0beb1e"
+      },
+      {
+        "path": "packages/studio/src/modal/Modal.tsx",
+        "sha256": "e6a643599c09bb0ec778b4b0d8a9e1d66835bd2101d3a420273b11b817b83c14"
+      },
+      {
+        "path": "packages/studio/src/site/read-aloud.ts",
+        "sha256": "bc9d074d51a92dfdd185a410fcb4f4992f6b010b4dc1674d4521dbfc26ce1cfa"
+      },
+      {
+        "path": "packages/studio/src/site/ReadAloud.tsx",
+        "sha256": "c4932c3fdee4184e0f8288430770423029c2ecdc3999e12865b03d0d97e51f57"
+      },
+      {
+        "path": "packages/lattice/src/board.ts",
+        "sha256": "0388d6d2ad940826de37386a74bb0ff534fe8077bab60b0774dbc92da217a4db"
+      },
+      {
+        "path": "packages/lattice/src/dawg-format.ts",
+        "sha256": "97d4a19826ef3676d176c89c5420eae1af268d2786687b44d5aec361bb93f696"
+      },
+      {
+        "path": "packages/fairness/src/primitives.ts",
+        "sha256": "9eedd53f47d7c6ae030e2f64d9e4a4d20fb55fb3e2c0fd45662e378f8a8f210e"
+      },
+      {
+        "path": "packages/fairness/src/rng.ts",
+        "sha256": "58304900a9c84411ded0a3d2713383c282c1c913a65a003970a49b54ae0e15bc"
+      },
+      {
+        "path": "packages/fairness/src/shuffle.ts",
+        "sha256": "7240f591cc9b3bbfc917370c29b314ca9614c90a54e1268bce9f6710ffb5838b"
+      },
+      {
+        "path": "packages/fairness/src/types.ts",
+        "sha256": "be6198b0938e87ff68b5033a3564776f01eb76aa1cb17066694367b98026bf08"
+      },
+      {
+        "path": "packages/engine/src/types.ts",
+        "sha256": "f7793ad10c4a441bde4f7cfb57d5dd75ebb10a560dee78f79f55a44fb4054352"
+      },
+      {
+        "path": "packages/engine/src/checks.ts",
+        "sha256": "7b4be53c9f524ea0ad268e098119a07b3a7dc1228067fb4b9fa5fa69d195b6ad"
+      },
+      {
+        "path": "packages/engine/src/definition.ts",
+        "sha256": "b7d483039aa95b14da16584988ef22f777d305be0a0c5724b4044b002092a2f0"
+      },
+      {
+        "path": "packages/engine/src/games/ludo.ts",
+        "sha256": "61b59f825886c6259bf43011767f82d4dcb062ee62a5441bc626b367b1cb5673"
+      },
+      {
+        "path": "packages/engine/src/track.ts",
+        "sha256": "9cbfdbef2f81d722c7dce1a20377f281f1681c9c771e2969f2b02a9e64075452"
+      },
+      {
+        "path": "packages/engine/src/board.ts",
+        "sha256": "3ea6da7505f3471de4b5802f8dd9d97bef10c7f8f42ac863ebdb161031627929"
+      },
+      {
+        "path": "packages/engine/src/games/snakes-and-ladders.ts",
+        "sha256": "876ce6b528a0f0d8ebbbafc27400156b0e6cbef3436e7537c9fddd9af989ffff"
+      },
+      {
+        "path": "packages/engine/src/games/variants.ts",
+        "sha256": "44024cf07093f9419f2600250709aad824bff5a82d08300ee0d31d0f6c7216da"
+      },
+      {
+        "path": "packages/engine/src/games/registry.ts",
+        "sha256": "6b97ad16ff06d44b3330481a0a088db266d8ae97b9cb2cfa54ebcf52cd9bef4e"
+      },
+      {
+        "path": "packages/engine/src/rules.ts",
+        "sha256": "f996a7e2b1a8eff2d6df74b0ec8675b6b1ea76983d0e42cd05b22f037fccaf3f"
+      },
+      {
+        "path": "packages/engine/src/engine.ts",
+        "sha256": "064c4c0d4ee331d74567ec79859912ac15b8597d0d313410a61bc00f26bba12e"
+      },
+      {
+        "path": "packages/engine/src/illegal.ts",
+        "sha256": "4b44f412c474b14f4c455a3a60d94e5493be8568f37c066b54443ca784d02f79"
+      },
+      {
+        "path": "packages/engine/src/invariants.ts",
+        "sha256": "43762bccf93f94bbad7a9108fd589b0e9db39ae880e0ef3c9e286eb625885502"
+      },
+      {
+        "path": "packages/engine/src/luck.ts",
+        "sha256": "279f96362eec2e7a101dd1b4c9920ef0180140be2a084cd4108bc1881e13b755"
+      },
+      {
+        "path": "packages/engine/src/match.ts",
+        "sha256": "8a80d3c0ef35fb51b3117f045bdf7ec49e938594876dd07186b8a3f834a7c244"
+      },
+      {
+        "path": "packages/engine/src/standing.ts",
+        "sha256": "9c54b200df0e0706069166ac8256a169d89a358c88f8e2d6924f05e3a9907eb4"
+      },
+      {
+        "path": "packages/engine/src/summary.ts",
+        "sha256": "5cd5dac2346916664578eedf273961c6f565493597ba337052432fbdc142d714"
+      },
+      {
+        "path": "packages/engine/src/index.ts",
+        "sha256": "186ce78d3036a3b4a788e56782035222a5fbb1cbb5037da393374c49b098ba97"
+      },
+      {
+        "path": "packages/fairness/src/v2/derive.ts",
+        "sha256": "b1cc2115fa3a0a03bacc75b8367f6a98664fe62c5fab01f37b2c3677a64b6bb8"
+      },
+      {
+        "path": "packages/fairness/src/v2/attest.ts",
+        "sha256": "acb9cd57d9367f0b728a9bdf8498af216ddc4e90e11624591cceae882a5b8c64"
+      },
+      {
+        "path": "packages/fairness/src/v2/seat.ts",
+        "sha256": "3e9d882493469aa5b83a16fff01060ce3a3eec847c561f8c11d68b425d2ee4d7"
+      },
+      {
+        "path": "packages/fairness/src/v2/types.ts",
+        "sha256": "afd21147820d74e4c6d6567af6897e8ca72a2e93a791b3b27cc22ca27809a236"
+      },
+      {
+        "path": "packages/fairness/src/v2/verify.ts",
+        "sha256": "f3c0f1c649935867611ed974c08d0115fe0ccf06c7a2ab6f5f78313b96b79e8d"
+      },
+      {
+        "path": "packages/fairness/src/v2/index.ts",
+        "sha256": "9e68d3ffd30d61d2e1951ed86a85d14e1d1de134718fdf5059ac076caa638386"
+      },
+      {
+        "path": "packages/fairness/src/index.ts",
+        "sha256": "89c3c94e2cf00c89fb6bce16b127341cc238f7a597e5efed2e7f95522500e67f"
+      },
+      {
+        "path": "packages/lattice/src/tiles.ts",
+        "sha256": "66027cc3cb0f30e3ba6519164b046675df4584d05c93711a1877ef6a125ecdd7"
+      },
+      {
+        "path": "packages/lattice/src/lexicons.ts",
+        "sha256": "68d7d1297a829e7e86142adf53e10a1283b4f87188346275dab728613083ffbf"
+      },
+      {
+        "path": "packages/lattice/src/dictionary.ts",
+        "sha256": "a61dc9fefd77b5355ede2d46158fb02a36a90ee74314a70021a194ea9a948c39"
+      },
+      {
+        "path": "packages/lattice/src/play.ts",
+        "sha256": "3378681021a22c4b5fc2c27047d53186dab82aabab53cbd17e6dfcad407595bd"
+      },
+      {
+        "path": "packages/lattice/src/rules.ts",
+        "sha256": "7b1c265c3a83c21ca2393d84f41069cf756bfea2dabe389a2414e23365cbd35b"
+      },
+      {
+        "path": "packages/lattice/src/invariants.ts",
+        "sha256": "8829536eae9fb7a3b7ec8c63faab7dd803656905cab3c9eb29d9135cbb3fe6fa"
+      },
+      {
+        "path": "packages/lattice/src/state.ts",
+        "sha256": "30f4ed393bf0e0842edb019af54cbe35b9881a04e591c8e67b5a7068e8d8db73"
+      },
+      {
+        "path": "packages/lattice/src/replay.ts",
+        "sha256": "9aa10a1c825a0b27631c1debb2e0c713515b3a14d2851a4f27c4853a3b5097cb"
+      },
+      {
+        "path": "packages/lattice/src/restore.ts",
+        "sha256": "aa8ffb40582b786d7398ca990ebe3a4f31fb6b12ed0ef8c37dfcd52d5a75327e"
+      },
+      {
+        "path": "packages/lattice/src/view.ts",
+        "sha256": "bd0153214cc061bbd1cb5780d35d27b02d97341f823fafdac5f87114f4b81ea0"
+      },
+      {
+        "path": "packages/lattice/src/index.ts",
+        "sha256": "98fbd1e6b89607bdbf4e9ff0a0c53689e0d64f1a7265b1f2197e06cfca8b1c70"
+      },
+      {
+        "path": "apps/lattice/src/components/room/BlankPicker.tsx",
+        "sha256": "0f5df9d66f60405ead5b8764d500660d60fdfbf7f8b0ae80c57c6b3944624f34"
+      },
+      {
+        "path": "packages/cards/src/bidding.ts",
+        "sha256": "eded6ec978ecdc2df839da02f51815390ca33e4535995d9f64fc285b6b619c5c"
+      },
+      {
+        "path": "packages/cards/src/deck.ts",
+        "sha256": "26365bf4bd5ce4673e8b4d8d367509fe8bbc95e2513281f85b75c2c433760623"
+      },
+      {
+        "path": "packages/cards/src/checks.ts",
+        "sha256": "536bf7627cb0efc7758ab597fa00216059c31869d3eaeea8f448b9b444768a2e"
+      },
+      {
+        "path": "packages/cards/src/deal.ts",
+        "sha256": "11f703516a8e4c0a7d39730694efa563c2498513ccbbd1c19d4649c688513237"
+      },
+      {
+        "path": "packages/cards/src/frozen.ts",
+        "sha256": "e88e2c99af102790ceb1a750ec68f9f52c79f2e6430cf432ed89741a85892f9c"
+      },
+      {
+        "path": "packages/cards/src/rounds.ts",
+        "sha256": "8d8a6a90ba46526b2d22ec0c64c09802bfa228744a050dc45a97e96714710d95"
+      },
+      {
+        "path": "packages/cards/src/variants.ts",
+        "sha256": "96e3a087a93c73ee827cb5daf43ffad52ec3ef7b33ff7690b0527b8065959bfb"
+      },
+      {
+        "path": "packages/cards/src/invariants.ts",
+        "sha256": "296183533eaa6d8e8199642064a331a9a3a4bae60d8d7778091786c47a09fc2b"
+      },
+      {
+        "path": "packages/cards/src/scoring.ts",
+        "sha256": "a16a013f0c6101a913aff65c47925d0d401a0ccfab271a1e1ab00fede9710427"
+      },
+      {
+        "path": "packages/cards/src/tricks.ts",
+        "sha256": "9a9f96f0e5192fc964e656f1ef6d2a5ad3486ed543fbd453aa418970aa050e6c"
+      },
+      {
+        "path": "packages/cards/src/state.ts",
+        "sha256": "836f268be3253034e4a2ccfb377f5b7cfe6e60a9803d869430d5e3c7dd8d092d"
+      },
+      {
+        "path": "packages/cards/src/view.ts",
+        "sha256": "d7ee85dcf06806a38f61b5fadd2b26e8d1029bc96e602c517d4d8df826c41be7"
+      },
+      {
+        "path": "packages/cards/src/index.ts",
+        "sha256": "5e7b1d986778da9b8613f86cc999e8553794e309a33c1940c78893cdaa24a901"
+      },
+      {
+        "path": "packages/cards/src/teen-patti/types.ts",
+        "sha256": "71b9d34a7040792c9be2a2a3790741d73f100f1c45b02fef530e9d4f4a7b3912"
+      },
+      {
+        "path": "packages/cards/src/teen-patti/rank.ts",
+        "sha256": "176a06bd7066488847e5736625084a334169672a16548eef23e8305e630e8b82"
+      },
+      {
+        "path": "packages/cards/src/teen-patti/settlement.ts",
+        "sha256": "e6341ac9c4188104565925bba0158cc5f90a64f384bc49ac9451e0f5cc6deaa1"
+      },
+      {
+        "path": "packages/cards/src/teen-patti/engine.ts",
+        "sha256": "fe19756f82ac186dc3c7f57a20426d4a25f702ed8902dd655f617f8d22f9fb5c"
+      },
+      {
+        "path": "packages/cards/src/teen-patti/view.ts",
+        "sha256": "61ef146a1f71caa4f1638cf684f9d5f15709cbe9cfcb113eb60d8769e46279cf"
+      },
+      {
+        "path": "packages/cards/src/teen-patti/invariants.ts",
+        "sha256": "64a6405de6319e745f5b0ea979f77cae67259b75ebaa0b08bca15a20523fa8cc"
+      },
+      {
+        "path": "packages/cards/src/teen-patti/index.ts",
+        "sha256": "6c8b92b12251e911cd980809cdc095356c3a1602f2876727a0f073aa5f4f3c93"
+      },
+      {
+        "path": "packages/cards/src/rummy/melds.ts",
+        "sha256": "a79f8981c84b8407e04dfec5ef532e5691876c19ccb78462183bba1fb786e380"
+      },
+      {
+        "path": "packages/cards/src/rummy/state.ts",
+        "sha256": "455d45c1114263c7ca4b4750c66ce12cc6d946fd01282b83f097df4ee9cfe7f8"
+      },
+      {
+        "path": "packages/cards/src/rummy/index.ts",
+        "sha256": "0135a545a6c294cdcaace79f83eb8d04227b64276db459fc6cf8bbf66f3f74f6"
+      },
+      {
+        "path": "packages/protocol/src/new-cards.ts",
+        "sha256": "c3b0fa027239a977b84b1ba5e6299b8ad8a45912db8feda40deb4d1211ad02e0"
+      },
+      {
+        "path": "packages/twentynine/src/auction.ts",
+        "sha256": "7ff9dfbbcbf246d0f171a05a2db7ed62a69d5693c504c2938888ac3a6c4c06c4"
+      },
+      {
+        "path": "packages/twentynine/src/cards.ts",
+        "sha256": "1cab99cd1223032e04838c182cdcacb361b37693f4271706825eb3c79c1ae38f"
+      },
+      {
+        "path": "packages/twentynine/src/rules.ts",
+        "sha256": "6db40c44d90d89c44622ca29781c13f0baf359408afa1ae248ed7bc3cb07f5f9"
+      },
+      {
+        "path": "packages/twentynine/src/teams.ts",
+        "sha256": "e2a742d0c410fdcc648e18c207e7452479b13ba2a1046e51f8aad19a09f34ebb"
+      },
+      {
+        "path": "packages/twentynine/src/invariants.ts",
+        "sha256": "8fe8bcf43df47a53d6c873d8cb813893220d6f36c498a552a8541e66e058c634"
+      },
+      {
+        "path": "packages/twentynine/src/scoring.ts",
+        "sha256": "c4eee80c68d8d9dba786100d64d877166cbe7adaa536837b6639757db62c9c92"
+      },
+      {
+        "path": "packages/twentynine/src/state.ts",
+        "sha256": "3664500c9356b841d715a39393c5659d57815dc1bbb16fea3a17d459de156bab"
+      },
+      {
+        "path": "packages/twentynine/src/view.ts",
+        "sha256": "2d6598876ec08c58c5f8ebc14233933682ad11d49e8f937a658d29a5fbc05c54"
+      },
+      {
+        "path": "packages/twentynine/src/index.ts",
+        "sha256": "76319a6d291da07db375e99704f5dda187f3d28d3f6c30762ee5f6fb3fd6ee64"
+      },
+      {
+        "path": "packages/pachisa/src/sets.ts",
+        "sha256": "92e471501c015c7b05f727d81f8cdacd6cb445d408750d37255ffcc5e138c467"
+      },
+      {
+        "path": "packages/pachisa/src/rules.ts",
+        "sha256": "eacd7dfd248ec9e4a71f0497b1d43a44fbf295b05e2da7ccb1880004872e4d5b"
+      },
+      {
+        "path": "packages/pachisa/src/solve.ts",
+        "sha256": "009ac8bb98bba37a57e4e7e0cf06f3420db6020088cdabb751a70dba1b7658dd"
+      },
+      {
+        "path": "packages/pachisa/src/state.ts",
+        "sha256": "2650fdcb8b41b114c4ae92aa41b2f050dde196a3a0a323a75a70883124e0b1da"
+      },
+      {
+        "path": "packages/pachisa/src/invariants.ts",
+        "sha256": "49a57ea03a33839c75b27d261b23873714dba053c9f6f589d0f120ad2689cefe"
+      },
+      {
+        "path": "packages/pachisa/src/view.ts",
+        "sha256": "39a83abfe670fb4f2d656143a9fc63464c04297a345e31087a10a0b274093fcb"
+      },
+      {
+        "path": "packages/pachisa/src/index.ts",
+        "sha256": "9b29a0d47bd9a9d664807f855504448fe5b606315e4c05320fe50aff8a5500b1"
+      },
+      {
+        "path": "packages/threetwofive/src/cards.ts",
+        "sha256": "95c11c2fe59d9167e2259d2f0b56e25291559a09279f6fb2efe4842d21e31fb6"
+      },
+      {
+        "path": "packages/threetwofive/src/rules.ts",
+        "sha256": "1b0fb4e1a10f0d39a9cd416e55e7457b8eeb1725ba96274e18090a4710368752"
+      },
+      {
+        "path": "packages/threetwofive/src/state.ts",
+        "sha256": "22b0add3da6a8989746b91481a58262e603bb59cafa75b5c7bd5f68bb2d2be25"
+      },
+      {
+        "path": "packages/threetwofive/src/invariants.ts",
+        "sha256": "a4714f0c0f3b80fcb4cc3d38013974ec68c93adc968bc5a9852335722089acd7"
+      },
+      {
+        "path": "packages/threetwofive/src/view.ts",
+        "sha256": "08f9a7a71bee41accbc83ab20068b2b9fdb14a46e54fb08e81621da5114584c9"
+      },
+      {
+        "path": "packages/threetwofive/src/index.ts",
+        "sha256": "d06285d967970beae4a949457642f6965d84a5521e2f0195b86553d9314a971e"
+      },
+      {
+        "path": "packages/brand/src/hosting.ts",
+        "sha256": "fb429dc56177344b0ecce168a4a34f6c62dac59454ce534124f8d6412496030c"
+      },
+      {
+        "path": "packages/brand/src/names.ts",
+        "sha256": "641ba6ae4629cefa8dfe3e6950280b8a5e98816d42ccebe6867ddbabf6d54220"
+      },
+      {
+        "path": "packages/brand/src/game-icons.ts",
+        "sha256": "20841d4ee2e57494dc95bc8b88fea867a19d2cbfdef8942c98e986150b13850b"
+      },
+      {
+        "path": "packages/brand/src/index.ts",
+        "sha256": "c94e94180d0ad5e1414d3826d1f17d3a469560a1a3049a3f355bda80e2d11853"
+      },
+      {
+        "path": "packages/protocol/src/families.ts",
+        "sha256": "c0eebd7bc85d51e446007c82a2927a006a2953a1dea8a706b888300a1a173047"
+      },
+      {
+        "path": "packages/protocol/src/frames.ts",
+        "sha256": "9609636fb7b2470a7331d704bcc8f31d23aaf705781aca5f28b5c85598b596a0"
+      },
+      {
+        "path": "packages/identity/src/names.ts",
+        "sha256": "70a188bb51f4c70c06e03f2484c9e65f9ed59f470888bf05a2219fd1e80786b1"
+      },
+      {
+        "path": "packages/identity/src/rooms.ts",
+        "sha256": "b46f89e2da41bad552b036100804f8703b9f20efeac55772eb5deb94e00dc19e"
+      },
+      {
+        "path": "packages/protocol/src/uuid.ts",
+        "sha256": "9cba81e1909450bdf63e10b6d4dbdefe6b710de8e97a7e93cdf6c3fee6bec024"
+      },
+      {
+        "path": "packages/protocol/src/chips.ts",
+        "sha256": "cdf6711e325407343f72315ccffbac34d29677964439bfeaecd3f5b44a4eff28"
+      },
+      {
+        "path": "packages/protocol/src/draw.ts",
+        "sha256": "9e207aa943ffdea7ba705b99ebbc6c31c35a8346697eaedddde276cb4b03a625"
+      },
+      {
+        "path": "packages/identity/src/pools.ts",
+        "sha256": "a3b15ade41565263abc235f841e341979a0dd112202890ca8fc90346771a322c"
+      },
+      {
+        "path": "packages/protocol/src/queue.ts",
+        "sha256": "8bdd8db34aab9607558ce7df178aaacc49cef7d9c229f4c16ee246858ab4deb3"
+      },
+      {
+        "path": "packages/protocol/src/body.ts",
+        "sha256": "fff368dde5e194bed12057e733caadceb3a4d69c12fa2b5b393cd5360b05b77a"
+      },
+      {
+        "path": "packages/protocol/src/scorecard-new.ts",
+        "sha256": "04cd68bc002c358919a356a66dbce0c1bd77bd483238f276473ef6862f77fca6"
+      },
+      {
+        "path": "packages/protocol/src/scorecard.ts",
+        "sha256": "81f051276048021085ad56f02d7ecf30c07103b832d5cfbdaa01b233c196df1f"
+      },
+      {
+        "path": "packages/protocol/src/index.ts",
+        "sha256": "ffc3c07160b344ce13ac2e5fea041b7861cffa7ca4549b750e5a050f1d718f0b"
+      },
+      {
+        "path": "packages/studio/src/labels.ts",
+        "sha256": "90204de365a2ef969d6b41f18cd82640e8424c4c5a77c49ec4c693d4f42d62b8"
+      },
+      {
+        "path": "packages/studio/src/room/SeatNames.tsx",
+        "sha256": "0af4d714a9a666d35affe90268bb059a8f4e95cf8c4d09c48353b47a1b0dd49d"
+      },
+      {
+        "path": "packages/studio/src/cards/faces.ts",
+        "sha256": "e6cc95e4de76c4df451611ae1efadda63c671d1b6c9b7fbeefe2bbc162958981"
+      },
+      {
+        "path": "packages/studio/src/cards/CourtFigure.tsx",
+        "sha256": "19d0b05ba9bd9eacdcc6555954ce09f6c20393db1527158f7f6620b79b7b46a9"
+      },
+      {
+        "path": "packages/studio/src/cards/PlayingCard.tsx",
+        "sha256": "d3b5e05775417c03c3d48d43166bbb2ee8e50c770b627ceb49a9ebc908f6c359"
+      },
+      {
+        "path": "packages/studio/src/cards/index.ts",
+        "sha256": "9ea42d79db6e213debd01ab2701e8e3ec5606f14857d8447a032be904bac29a2"
+      },
+      {
+        "path": "apps/judgement/src/lib/cards/faces.ts",
+        "sha256": "f38a3b59027dd488266279b0b4664a213c0d2d97c1083b84a959ca7d6b0f0ea3"
+      },
+      {
+        "path": "apps/judgement/src/components/cards/RoundBreak.tsx",
+        "sha256": "2a2bb11b4b14a623238af7be6d996230e75bb9e97fd2a8b822cea201e3baa6df"
+      },
+      {
+        "path": "apps/judgement/src/components/cards/DealBreak.tsx",
+        "sha256": "d724bedf52b2cb86d0c678d1af8bbbd7dc1ce0d0e3189619f4769fd5a0c3f9cc"
+      },
+      {
+        "path": "apps/judgement/src/components/cards/ScorePad.tsx",
+        "sha256": "c08b6293ddd8fc15aebdf5caa79dddf138f7f69723041bd676c31615b5172c0a"
+      },
+      {
+        "path": "packages/studio/src/hooks/useLayoutReset.ts",
+        "sha256": "05ed41d5f2aa8aa2fa96521a9cf510bbbd48afeddbdfbde7599eb723c44eea9e"
+      },
+      {
+        "path": "apps/draw/src/lib/brush.ts",
+        "sha256": "cce32caa0fc1bb4032557f417f3b0d25b9b351695f91836483108e5a09645127"
+      },
+      {
+        "path": "apps/draw/src/lib/fill.ts",
+        "sha256": "f2b2a590cedb7e8664a874c2e0a48dbf9f01d39ac80a350bd71e334b2065bdd6"
+      },
+      {
+        "path": "apps/draw/src/lib/site.ts",
+        "sha256": "12e42a781cfb5957f5e93bd01247ea6064948703b1016447c4baddfb0a17e3e4"
+      },
+      {
+        "path": "apps/draw/src/lib/mark.ts",
+        "sha256": "d9ef22a4ec148a4e6113fabfbb2b28ac3bf2e36e0fac40dd535e62a369b47589"
+      },
+      {
+        "path": "apps/draw/src/lib/canvas.ts",
+        "sha256": "947da397e78652ca3a7f12f09c3fdcff56ca6137c8cb0324de52e234fed59300"
+      },
+      {
+        "path": "apps/draw/src/components/room/DrawCanvas.tsx",
+        "sha256": "9702d51145c95e51fbad69884f6572cc08a0241a8031e2c53558294c3ae602c7"
+      },
+      {
+        "path": "packages/studio/src/table/haptics.ts",
+        "sha256": "bee5096eb2b3353aef8c12b7b7a97d9a335fc6ac35845ad7998f07a8b827ba57"
+      }
+    ],
+    "adapters": [
+      "Fixed synthetic pathname, no Next router",
+      "Synthetic game state and callbacks",
+      "Original CardTable score modal JSX and Pachisa showdown functions extracted without edits"
+    ]
+  }
+]
