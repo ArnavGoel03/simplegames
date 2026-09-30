@@ -141,6 +141,13 @@ Historical game gate at2bdc3b1 passes4,285 package tests and126 Node controls pl
 
 ## Operational repairs and evidence
 
+- F76: Actual Chromium geometry measured the Circuit start action at44px while intent/reader controls were48px. A later shared entry rule overrode the canonical height; entry actions, seat actions and option controls now derive their minimum from the canonical token. Focused shared lint and five geometry detector controls pass. Full rebuilt browser acceptance remains required.
+- F77: Geometry verification now asserts the original measurement before hover. The previous failure correctly detected44px but labelled that existing mismatch as a hover change. The same detector and tolerance remain unchanged.
+- F78: Native modal focus can hand the boundary Tab to browser chrome, exposing body as activeElement. Shared lifecycle now cycles boundary Tab within the top sheet, filters unavailable controls and removes its listener during cleanup. Original-source calibration fails four cases; repaired13/13 controls, lint and typecheck pass. Fresh hosted keyboard acceptance remains required.
+- Latest source-bound gates before these follow-ups: Games b18e083 passes4,286 package tests,141 Node checks and the original-image receipt control; Studio9fc0e15 passes177 application tests and78 Node checks. Five b18e083 game candidates were built/uploaded and99 exact remote startup assets match local content.
+- Chromium36749438893 fails Deal round-dialog Tab containment and the44px Circuit entry action. Four-candidate PWA and network checks pass. WebKit36749443831 was cancelled. These runs do not certify promotion.
+- Studio temporary preview configuration was restored and read back as enabled:false/previews_enabled:false. A stale OAuth token initially returned401; Wrangler refreshed it, and provider restoration succeeded.
+
 - Quiet test/build contention was removed by serializing heavy gates; full success is recorded only from completed source-bound receipts.
 - Failed Judgement build ran out of disk; only its generated .next/.open-next directories were removed, then a clean rebuild passed. No source or existing live release was deleted.
 - Studio preview settings were read and saved, temporarily enabled for exact-candidate review; original enabled:false/previews_enabled:false must be restored after certification/promotion or stopping.

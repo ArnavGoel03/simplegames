@@ -47,9 +47,9 @@ try {
           results.push({ name, ...measured, failures });
           const region = await page.locator(".play-room-entry,.play-entry,.casino-arrival").count() ? page.locator(".play-room-entry,.play-entry,.casino-arrival").first() : page.locator("main").first();
           await region.screenshot({ path: new URL(`${name}.jpg`, output).pathname, type: "jpeg", quality: 85 });
+          assert.deepEqual(failures, [], `Unequal or clipped controls: ${name}`);
           const hover = page.locator(".play-room-actions button,.play-room-join button,.play-entry-panel:not([hidden]) .play-btn,.casino-enter,.button--large").first();
           if (await hover.isVisible()) { await hover.hover(); const hovered = await page.evaluate(measureControlGeometry); assert.deepEqual(geometryFailures(hovered.groups, hovered.expectedHeight), [], `Hover changed control geometry: ${name}`); await region.screenshot({ path: new URL(`${name}-hover.jpg`, output).pathname, type: "jpeg", quality: 85 }); await page.mouse.move(0, 0); }
-          assert.deepEqual(failures, [], `Unequal or clipped controls: ${name}`);
         }
       }
     }
