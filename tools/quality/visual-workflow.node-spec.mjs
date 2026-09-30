@@ -48,3 +48,9 @@ test("accessibility candidate verification remains enabled and respects diagnost
     assert.equal(enabled("Verify accessibility", ["cards"], { [flag]: true }), false);
   }
 });
+
+test("actual control geometry checks all candidate sites and excludes diagnostic-only modes", () => {
+  for (const site of ["studio", "board", "cards", "words", "draw", "teenpatti"]) assert.equal(enabled("Verify control geometry", [site]), true);
+  assert.equal(enabled("Verify control geometry", []), false);
+  for (const flag of ["controls_only", "network_probe_only", "cancelled"]) assert.equal(enabled("Verify control geometry", ["draw"], { [flag]: true }), false);
+});

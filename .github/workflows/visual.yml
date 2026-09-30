@@ -107,6 +107,11 @@ jobs:
         env:
           BROWSER_ENGINE: ${{ inputs.browser || 'chromium' }}
         run: node tools/verify-accessibility.mjs
+      - name: Verify control geometry
+        if: ${{ !inputs.controls_only && inputs.release_candidates_json && !inputs.network_probe_only && !cancelled() }}
+        env:
+          BROWSER_ENGINE: ${{ inputs.browser || 'chromium' }}
+        run: node tools/verify-control-geometry.mjs
       - name: Verify service worker lifecycle
         if: ${{ !inputs.controls_only && inputs.release_candidates_json && !inputs.network_probe_only && !cancelled() }}
         env:
