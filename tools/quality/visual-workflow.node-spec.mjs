@@ -2,9 +2,49 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 import { runInNewContext } from "node:vm";
+import { spawnSync } from "node:child_process";
 
 const workflow = readFileSync(new URL("../../.github/workflows/visual.yml", import.meta.url), "utf8");
 const history = "Verify synthetic player history with candidate styles";
+
+function installationContract(source) {
+  assert.match(source, /BROWSER_INSTALL_TIMEOUT_SECONDS: 150/);
+  const cache = source.split("      - name: Cache browser binaries\n")[1]?.split("      - ")[0];
+  assert(cache, "Missing browser binary cache");
+  assert.match(cache, /path: ~\/\.cache\/ms-playwright/);
+  assert.match(cache, /key: playwright-\$\{\{ runner\.os \}\}-\$\{\{ runner\.arch \}\}-\$\{\{ hashFiles\('package-lock\.json'\) \}\}-\$\{\{ inputs\.browser \|\| 'chromium' \}\}/);
+  assert.doesNotMatch(cache, /restore-keys:/);
+  for (const name of ["Install browser dependencies", "Install browser"]) {
+    const block = source.split(`      - name: ${name}\n`)[1]?.split("      - ")[0];
+    assert(block, `Missing ${name}`);
+    assert.doesNotMatch(block, /^        if:/m, "Cache hits must not bypass dependency validation or installation");
+    assert.match(block, /timeout-minutes: 3/);
+    assert.match(block, /timeout --kill-after=5s "\$\{BROWSER_INSTALL_TIMEOUT_SECONDS\}s" npx playwright install/);
+  }
+}
+
+test("browser installation caches exact lockfile and engine without skipping validation", () => {
+  installationContract(workflow);
+  for (const broken of [
+    workflow.replace("hashFiles('package-lock.json')", "'shared'"),
+    workflow.replace(/(key: playwright-[^\n]+)-\$\{\{ inputs\.browser \|\| 'chromium' \}\}/, "$1"),
+    workflow.replace("      - name: Install browser dependencies\n", "      - name: Install browser dependencies\n        if: steps.cache.outputs.cache-hit != 'true'\n"),
+  ]) assert.throws(() => installationContract(broken));
+});
+
+test("native dependency installation replaces the observed stalled mirror and bounds network work", () => {
+  const block = workflow.split("      - name: Install browser dependencies\n")[1].split("      - ")[0];
+  assert.match(workflow, /runs-on: ubuntu-24\.04\n    timeout-minutes: 10/);
+  assert.match(block, /https:\/\/archive\.ubuntu\.com\/ubuntu.+sudo tee \/etc\/apt\/apt-mirrors\.txt/);
+  assert.match(block, /Acquire::http::Timeout "15";/);
+  assert.match(block, /Acquire::https::Timeout "15";/);
+  assert.match(block, /Acquire::Retries "1";/);
+  assert.match(block, /npx playwright install-deps "\$BROWSER_ENGINE"/);
+  const shell = block.split("        run: |\n")[1].replace(/^          /gm, "");
+  const syntax = spawnSync("bash", ["-n"], { input: shell, encoding: "utf8", timeout: 1000 });
+  assert.equal(syntax.status, 0, syntax.stderr);
+  assert.match(workflow, /PLAYWRIGHT_DOWNLOAD_CONNECTION_TIMEOUT: 15000/);
+});
 
 function enabled(step, sites, flags = {}) {
   const block = workflow.split(`      - name: ${step}\n`)[1];

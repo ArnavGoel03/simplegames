@@ -56,6 +56,8 @@ jobs:
       BASELINE_ONLY: ${{ inputs.baseline }}
       RELEASE_CANDIDATES_JSON: ${{ inputs.release_candidates_json }}
       SITE_FILTER: ${{ inputs.site_filter }}
+      # Leave the ten-minute job budget available for browser checks.
+      BROWSER_INSTALL_TIMEOUT_SECONDS: 150
     steps:
       - uses: actions/checkout@v7.0.1
       - uses: actions/setup-node@v7.0.0
@@ -64,10 +66,29 @@ jobs:
           cache: npm
       - run: npm ci --no-audit --no-fund
       - run: npm run gate
-      - name: Install browser
+      - name: Cache browser binaries
+        uses: actions/cache@v6.1.0
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('package-lock.json') }}-${{ inputs.browser || 'chromium' }}
+      - name: Install browser dependencies
+        timeout-minutes: 3
         env:
           BROWSER_ENGINE: ${{ inputs.browser || 'chromium' }}
-        run: npx playwright install --with-deps "$BROWSER_ENGINE"
+        run: |
+          # The runner's Azure package mirror stalled native downloads for eight minutes.
+          test -f /etc/apt/apt-mirrors.txt
+          printf '%s\n' 'https://archive.ubuntu.com/ubuntu' | sudo tee /etc/apt/apt-mirrors.txt >/dev/null
+          # Bound individual connections and retries, as well as the complete command.
+          printf '%s\n' 'Acquire::http::Timeout "15";' 'Acquire::https::Timeout "15";' 'Acquire::Retries "1";' | sudo tee /etc/apt/apt.conf.d/99-playwright-network >/dev/null
+          timeout --kill-after=5s "${BROWSER_INSTALL_TIMEOUT_SECONDS}s" npx playwright install-deps "$BROWSER_ENGINE"
+      - name: Install browser
+        timeout-minutes: 3
+        env:
+          BROWSER_ENGINE: ${{ inputs.browser || 'chromium' }}
+          # Browser CDN connections must fail promptly rather than exhausting the job.
+          PLAYWRIGHT_DOWNLOAD_CONNECTION_TIMEOUT: 15000
+        run: timeout --kill-after=5s "${BROWSER_INSTALL_TIMEOUT_SECONDS}s" npx playwright install "$BROWSER_ENGINE"
       - if: ${{ !inputs.controls_only && !inputs.live && !inputs.casino_preview && !inputs.baseline && !inputs.release_candidates_json }}
         run: npm run build
       - name: Verify usable game controls

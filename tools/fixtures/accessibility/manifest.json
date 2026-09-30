@@ -3,10 +3,10 @@
     "schema": 1,
     "synthetic": true,
     "site": "cards",
-    "sourceHead": "e99a524d47479efccf27c7992f83e71a099d0c63",
-    "sourceFingerprint": "1dec984992d9838592d386521dbcb3a5b008d3e6b7bd95051efbb4e9ce20a7f2",
-    "buildSource": "61160f609a3c99f97b3cd42ce42ce740ab92546f23303175999e3b5b558c8438",
-    "buildOutput": "59a45d4bb89df2037c26e93bb30c688cc4f7c696fccb1ef7a53c5a4c771dadc8",
+    "sourceHead": "8cae7b1d0d49a311688076ba252ebbb2aa647d0f",
+    "sourceFingerprint": "a4c0b5c74249fac563632f2bc03013bee5a79edf14eabd254613331a83d40f2a",
+    "buildSource": "a4b4c340b55978b985985d5488f9a9c4617cd71e6c6fa6c7f5bd9d934474d766",
+    "buildOutput": "07ea593eef09cbbbdf4050572885a812552389ca7f29f962fd0e8b8ad0dd3c0c",
     "sha256": "fddf145978ae78ae0730733b44b0666211506ed7503894b0693e48bd279fbe22",
     "sources": [
       {
@@ -544,10 +544,10 @@
     "schema": 1,
     "synthetic": true,
     "site": "words",
-    "sourceHead": "e99a524d47479efccf27c7992f83e71a099d0c63",
-    "sourceFingerprint": "1dec984992d9838592d386521dbcb3a5b008d3e6b7bd95051efbb4e9ce20a7f2",
-    "buildSource": "5b384aacd716b043d650a10197c74d1f58ee9e17fd7bee6a39ca2a2b212e176c",
-    "buildOutput": "125a1f281085bea5f99ee8278d8e2bf63f5e08751947dcc9a3309c7305375d3c",
+    "sourceHead": "8cae7b1d0d49a311688076ba252ebbb2aa647d0f",
+    "sourceFingerprint": "a4c0b5c74249fac563632f2bc03013bee5a79edf14eabd254613331a83d40f2a",
+    "buildSource": "c320f83be6657ed15eda101ddaadc4a64e5573df2fb68a0a98c8cd01076a443f",
+    "buildOutput": "dcb436fb0833d82887d5c08a0bbcfda9f7ed3f90ccd67f9474758c31b3f2a046",
     "sha256": "fddf145978ae78ae0730733b44b0666211506ed7503894b0693e48bd279fbe22",
     "sources": [
       {
@@ -1085,10 +1085,10 @@
     "schema": 1,
     "synthetic": true,
     "site": "draw",
-    "sourceHead": "e99a524d47479efccf27c7992f83e71a099d0c63",
-    "sourceFingerprint": "1dec984992d9838592d386521dbcb3a5b008d3e6b7bd95051efbb4e9ce20a7f2",
-    "buildSource": "502d8ee0540d9802fd094a7af59083d4d9fab7b3d8a222cf4d5f3524b701d320",
-    "buildOutput": "d0cd27e3db6695c591004d0ed114c900b5626a233d654be99d9a2f94e769905f",
+    "sourceHead": "8cae7b1d0d49a311688076ba252ebbb2aa647d0f",
+    "sourceFingerprint": "a4c0b5c74249fac563632f2bc03013bee5a79edf14eabd254613331a83d40f2a",
+    "buildSource": "98a83060a54f05caf4bcb3e3a6b5b90196061e42d85893add300565ffb5d2db5",
+    "buildOutput": "5625d27ee873d927440ff654e242c4672d03c9b3273bde22d9b8eb39c1da76c4",
     "sha256": "fddf145978ae78ae0730733b44b0666211506ed7503894b0693e48bd279fbe22",
     "sources": [
       {
