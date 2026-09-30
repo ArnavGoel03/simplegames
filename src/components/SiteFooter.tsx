@@ -17,9 +17,9 @@ export function SiteFooter() {
         ))}
       </nav>
       <nav className="colophon__legal" aria-label="Legal">
-        <Link href={LEGAL_INDEX_PATH}>Legal</Link>
+        <Link href={LEGAL_INDEX_PATH} prefetch={false}>Legal</Link>
         {LEGAL_DOCS.map((doc) => (
-          <Link key={doc.slug} href={legalPath(doc.slug)}>
+          <Link key={doc.slug} href={legalPath(doc.slug)} prefetch={false}>
             {doc.title}
           </Link>
         ))}

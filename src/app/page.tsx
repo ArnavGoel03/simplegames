@@ -40,9 +40,9 @@ export default function HomePage() {
           </p>
           <p className="cta">
             {first ? (
-              <Link className="button button--large" href={GAMES_LINK.path}>
+              <a className="button button--large" href={GAMES_LINK.path}>
                 {GAMES_LINK.label}<ArrowUpRight />
-              </Link>
+              </a>
             ) : null}
             <Link className="button button--large button--quiet" href="/fair-play">
               How the check works
