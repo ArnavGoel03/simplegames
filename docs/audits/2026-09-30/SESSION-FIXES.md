@@ -4,7 +4,7 @@ Scope: user's thorough Glass Table Games red team, followed by "verify n fix all
 
 ## Deployment and verification checkpoint
 
-Latest user steering: finish every fix, deploy after thorough verification, and correct inconsistent button geometry across the studio and different games. Final game source5d5ed65 adds the schema preflight, Circuit reading control and shared geometry; it requires fresh gate/build/browser receipts.
+Latest user steering: finish every fix, deploy after thorough verification, and correct inconsistent button geometry across the studio and different games. Final game sourceb18e083 adds the schema preflight, Circuit reading control and shared geometry; it requires fresh gate/build/browser receipts. The fixture import and AI progress follow-ups are included.
 
 
 - Live: realtime source5934392, immutable Worker568e01c4-01bd-4b4d-9816-a124842a03fa at100%. Existing rollback4aea2b89 retained; provider readback and /health200 verified.
@@ -132,6 +132,8 @@ Historical game gate at2bdc3b1 passes4,285 package tests and126 Node controls pl
 | F72 | Calibrate actual action geometry on all six homes and every intent panel in both themes and three viewports, capture normal/hover regions, allow wrapped labels and exclude dense/recent-room controls. | Studio405889d,69a6d0f,031598d | Known undersized positive detector fails; focused controls/lint pass. Final actual browser execution pending. |
 
 | F73 | Include the new database preflight dependency in the synthetic OpenNext release fixture. | Games3af345c | Full gate exposed ERR_MODULE_NOT_FOUND in the fixture; repaired actual adapter suite10/10 and focused lint pass. Final full gate rerun pending. |
+
+| F74 | Emit completed AI cases with the verbose reporter so the release runner distinguishes progress from a hung process. | Gamesb18e083 | Same166 tests pass with166 completion lines; no idle/test timeout increased. Full source-bound gate and unchanged typecheck budget still required. |
 
 ## Operational repairs and evidence
 
