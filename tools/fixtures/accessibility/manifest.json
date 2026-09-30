@@ -3,11 +3,11 @@
     "schema": 1,
     "synthetic": true,
     "site": "cards",
-    "sourceHead": "5934392f3daa47d63b9b3a7b52953396204031ad",
-    "sourceFingerprint": "dfbb9ef47d1e8a11ee8535e905551fbf764b42f326f88556c44f3f3680accbd7",
-    "buildSource": "4368f7b863075d290c25646d641e08af1fdfa302f0ce56092b227347e7b75c58",
-    "buildOutput": "b0a7a62596d72267f9b1fb3b065512e4408dd6c4742efd02f3592ebf68721a58",
-    "sha256": "d0abd19919c406f442adfc182b8cbd6cb195771c65051e25195add3e18ce1c3e",
+    "sourceHead": "2bdc3b191188174fb5f846bc1457a0f8183bf98b",
+    "sourceFingerprint": "f11e6490a220f2adcb55a3b78d447a2044dc60ca0e6fe0328910a4e059efa51d",
+    "buildSource": "d7f0111365cdc680535ef574f840846c6dda6580125b55802bfaf2728ad89a6f",
+    "buildOutput": "dc9bd789c7953c9d1990a4bb835a4e2beab871129ebd34cb60a1b7119a06ef61",
+    "sha256": "250d0c6298dd9d96d9f4e8fa549b2e6bc8c3dfb2a9544801ce947cd90f32b2b5",
     "sources": [
       {
         "path": "apps/judgement/src/components/cards/CardTable.tsx",
@@ -26,12 +26,16 @@
         "sha256": "e6a643599c09bb0ec778b4b0d8a9e1d66835bd2101d3a420273b11b817b83c14"
       },
       {
+        "path": "packages/studio/src/site/read-aloud-loader.ts",
+        "sha256": "b28a21da7be51793244431ec014c5bbfd984972f8f1a679515a97ac9329ee7ad"
+      },
+      {
         "path": "packages/studio/src/site/read-aloud.ts",
         "sha256": "bc9d074d51a92dfdd185a410fcb4f4992f6b010b4dc1674d4521dbfc26ce1cfa"
       },
       {
         "path": "packages/studio/src/site/ReadAloud.tsx",
-        "sha256": "c4932c3fdee4184e0f8288430770423029c2ecdc3999e12865b03d0d97e51f57"
+        "sha256": "c3d0d1e7fef7eea6dc2a5f361210d8ea7cec3578ee3bbb055e548b9b2cea89c6"
       },
       {
         "path": "packages/lattice/src/board.ts",
@@ -540,11 +544,11 @@
     "schema": 1,
     "synthetic": true,
     "site": "words",
-    "sourceHead": "5934392f3daa47d63b9b3a7b52953396204031ad",
-    "sourceFingerprint": "dfbb9ef47d1e8a11ee8535e905551fbf764b42f326f88556c44f3f3680accbd7",
-    "buildSource": "d632a5dadb564b1202deec65ed5005c9a62e7be7bad4f815b15e368c36c88a2d",
-    "buildOutput": "16e89a7bbff1d3c640a7b55f1f010d336dcee40352e2ac5b40fe343198341797",
-    "sha256": "d0abd19919c406f442adfc182b8cbd6cb195771c65051e25195add3e18ce1c3e",
+    "sourceHead": "2bdc3b191188174fb5f846bc1457a0f8183bf98b",
+    "sourceFingerprint": "f11e6490a220f2adcb55a3b78d447a2044dc60ca0e6fe0328910a4e059efa51d",
+    "buildSource": "50ef812c11fc503845cbe4516ec7b141986dc1ce21f9c7e8a9958d62c3d8ba26",
+    "buildOutput": "9a5dd009161b6a8c0032b8dc6fc76e11b166a27085b6d1aa966753c1553fb321",
+    "sha256": "250d0c6298dd9d96d9f4e8fa549b2e6bc8c3dfb2a9544801ce947cd90f32b2b5",
     "sources": [
       {
         "path": "apps/judgement/src/components/cards/CardTable.tsx",
@@ -563,12 +567,16 @@
         "sha256": "e6a643599c09bb0ec778b4b0d8a9e1d66835bd2101d3a420273b11b817b83c14"
       },
       {
+        "path": "packages/studio/src/site/read-aloud-loader.ts",
+        "sha256": "b28a21da7be51793244431ec014c5bbfd984972f8f1a679515a97ac9329ee7ad"
+      },
+      {
         "path": "packages/studio/src/site/read-aloud.ts",
         "sha256": "bc9d074d51a92dfdd185a410fcb4f4992f6b010b4dc1674d4521dbfc26ce1cfa"
       },
       {
         "path": "packages/studio/src/site/ReadAloud.tsx",
-        "sha256": "c4932c3fdee4184e0f8288430770423029c2ecdc3999e12865b03d0d97e51f57"
+        "sha256": "c3d0d1e7fef7eea6dc2a5f361210d8ea7cec3578ee3bbb055e548b9b2cea89c6"
       },
       {
         "path": "packages/lattice/src/board.ts",
@@ -1077,11 +1085,11 @@
     "schema": 1,
     "synthetic": true,
     "site": "draw",
-    "sourceHead": "5934392f3daa47d63b9b3a7b52953396204031ad",
-    "sourceFingerprint": "dfbb9ef47d1e8a11ee8535e905551fbf764b42f326f88556c44f3f3680accbd7",
-    "buildSource": "1160bb582bc404318fd94bd0c0d76ff47804c3d99b4a1bdab277fa369cc71f4a",
-    "buildOutput": "b8e03a04321be6f380c51e54f7a0a9804ac043ae444596a8115498445a6b1cc1",
-    "sha256": "d0abd19919c406f442adfc182b8cbd6cb195771c65051e25195add3e18ce1c3e",
+    "sourceHead": "2bdc3b191188174fb5f846bc1457a0f8183bf98b",
+    "sourceFingerprint": "f11e6490a220f2adcb55a3b78d447a2044dc60ca0e6fe0328910a4e059efa51d",
+    "buildSource": "33370bea760d6a8ee22c60d732777299d903b97dfc94dc2cb9fb6127b85e954e",
+    "buildOutput": "943129b50967606d7a047d0ab23a2a5246877eb46b096aec0848c522e709e590",
+    "sha256": "250d0c6298dd9d96d9f4e8fa549b2e6bc8c3dfb2a9544801ce947cd90f32b2b5",
     "sources": [
       {
         "path": "apps/judgement/src/components/cards/CardTable.tsx",
@@ -1100,12 +1108,16 @@
         "sha256": "e6a643599c09bb0ec778b4b0d8a9e1d66835bd2101d3a420273b11b817b83c14"
       },
       {
+        "path": "packages/studio/src/site/read-aloud-loader.ts",
+        "sha256": "b28a21da7be51793244431ec014c5bbfd984972f8f1a679515a97ac9329ee7ad"
+      },
+      {
         "path": "packages/studio/src/site/read-aloud.ts",
         "sha256": "bc9d074d51a92dfdd185a410fcb4f4992f6b010b4dc1674d4521dbfc26ce1cfa"
       },
       {
         "path": "packages/studio/src/site/ReadAloud.tsx",
-        "sha256": "c4932c3fdee4184e0f8288430770423029c2ecdc3999e12865b03d0d97e51f57"
+        "sha256": "c3d0d1e7fef7eea6dc2a5f361210d8ea7cec3578ee3bbb055e548b9b2cea89c6"
       },
       {
         "path": "packages/lattice/src/board.ts",
