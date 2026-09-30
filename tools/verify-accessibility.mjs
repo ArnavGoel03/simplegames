@@ -7,10 +7,10 @@ import { accessibilitySites, verifyFixture } from "./accessibility-fixture.mjs";
 
 const directory = new URL("./fixtures/accessibility/", import.meta.url);
 const supported = candidates.filter(candidate => accessibilitySites[candidate.site]);
-if (!supported.length) { console.log("No migrated accessibility candidate supplied"); process.exit(0); }
-assert(existsSync(new URL("manifest.json", directory)), "Migrated accessibility candidates require canonical fixtures");
-const manifests = JSON.parse(await readFile(new URL("manifest.json", directory), "utf8"));
-const bytes = await readFile(new URL("bundle.js", directory));
+if (!candidates.length) { console.log("No accessibility candidate supplied"); process.exit(0); }
+if (supported.length) assert(existsSync(new URL("manifest.json", directory)), "Migrated accessibility candidates require canonical fixtures");
+const manifests = supported.length ? JSON.parse(await readFile(new URL("manifest.json", directory), "utf8")) : [];
+const bytes = supported.length ? await readFile(new URL("bundle.js", directory)) : null;
 await mkdir(output, { recursive: true });
 const results = [];
 const diagnostics = [];
@@ -23,6 +23,54 @@ function fakeSpeech() {
   Object.defineProperty(window, "SpeechSynthesisUtterance", { configurable: true, value: class { constructor(text) { this.text = text; } } });
 }
 try {
+  // Exercise the actual built client control and deferred speech chunk on every home.
+  for (const candidate of candidates) {
+    for (const colorScheme of ["dark", "light"]) {
+      const context = await browser.newContext({ viewport: { width: 390, height: 844 }, colorScheme, reducedMotion: "reduce", serviceWorkers: "block" });
+      await context.addInitScript(omitServiceWorkerCapability);
+      await context.addInitScript(fakeSpeech);
+      const page = await context.newPage();
+      page.setDefaultTimeout(15_000);
+      const errors = [];
+      page.on("pageerror", error => errors.push(error.message));
+      page.on("console", message => { if (message.type() === "error") errors.push(message.text()); });
+      const diagnostic = { site: candidate.site, colorScheme, actualHome: true, errors, requests: [] };
+      diagnostics.push(diagnostic);
+      page.on("requestfailed", request => diagnostic.requests.push({ url: request.url(), failure: request.failure()?.errorText }));
+      try {
+        const response = await page.goto(candidate.origin, { waitUntil: "domcontentloaded", timeout: 20_000 });
+        assert(response?.ok(), "Actual reading candidate home failed");
+        assert.equal(await observeSource(page, candidate.site), candidate.sourceHead);
+        const read = page.locator("main [data-read-aloud-control] button").first();
+        await read.waitFor({ state: "visible" });
+        await page.waitForFunction(() => document.querySelector("main [data-read-aloud-control] button")?.disabled === false);
+        assert.equal(await page.evaluate(() => speechSynthesis.utterances.length), 0, "Candidate read aloud started without activation");
+        const activate = async () => {
+          await read.focus(); await page.keyboard.press("Enter");
+          await page.waitForFunction(() => Boolean(speechSynthesis.current?.text?.trim()) && document.querySelector("main [data-read-aloud-control] button")?.getAttribute("aria-pressed") === "true");
+          assert.equal(await read.getAttribute("aria-busy"), "false", "Deferred reading import remained busy");
+          assert(await page.evaluate(() => document.querySelector("main").textContent.replace(/\s+/g, " ").includes(speechSynthesis.current.text.replace(/\s+/g, " "))), "Actual speech did not read main content");
+        };
+        const noHighlight = () => page.evaluate(() => !(CSS.highlights?.has("play-reading-word") || false) && document.querySelectorAll(".play-reading-overlay").length === 0);
+        await activate();
+        await page.evaluate(() => { speechSynthesis.current.onstart?.({}); speechSynthesis.current.onboundary?.({ charIndex: 0 }); });
+        await page.screenshot({ path: new URL(`accessibility-home-reading-${candidate.site}-${colorScheme}-390x844.jpg`, output).pathname, fullPage: true, type: "jpeg", quality: 85 });
+        await read.press("Enter");
+        await page.waitForFunction(() => speechSynthesis.current === null && document.querySelector("main [data-read-aloud-control] button")?.getAttribute("aria-pressed") === "false");
+        assert(await noHighlight(), "Stop retained actual speech highlights");
+        await activate();
+        await page.evaluate(() => { window.actualLateSpeech = speechSynthesis.current; window.dispatchEvent(new PopStateEvent("popstate")); });
+        await page.waitForFunction(() => speechSynthesis.current === null && document.querySelector("main [data-read-aloud-control] button")?.getAttribute("aria-pressed") === "false");
+        const utterances = await page.evaluate(() => speechSynthesis.utterances.length);
+        await page.evaluate(() => { window.actualLateSpeech.onboundary?.({ charIndex: 0 }); window.actualLateSpeech.onend?.({}); });
+        assert(await noHighlight(), "Late actual speech restored cancelled highlights");
+        assert.equal(await page.evaluate(() => speechSynthesis.utterances.length), utterances, "Late actual speech resumed after navigation");
+        assert.equal(await read.getAttribute("aria-pressed"), "false");
+        assert.deepEqual(errors, [], "Actual candidate reading emitted browser errors");
+        results.push({ site: candidate.site, colorScheme, actualHome: true, keyboardPlay: true, noAutoplay: true, stop: true, navigation: true, lateSpeechCancelled: true });
+      } finally { await context.close(); }
+    }
+  }
   for (const candidate of supported) {
     const manifest = manifests.find(item => item.site === candidate.site);
     assert(manifest, `Missing accessibility fixture: ${candidate.site}`);
@@ -182,7 +230,7 @@ try {
     await recordEvidence(candidate.site, candidate.sourceHead, [{ id: "accessibility", status: "passed", details: "Canonical migrated surfaces, native focus lifecycle, keyboard drawing, synthetic speech boundary and navigation cancellation" }], [], candidate.origin);
   }
 } finally {
-  await writeFile(new URL(`accessibility-${engine}.json`, output), JSON.stringify({ candidates: supported, synthetic: true, speech: "Deterministic injected speech, no installed voice required", diagnostics, results }, null, 2));
+  await writeFile(new URL(`accessibility-${engine}.json`, output), JSON.stringify({ candidates, fixtureCandidates: supported, synthetic: true, speech: "Deterministic injected speech, no installed voice required", diagnostics, results }, null, 2));
   await browser.close();
 }
-console.log(`Verified ${results.length} canonical accessibility layouts`);
+console.log(`Verified ${results.length} actual and canonical accessibility checks`);

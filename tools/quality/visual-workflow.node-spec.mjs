@@ -42,7 +42,7 @@ test("a Casino-only release retains every existing Casino browser check", () => 
 });
 
 test("accessibility candidate verification remains enabled and respects diagnostic modes", () => {
-  for (const site of ["words", "cards", "draw", "teenpatti"]) assert.equal(enabled("Verify accessibility", [site]), true);
+  for (const site of ["studio", "board", "words", "cards", "draw", "teenpatti"]) assert.equal(enabled("Verify accessibility", [site]), true);
   assert.equal(enabled("Verify accessibility", []), false);
   for (const flag of ["controls_only", "network_probe_only", "cancelled"]) {
     assert.equal(enabled("Verify accessibility", ["cards"], { [flag]: true }), false);

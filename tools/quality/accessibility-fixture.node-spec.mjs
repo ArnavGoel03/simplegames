@@ -37,3 +37,14 @@ test("canonical browser bundle initializes without an injected Node process", ()
   bootstrap(bytes);
   assert.throws(() => bootstrap("process.env.NEXT_PUBLIC_SITE_URL;" + bytes), /process is not defined/);
 });
+
+test("actual reading homes cover all supplied candidates without changing fixture evidence scope", () => {
+  const source = readFileSync(new URL("../verify-accessibility.mjs", import.meta.url), "utf8");
+  const actual = source.slice(source.indexOf("// Exercise the actual built client control"), source.indexOf("for (const candidate of supported)"));
+  assert(actual.includes("for (const candidate of candidates)"));
+  for (const contract of ["observeSource(page, candidate.site)", "candidate.sourceHead", "omitServiceWorkerCapability", "fakeSpeech", "speechSynthesis.utterances.length), 0", 'page.keyboard.press("Enter")', "aria-busy", "PopStateEvent", "actualLateSpeech.onboundary", "actualLateSpeech.onend", "accessibility-home-reading-"]) assert(actual.includes(contract), contract);
+  assert(!actual.includes("recordEvidence("), "Actual homes must not invent a migrated-surface release evidence requirement");
+  assert(source.includes("fixtureCandidates: supported"));
+  assert(source.includes("if (!candidates.length)"));
+  assert(!source.includes("if (!supported.length)"));
+});
