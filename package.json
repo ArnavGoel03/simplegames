@@ -29,7 +29,7 @@
     "postinstall": "npm ci --prefix tools/eslint-compat --ignore-scripts --no-audit --no-fund"
   },
   "dependencies": {
-    "next": "16.3.7",
+    "next": "16.4.3",
     "react": "19.3.0",
     "react-dom": "19.3.0"
   },
