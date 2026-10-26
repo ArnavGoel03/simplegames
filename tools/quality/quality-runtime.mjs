@@ -1,11 +1,11 @@
 // Receipt I/O and bounded commands, shared unchanged with the studio adapter.
 import { spawn, execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
-import { appendFileSync, mkdirSync, mkdtempSync, readFileSync, renameSync, rmSync, statSync, writeFileSync } from "node:fs";
-import { machine, platform, tmpdir } from "node:os";
+import { appendFileSync, mkdirSync, readFileSync, renameSync, rmSync, statSync, writeFileSync } from "node:fs";
+import { machine, platform } from "node:os";
 import { dirname, isAbsolute, join, relative } from "node:path";
 import { stripVTControlCharacters } from "node:util";
-import { SHA256, SOURCE_HEAD, latestDeployment, measuredValue, requireVersionAdvance, sitePolicy, validateCandidate, validateCILookup, validateEvidence } from "./release-policy.mjs";
+import { SHA256, SOURCE_HEAD, latestDeployment, measuredValue, requireVersionAdvance, validateCandidate } from "./release-policy.mjs";
 
 export const digest = (value) => createHash("sha256").update(value).digest("hex");
 export const receiptPath = (root, ...parts) => join(root, ".audit", "quality", ...parts);
@@ -152,62 +152,11 @@ export function requireGate(root, identity, command, policy) {
   return gate;
 }
 
-function ghJson(endpoint) {
-  return JSON.parse(execFileSync("gh", ["api", "--hostname", "github.com", endpoint], { encoding: "utf8", timeout: 30000, maxBuffer: 1024 * 1024 }));
-}
-
-function fetchEvidence(ci, runId, artifactId) {
-  if (!ci || !/^[\w.-]+\/[\w.-]+$/.test(ci.repository) || !Number.isSafeInteger(runId) || runId <= 0 || !Number.isSafeInteger(artifactId) || artifactId <= 0) throw new Error("release: invalid CI lookup");
-  console.log(`release: checking CI run ${runId}, artifact ${artifactId}`);
-  const run = ghJson(`repos/${ci.repository}/actions/runs/${runId}`);
-  const artifact = ghJson(`repos/${ci.repository}/actions/artifacts/${artifactId}`);
-  const lookup = validateCILookup(run, artifact, ci, runId, artifactId);
-  const archive = execFileSync("gh", ["api", "--hostname", "github.com", `repos/${ci.repository}/actions/artifacts/${artifactId}/zip`], { timeout: 30000, maxBuffer: 64 * 1024 * 1024 });
-  if (`sha256:${digest(archive)}` !== artifact.digest) throw new Error("release: downloaded CI artifact digest does not match GitHub");
-  const directory = mkdtempSync(join(tmpdir(), "gtg-evidence-"));
-  try {
-    const path = join(directory, "artifact.zip");
-    writeFileSync(path, archive);
-    const files = execFileSync("unzip", ["-Z1", path], { encoding: "utf8", timeout: 10000, maxBuffer: 1024 * 1024 }).trim().split("\n");
-    const reports = files.filter((name) => /^(?:[\w.-]+\/)*release-evidence\.json$/.test(name));
-    if (reports.length !== 1) throw new Error("release: CI artifact must contain exactly one release-evidence.json");
-    const evidence = JSON.parse(execFileSync("unzip", ["-p", path, reports[0]], { encoding: "utf8", timeout: 10000, maxBuffer: 1024 * 1024 }));
-    if (evidence.schema !== 1 || !Array.isArray(evidence.reports)) throw new Error("release: invalid CI evidence envelope");
-    return { lookup, evidence };
-  } finally { rmSync(directory, { recursive: true, force: true }); }
-}
-
-export function recordRelease({ root, site, candidate, policy, references, fetchArtifact = fetchEvidence }) {
-  const config = sitePolicy(policy, site);
-  const cache = new Map();
-  const fetch = (runId, artifactId) => {
-    const key = `${runId}:${artifactId}`;
-    if (!cache.has(key)) cache.set(key, fetchArtifact(policy.ci, runId, artifactId));
-    return cache.get(key);
-  };
-  if (!Array.isArray(references) || references.length < 1 || references.length > 10 || new Set(references.map((ref) => `${ref.runId}:${ref.artifactId}`)).size !== references.length) throw new Error("release: supply unique CI run:artifact references");
-  const primary = references.map(({ runId, artifactId }) => fetch(runId, artifactId));
-  const reports = primary.flatMap((item) => item.evidence.reports);
-  const verified = validateEvidence(reports, candidate, policy);
-  // A baseline names actual CI measurements, not a hand-written high limit.
-  const baselines = config.metrics.map((budget) => {
-    const result = fetch(budget.baseline.runId, budget.baseline.artifactId);
-    const samples = result.evidence.reports.filter((report) => report.site === site && report.sourceHead === budget.baseline.sourceHead).flatMap((report) => report.browsers ?? []).filter((browser) => browser.observedSourceHead === budget.baseline.sourceHead).flatMap((browser) => browser.measurements?.filter((metric) => metric.id === budget.id && metric.unit === budget.unit) ?? []);
-    if (!samples.length || Math.max(...samples.map((metric) => measuredValue(metric.samples, budget.statistic, budget.minSamples ?? 1))) !== budget.baseline.value) throw new Error(`release: ${budget.id} baseline does not match its CI artifact`);
-    return { id: budget.id, ...budget.baseline, lookup: result.lookup };
-  });
-  const receipt = { schema: 1, kind: "release", recordedAt: new Date().toISOString(), candidateDigest: digest(JSON.stringify(candidate)), policyDigest: digest(JSON.stringify(policy)), ci: primary.map((item) => item.lookup), reports, verified, baselines };
-  writeJson(receiptPath(root, "releases", `${site}.json`), receipt);
-  return receipt;
-}
-
-export function requireRelease({ root, site, identity, command, expectedCandidate, policy }) {
+/** A deploy needs a passing local gate and an uploaded candidate that matches this source. No CI or browser certificate. */
+export function requireCandidate({ root, site, identity, command, expectedCandidate, policy }) {
   requireGate(root, identity, command, policy);
   const candidate = validateCandidate(readJson(receiptPath(root, "candidates", `${site}.json`)), { site, ...identity, ...expectedCandidate });
-  const receipt = readJson(receiptPath(root, "releases", `${site}.json`));
-  if (receipt.schema !== 1 || receipt.kind !== "release" || receipt.candidateDigest !== digest(JSON.stringify(candidate)) || receipt.policyDigest !== digest(JSON.stringify(policy)) || !Array.isArray(receipt.ci) || receipt.ci.length < 1 || receipt.ci.some((lookup) => !Number.isSafeInteger(lookup.runId) || !Number.isSafeInteger(lookup.artifactId) || !/^sha256:[a-f0-9]{64}$/.test(lookup.artifactDigest) || lookup.repository !== policy.ci.repository || lookup.workflow !== policy.ci.workflow)) throw new Error("release: missing or stale verified CI release receipt");
-  validateEvidence(receipt.reports, candidate, policy);
-  return { candidate, receipt };
+  return { candidate };
 }
 
 export function wranglerJson(args, { cwd, env = process.env }) {

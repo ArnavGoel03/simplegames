@@ -27,7 +27,7 @@ import { buildInfo } from "./build-info.mjs";
 import { writeServiceWorker } from "./generate-worker.mjs";
 
 import { root, identity, buildSource, gateCommand, policy, workerName, previewOrigin } from "./release-context.mjs";
-import { commandOutcome, promoteCandidate, readJson, receiptPath, requireRelease, runRecorded, writeJson } from "./quality/quality-runtime.mjs";
+import { commandOutcome, promoteCandidate, readJson, receiptPath, requireCandidate, runRecorded, writeJson } from "./quality/quality-runtime.mjs";
 import { parseUploadedVersion } from "./quality/release-policy.mjs";
 import { prepareStaticCache, requireCanonicalEnvironment, requireFreshNextBuild, staticReleaseEnvironment } from "./quality/open-next-release.mjs";
 
@@ -57,7 +57,7 @@ try {
   if (command === "deploy") {
     const validate = () => {
       const candidate = readJson(receiptPath(root, "candidates", "studio.json"));
-      return requireRelease({ root, site: "studio", identity: identity(), command: gateCommand,
+      return requireCandidate({ root, site: "studio", identity: identity(), command: gateCommand,
         expectedCandidate: { appVersion: JSON.parse(readFileSync(new URL("../package.json", import.meta.url), "utf8")).version, worker: workerName(), buildSource: buildSource(), origin: previewOrigin(candidate.candidateVersion) }, policy: policy() });
     };
     const releaseEnv = await staticReleaseEnvironment(root, env);

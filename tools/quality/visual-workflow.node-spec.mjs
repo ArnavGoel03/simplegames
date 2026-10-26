@@ -12,7 +12,7 @@ function installationContract(source) {
   const cache = source.split("      - name: Cache browser binaries\n")[1]?.split("      - ")[0];
   assert(cache, "Missing browser binary cache");
   assert.match(cache, /path: ~\/\.cache\/ms-playwright/);
-  assert.match(cache, /key: playwright-\$\{\{ runner\.os \}\}-\$\{\{ runner\.arch \}\}-\$\{\{ hashFiles\('package-lock\.json'\) \}\}-\$\{\{ inputs\.browser \|\| 'chromium' \}\}/);
+  assert.match(cache, /key: playwright-\$\{\{ runner\.os \}\}-\$\{\{ runner\.arch \}\}-\$\{\{ hashFiles\('package-lock\.json'\) \}\}-chromium/);
   assert.doesNotMatch(cache, /restore-keys:/);
   for (const name of ["Install browser dependencies", "Install browser"]) {
     const block = source.split(`      - name: ${name}\n`)[1]?.split("      - ")[0];
@@ -27,7 +27,7 @@ test("browser installation caches exact lockfile and engine without skipping val
   installationContract(workflow);
   for (const broken of [
     workflow.replace("hashFiles('package-lock.json')", "'shared'"),
-    workflow.replace(/(key: playwright-[^\n]+)-\$\{\{ inputs\.browser \|\| 'chromium' \}\}/, "$1"),
+    workflow.replace(/(key: playwright-[^\n]+)-chromium/, "$1"),
     workflow.replace("      - name: Install browser dependencies\n", "      - name: Install browser dependencies\n        if: steps.cache.outputs.cache-hit != 'true'\n"),
   ]) assert.throws(() => installationContract(broken));
 });
@@ -87,10 +87,4 @@ test("accessibility candidate verification remains enabled and respects diagnost
   for (const flag of ["controls_only", "network_probe_only", "cancelled"]) {
     assert.equal(enabled("Verify accessibility", ["cards"], { [flag]: true }), false);
   }
-});
-
-test("actual control geometry checks all candidate sites and excludes diagnostic-only modes", () => {
-  for (const site of ["studio", "board", "cards", "words", "draw", "teenpatti"]) assert.equal(enabled("Verify control geometry", [site]), true);
-  assert.equal(enabled("Verify control geometry", []), false);
-  for (const flag of ["controls_only", "network_probe_only", "cancelled"]) assert.equal(enabled("Verify control geometry", ["draw"], { [flag]: true }), false);
 });

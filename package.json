@@ -25,7 +25,6 @@
     "test:release": "node --test tools/quality/*.node-spec.mjs && node tools/check-og.mjs",
     "quality": "node tools/quality-gate.mjs",
     "cf:upload": "node tools/cf.mjs upload",
-    "release:receipt": "node tools/release-receipt.mjs",
     "postinstall": "npm ci --prefix tools/eslint-compat --ignore-scripts --no-audit --no-fund"
   },
   "dependencies": {
