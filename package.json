@@ -24,6 +24,7 @@
     "gate": "npm run verify:toolchain && npm run typecheck && npm run lint && npm test && npm run test:release",
     "test:release": "node --test tools/quality/*.node-spec.mjs && node tools/check-og.mjs",
     "quality": "node tools/quality-gate.mjs",
+    "stats": "node tools/stats.mjs",
     "cf:upload": "node tools/cf.mjs upload",
     "postinstall": "npm ci --prefix tools/eslint-compat --ignore-scripts --no-audit --no-fund"
   },

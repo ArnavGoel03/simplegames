@@ -194,10 +194,9 @@ const GAME_PRESENTATION: readonly Omit<Game, "name" | "url" | "icon">[] = [
     // goes to the room rather than to any one game in it: every game inside is
     // one press from here, and a studio that deep-linked to one of eight would
     // be picking a favourite.
-    // Judgement's tile deals a real hand instead of showing a photograph. A
-    // card game's table is its players' hands, and those are private, so there
-    // is nothing to photograph that would not be a staged lie.
-    art: null,
+    // A capture of a real solo Judgement table on the live deployment, taken
+    // after dealing: a real hand and the computer's seats, nobody's private cards.
+    art: { src: "/art/deal-judgement.webp", width: 1200, height: 706, alt: "Deal" },
     fallback: "cards",
   },
   {
