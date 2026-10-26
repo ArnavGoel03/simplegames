@@ -61,7 +61,10 @@ try {
         expectedCandidate: { appVersion: JSON.parse(readFileSync(new URL("../package.json", import.meta.url), "utf8")).version, worker: workerName(), buildSource: buildSource(), origin: previewOrigin(candidate.candidateVersion) }, policy: policy() });
     };
     const releaseEnv = await staticReleaseEnvironment(root, env);
-    await promoteCandidate({ root, site: "studio", cwd: root, env: releaseEnv, liveOrigin: SITE_URL, validate });
+    // The candidate's preview URL is switched off for this Worker, so its footer cannot be read before
+    // promotion. The receipt's own version stands in, and the live HTTP checks after promotion read the real one.
+    await promoteCandidate({ root, site: "studio", cwd: root, env: releaseEnv, liveOrigin: SITE_URL, validate,
+      readCandidateVersion: async () => validate().candidate.appVersion });
     process.exit(0);
   }
   if (command === "upload") {
