@@ -4,7 +4,7 @@
     "tools/generate-og.mjs": "b9704ebe9cc7d1c60331a5c8238dcd1313ce6946e65054944ac13d08987ba08c",
     "tools/og-receipt.mjs": "77a7d3e6c16ae90e2e970a5f2819efbaa22f27da22c6113b3d03a7d2912e3948",
     "tools/og-renderers/studio.tsx": "bb27c84f12b5038f4046f2e052fbaf50cd129daafcd80bdae4b750de25e16ebc",
-    "src/lib/brand.ts": "cc4cb2fe879a7e7f85fb236840c316135f2c3fcd7d05f5703fa847dcd2e61dd5",
+    "src/lib/brand.ts": "f18e1852e7cc14f7e3e021c9f399332463de3cbb0a6d8a0d9212ca00ec2d1541",
     "src/lib/studio-mark.ts": "8b7ee53c31c34698f8cd03a035c9d8ebd752f7bd89f35ad465836cede123bdab",
     "src/lib/studio-mark.json": "77c0237c055aebf2e1b426371385bfc5f09e9ea2ad63b5e957a87eefb3e32371",
     "src/lib/palette.json": "d3adb7655e485f453d8fe646c6debcc4448b15636a5d6828647de15b5fcef89c",
