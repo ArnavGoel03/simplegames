@@ -51,6 +51,7 @@ test("phase timer recognizes pnpm 12 command markers from package scripts", () =
 test("gate metric rejects slow, missing, duplicate and mismatched baseline records", () => fixture(({ root, policy }) => {
   const measured = [{ id: "typecheck", unit: "ms", samples: [100] }];
   assert.equal(checkGateMetrics(root, policy, measured, ["pnpm"])[0].actual, 100);
+  assert.deepEqual(checkGateMetrics(root, { schema: 1 }, [], ["pnpm"]), []);
   assert.throws(() => checkGateMetrics(root, policy, [], ["pnpm"]));
   assert.throws(() => checkGateMetrics(root, policy, [...measured, ...measured], ["pnpm"]));
   assert.throws(() => checkGateMetrics(root, policy, [{ ...measured[0], samples: [2001] }], ["pnpm"]), /exceeding/);

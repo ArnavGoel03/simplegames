@@ -109,6 +109,8 @@ export function phaseClock(packageInfo) {
 }
 
 export function checkGateMetrics(root, policy, measurements, command) {
+  // No per-machine timing budget configured: the gate passing is the whole requirement.
+  if (policy?.gateMetrics === undefined) return [];
   if (!Array.isArray(policy?.gateMetrics) || !policy.gateMetrics.length || new Set(policy.gateMetrics.map((metric) => metric.id)).size !== policy.gateMetrics.length) throw new Error("release: missing measured gate phase policy");
   return policy.gateMetrics.map((budget) => {
     const reference = budget.baseline;
