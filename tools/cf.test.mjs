@@ -59,7 +59,9 @@ if (process.env.TEST_MUTATE_UPLOAD === 'stamp') {
 }
 console.log('Worker Version ID: 12345678-1234-1234-1234-123456789abc');
 `, { mode: 0o755 });
-  for (const args of [["init", "--quiet"], ["add", "tools", "src", "public", "package.json", "package-lock.json", "wrangler.jsonc"], ["-c", "user.name=Fixture", "-c", "user.email=fixture@example.test", "commit", "--quiet", "-m", "fixture"]]) {
+  // core.hooksPath: a machine-wide pre-commit hook must not decide whether a
+  // throwaway fixture repository can commit.
+  for (const args of [["init", "--quiet"], ["add", "tools", "src", "public", "package.json", "package-lock.json", "wrangler.jsonc"], ["-c", "core.hooksPath=/dev/null", "-c", "user.name=Fixture", "-c", "user.email=fixture@example.test", "commit", "--quiet", "-m", "fixture"]]) {
     expect(spawnSync("git", args, { cwd: root, encoding: "utf8", timeout: 5000 }).status).toBe(0);
   }
   const run = (command, env = {}, args = []) => spawnSync(process.execPath, ["tools/cf.mjs", command, ...args], {

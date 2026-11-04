@@ -58,6 +58,10 @@
         {
           "id": "rummy",
           "name": "Rummy"
+        },
+        {
+          "id": "crazyeights",
+          "name": "Crazy Eights"
         }
       ]
     },

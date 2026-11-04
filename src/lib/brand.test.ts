@@ -120,7 +120,7 @@ describe("the games registry", () => {
     expect(studio.url).not.toMatch(/vercel\.app/);
   });
 
-  it("keeps Casino's eleven games fifth and Rummy ninth inside Deal", () => {
+  it("keeps Casino's eleven games fifth, Rummy ninth and Crazy Eights tenth inside Deal", () => {
     expect(GAMES).toHaveLength(5);
     expect(GAMES[4].id).toBe("teenpatti");
     expect(GAMES[4].name).toBe("Casino");
@@ -131,7 +131,8 @@ describe("the games registry", () => {
     ]);
     expect(GAMES.some((game) => game.id === "rummy")).toBe(false);
     const deal = GAMES.find((game) => game.id === "taash")!;
-    expect(deal.holds.split(", ")).toHaveLength(9);
+    expect(deal.holds.split(", ")).toHaveLength(10);
     expect(deal.holds.split(", ")[8]).toBe("Rummy");
+    expect(deal.holds.split(", ")[9]).toBe("Crazy Eights");
   });
 });

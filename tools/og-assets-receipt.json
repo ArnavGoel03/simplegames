@@ -8,7 +8,7 @@
     "src/lib/studio-mark.ts": "8b7ee53c31c34698f8cd03a035c9d8ebd752f7bd89f35ad465836cede123bdab",
     "src/lib/studio-mark.json": "77c0237c055aebf2e1b426371385bfc5f09e9ea2ad63b5e957a87eefb3e32371",
     "src/lib/palette.json": "d3adb7655e485f453d8fe646c6debcc4448b15636a5d6828647de15b5fcef89c",
-    "package-lock.json": "57ab534de620375d767556aa3ffaa780930129fd47103f8c30021d9bced3b1a4"
+    "package-lock.json": "9bad69c1bd63d8d4ba48d56480473ed9d44d3c1e5cb20c85a0404d2a97e91476"
   },
   "outputs": {
     "src/app/opengraph-image.png": "57df19733ab568342a27d1ff3383b2c39adf90787607da12f43d5a79b0104ac9",
