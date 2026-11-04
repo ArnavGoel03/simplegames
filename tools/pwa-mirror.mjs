@@ -3,7 +3,7 @@ import { createHash } from "node:crypto";
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
-export const PWA_FILES = ["service-worker.ts", "worker-runtime.ts", "version.ts", "asset-recovery.ts", "worker-client.ts", "early-source.ts", "diagnostic-limits.ts"];
+export const PWA_FILES = ["service-worker.ts", "worker-runtime.ts", "version.ts", "asset-recovery.ts", "worker-client.ts", "offline-readiness.ts", "offline-assets.ts", "early-source.ts", "diagnostic-limits.ts"];
 
 export function validatePwaSource(bundle) {
   assert(bundle && bundle.schema === 1 && Array.isArray(bundle.files), "Unsupported PWA source bundle");

@@ -25,7 +25,7 @@ export function outputFingerprint(root) {
   hash.update(".next/BUILD_ID").update(readFileSync(join(root, ".next/BUILD_ID")));
   return hash.digest("hex");
 }
-const SOURCE_DIRECTORIES = ["src", "public", "tools", "docs/quality", ".github"];
+const SOURCE_DIRECTORIES = ["src", "lattice", "public", "tools", "docs/quality", ".github"];
 const GENERATED = new Set(["node_modules", ".audit", ".git", ".next", ".open-next", ".wrangler", ".vercel", "coverage", "dist", "test-results", "playwright-report", ".DS_Store"]);
 const generated = (name) => GENERATED.has(name) || name.endsWith(".tsbuildinfo") || name === "next-env.d.ts";
 

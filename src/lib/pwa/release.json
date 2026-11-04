@@ -3,11 +3,11 @@
   "files": [
     {
       "name": "service-worker.ts",
-      "sha256": "64bc74e857f837039a306e3164d0e382e50857312ef56114f075ee1aa264c101"
+      "sha256": "549adfebc61073918d378252bbb29a2f22cf0cc32fbfe388423bfea557ebd7f8"
     },
     {
       "name": "worker-runtime.ts",
-      "sha256": "d229601c0b5005fb26bb4e0ab288110ddd3183a9527a2056ba6a9c4d378c6144"
+      "sha256": "f18103124b48c88a8c75a1282f315a7c60158b7e9dfb2c8d9a4e1a5efc9eda7d"
     },
     {
       "name": "version.ts",
@@ -20,6 +20,14 @@
     {
       "name": "worker-client.ts",
       "sha256": "bb126978855bdd6122501ebbdd48bd528efb459db21268256974d3aba098d95a"
+    },
+    {
+      "name": "offline-readiness.ts",
+      "sha256": "2c85368a2c585904ed0178db97da49dbc6b86fe84edac0c74563c2aeab50961a"
+    },
+    {
+      "name": "offline-assets.ts",
+      "sha256": "6af245c581e47a16e12c7a09eb7bf4c1abc86be97a9c6136d0bd8775a46ea9b2"
     },
     {
       "name": "early-source.ts",

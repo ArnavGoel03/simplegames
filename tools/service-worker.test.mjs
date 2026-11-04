@@ -59,8 +59,12 @@ describe("the studio's generated service worker", () => {
   });
   it("caches a complete shell and only uses it for offline navigation", async () => {
     const sw = worker(); await sw.install();
-    expect(sw.request("/about", { mode: "navigate" })).toBeUndefined();
-    sw.navigator.onLine = false; sw.fetch.mockRejectedValue(new Error("offline"));
+    // Online navigation is network-first; a failed request falls back to the shell.
+    sw.fetch.mockClear();
+    expect((await sw.request("/about", { mode: "navigate" })).status).toBe(200); expect(sw.fetch).toHaveBeenCalledTimes(1);
+    sw.fetch.mockRejectedValue(new Error("unreachable"));
+    expect(await (await sw.request("/about", { mode: "navigate" })).text()).toContain("home");
+    sw.navigator.onLine = false;
     expect(await (await sw.request("/about", { mode: "navigate" })).text()).toContain("home");
     expect(sw.request("/unrelated.png")).toBeUndefined();
     expect(await (await sw.request("/_next/static/app.css")).text()).toContain("color:red");

@@ -1,6 +1,8 @@
 import { workerVersion } from "./version";
 import { WORKER_RUNTIME } from "./worker-runtime";
 import { ASSET_RECOVERY_STARTED, ASSET_RECOVERY_CANCELLED, ASSET_RECOVERY_QUERY } from "./asset-recovery";
+import { OFFLINE_STATUS_MESSAGE, OFFLINE_DOWNLOAD_MESSAGE, MAX_OFFLINE_PATHS } from "./offline-readiness";
+import { OFFLINE_ASSET_MANIFEST_FORMAT, OFFLINE_ASSET_LIMIT, OFFLINE_ASSET_TOTAL_BYTES, OFFLINE_ASSET_FILE_BYTES, OFFLINE_NOTICES_PATH, OFFLINE_WORD_ASSET_PATHS, DAWG_CONTENT_TYPE } from "./offline-assets";
 
 // One shared service worker, not four apps writing the same file by hand.
 //
@@ -77,6 +79,8 @@ export interface ServiceWorkerRoute {
   readonly appCommit: string | null;
   /** Every route and asset this app can serve with no network at all. */
   readonly precache: readonly string[];
+  /** Optional build manifest covering chunks first loaded after offline startup. */
+  readonly assetManifest?: string;
   /** The page that unregisters this worker and deletes its caches. */
   readonly escape: string;
   /** What a home screen launch actually requests. */
@@ -110,6 +114,10 @@ export interface ServiceWorkerRoute {
  */
 export function serviceWorkerSource(config: ServiceWorkerRoute): string {
   const privatePrefixes = [...BASE_PRIVATE_PREFIXES, ...(config.privatePrefixes ?? [])];
+  if (config.assetManifest && (!config.assetManifest.startsWith("/") || config.assetManifest.startsWith("//") ||
+    /[?#]/.test(config.assetManifest) || privatePrefixes.some((prefix) => config.assetManifest!.startsWith(prefix)) || config.assetManifest === config.escape)) {
+    throw new Error("invalid offline asset manifest path");
+  }
   const extra = config.extraCache;
   const extraDeclaration = extra
     ? `\n${extra.comment}\nconst ${extra.constName} = ${JSON.stringify(extra.prefix)};\n`
@@ -123,6 +131,17 @@ const VERSION = ${JSON.stringify(workerVersion(config.app, config.appVersion, co
 const STATIC_CACHE = VERSION + "-static";
 const CACHE_PREFIX = ${JSON.stringify(config.app + "-")};
 const OFFLINE = ${JSON.stringify(config.offline)};
+const OFFLINE_STATUS_MESSAGE = ${JSON.stringify(OFFLINE_STATUS_MESSAGE)};
+const OFFLINE_DOWNLOAD_MESSAGE = ${JSON.stringify(OFFLINE_DOWNLOAD_MESSAGE)};
+const MAX_OFFLINE_PATHS = ${MAX_OFFLINE_PATHS};
+const ASSET_MANIFEST = ${JSON.stringify(config.assetManifest ?? null)};
+const ASSET_MANIFEST_FORMAT = ${OFFLINE_ASSET_MANIFEST_FORMAT};
+const ASSET_MANIFEST_LIMIT = ${OFFLINE_ASSET_LIMIT};
+const ASSET_MANIFEST_TOTAL_BYTES = ${OFFLINE_ASSET_TOTAL_BYTES};
+const ASSET_MANIFEST_FILE_BYTES = ${OFFLINE_ASSET_FILE_BYTES};
+const NOTICES_PATH = ${JSON.stringify(OFFLINE_NOTICES_PATH)};
+const WORD_ASSET_PATHS = ${JSON.stringify(OFFLINE_WORD_ASSET_PATHS)};
+const WORD_ASSET_CONTENT_TYPE = ${JSON.stringify(DAWG_CONTENT_TYPE)};
 const ASSET_RECOVERY_STARTED = ${JSON.stringify(ASSET_RECOVERY_STARTED)};
 const ASSET_RECOVERY_CANCELLED = ${JSON.stringify(ASSET_RECOVERY_CANCELLED)};
 const ASSET_RECOVERY_QUERY = ${JSON.stringify(ASSET_RECOVERY_QUERY)};
