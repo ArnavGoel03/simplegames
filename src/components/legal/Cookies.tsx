@@ -43,6 +43,11 @@ export function Cookies() {
         reconnect a player or deliver a report.
       </p>
       <p>
+        The studio counts how games are used: a game started or finished, a first or repeat
+        visit, a sign-in. Each count holds no name, account, address or device ID, and cannot be
+        tied back to you.
+      </p>
+      <p>
         Games use <code>glasstable-session</code> to identify a guest or signed-in player, and{" "}
         <code>glasstable-session-here</code> to tell the browser that a session exists. Both have
         a maximum age of 180 days when issued and can be renewed. The{" "}

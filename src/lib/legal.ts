@@ -59,14 +59,14 @@ export const LEGAL_DOCS = [
   },
   {
     slug: "privacy",
-    updated: "2026-09-30",
+    updated: "2026-11-05",
     title: "Privacy",
     summary:
       "What the studio site and games collect and store, and what their hosting provider sees.",
   },
   {
     slug: "cookies",
-    updated: "2026-09-30",
+    updated: "2026-11-05",
     title: "Cookies",
     summary: "The studio site, game session cookies and practical browser storage.",
   },

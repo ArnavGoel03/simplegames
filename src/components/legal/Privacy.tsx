@@ -75,6 +75,11 @@ export function Privacy() {
         where supported, replay data. Reports can be queued in browser storage for delivery.
         This studio&rsquo;s reporting change does not disable reporting in the games.
       </p>
+      <p>
+        The studio counts how games are used: a game started or finished, a first or repeat
+        visit, a sign-in. Each count holds no name, account, address or device ID, and cannot be
+        tied back to you.
+      </p>
 
       <h2>4. Children</h2>
       <p>
